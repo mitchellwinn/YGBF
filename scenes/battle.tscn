@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwe6q66isus1c"]
+
+[ext_resource type="Texture2D" uid="uid://b0jwpjq381q5v" path="res://images/style_guide/battle_ui_style_guide.png" id="1_v6csx"]
+
+[node name="Battle" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Guide" type="TextureRect" parent="Control"]
+layout_mode = 1
+offset_right = 960.0
+offset_bottom = 540.0
+texture = ExtResource("1_v6csx")
+expand_mode = 2

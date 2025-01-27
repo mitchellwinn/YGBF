@@ -55,8 +55,8 @@ func battle_process():
 			await we_attack_enemy()
 		else:
 			await remaining_enemies_attack()
-		await get_tree().fixed_frame()
 		reset_exhaustion()
+		await get_tree().fixed_frame()
 	return
 
 func decide_attacker():
