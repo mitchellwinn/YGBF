@@ -2,17 +2,26 @@ extends Node
 
 class_name Stats
 
-var MAX_HP: int
-var hp: int
+var hp: int #holds data for current hp
+var ego: int #holds data for current ego
+var attacks: Array[int] = [] #holds data for each attack that can be performed per turn and its corresponding speed (thats what the int is for)
+var attack_index: int = 0 #holds data for which index of move the player is on, most of the time this is 0 if they haven't attacked this turn, 1 if they have
 var character_name: String
-#etc...
 
+func get_max_hp() -> int:
+	var value: int = 100 #write code later to calculate this based on level or other factors
+	return value
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func get_max_ego() -> int:
+	var value: int = 100 #write code later to calculate this based on level or other factors
+	return value
 
+func define_attacks():
+	attacks.clear() #wipe array to a clean slate before any recalculations
+	attacks.append(50) #placeholder character gets 1 attack per turn at speed of 50
+	return
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func is_exhausted() -> bool:
+	if attack_index>=attacks.size():
+		return true #we have used more attacks than we have available this turn, we are exhausted
+	return false 
