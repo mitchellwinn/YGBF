@@ -1,7 +1,5 @@
 extends Node
 
-const Stats = preload("res://scripts/stats.gd")
-
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var party: Array[Stats] = [] #holds data for all party members who will appear in battle
