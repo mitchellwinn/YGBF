@@ -91,7 +91,7 @@ func decide_menu_category():
 		if Input.is_action_just_pressed("move_up"):
 			#play some sound effect
 			await iterate_menu_index(-2)
-		menu_index = menu_index%party.size() #makes sure the attacker_index stays within the size of the party
+		menu_index = menu_index%4 #makes sure the menu_index stays within the amount of options
 		if Input.is_action_just_pressed("confirm"):
 			#play some sound effect
 			hovered_selection = categorical_menu_buttons[menu_index] #sets the attacker equal to the instance of that party member
@@ -140,30 +140,30 @@ func determine_enemy_attack():
 func iterate_attacker_index(value: int):
 	attacker_index += value #pick the member to the left of currently hovered party member
 	while party[attacker_index].is_exhausted():
-		attacker_index = keep_iterating(attacker_index, value)
+		attacker_index = keep_iterating(attacker_index, value) #target the next party member over
 		await get_tree().fixed_frame()
 	return
 
 func iterate_menu_index(value: int):
 	menu_index += value #pick the member to the left of currently hovered party member
 	while !categorical_menu_buttons[menu_index].can_hover:
-		menu_index = keep_iterating(menu_index, value)
+		menu_index = keep_iterating(menu_index, value) #target the next button over
 		await get_tree().fixed_frame()
 	return
 	
 func iterate_target_index(value: int):
 	target_index += value #pick the member to the left of currently hovered party member
-	while enemies[target_index].is_exhausted():
-		target_index = keep_iterating(target_index, value)
+	while enemies[target_index].is_subdued(): #can't tareget an enemy that has already been defeated
+		target_index = keep_iterating(target_index, value) #target the next enemy over
 		await get_tree().fixed_frame()
 	return
 
 func keep_iterating(index: int, value: int):
 	if value == 0:
-		menu_index += 1
+		index += 1
 	else:
-		menu_index += value/abs(value) #iterate by 1 in the original direction we were iterating in
-	return value;
+		index += value/abs(value) #iterate by 1 in the original direction we were iterating in
+	return index;
 
 func execute_on_hovered_selection():
 	#write code to reference the hovered selection and do what happens when it's confirmed
