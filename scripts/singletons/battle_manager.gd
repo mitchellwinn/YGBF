@@ -99,7 +99,13 @@ func iterate_attacker_index(value: int):
 	return
 	
 func compare_speed(enemy: Stats, attacker: Stats) -> int:
-	var value: int = abs(enemy.attacks[enemy.attack_index]-attacker.attacks[attacker.attack_index])
+	var value: int = enemy.attacks[enemy.attack_index]-attacker.attacks[attacker.attack_index]
+	if value > 10:
+		return -1 #enemy faster
+	elif value >= -10 and value <= 10:
+		return 0 #tie
+	else:
+		return 1 #enemy slower
 	return value
 	
 func all_party_members_exhausted() -> bool:
