@@ -21,6 +21,13 @@ GameManager="*res://scripts/singletons/game_manager.gd"
 BattleManager="*res://scripts/singletons/battle_manager.gd"
 DialogueManager="*res://scripts/singletons/dialogue_manager.gd"
 
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

@@ -121,7 +121,7 @@ func determine_enemy_attack():
 	for enemy in enemies:
 		if enemy.is_exhausted(): #if the enemy we would compare speed to has already used all their moves, skip them
 			continue
-		match compare_speed(enemy, attacker): #
+		match compare_speed(enemy): #
 			-1:
 				await enemy_attacks_us(enemy) #we are slower than the enemy, enemy attacks us
 			0:
@@ -169,7 +169,7 @@ func execute_on_hovered_selection():
 	#write code to reference the hovered selection and do what happens when it's confirmed
 	return
 
-func compare_speed(enemy: Stats, attacker: Stats) -> int:
+func compare_speed(enemy: Stats) -> int:
 	var value: int = enemy.attacks[enemy.attack_index]-attacker.attacks[attacker.attack_index]
 	if value > 10:
 		return -1 #enemy faster
@@ -177,7 +177,7 @@ func compare_speed(enemy: Stats, attacker: Stats) -> int:
 		return 0 #tie and mus coinflip beacuase our speed is within 10 points of the enemy
 	else:
 		return 1 #enemy slower
-	return value
+
 	
 func all_party_members_exhausted() -> bool:
 	for member in party:
