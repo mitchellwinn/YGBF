@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwe6q66isus1c"]
+[gd_scene load_steps=7 format=3 uid="uid://cwe6q66isus1c"]
 
 [ext_resource type="Texture2D" uid="uid://b0jwpjq381q5v" path="res://images/style_guide/battle_ui_style_guide.png" id="1_v6csx"]
 [ext_resource type="Texture2D" uid="uid://b4gecnjuu0nna" path="res://images/style_guide/enemy_resolution_guide.png" id="2_musbg"]
 [ext_resource type="Texture2D" uid="uid://boojsykjd02qx" path="res://images/style_guide/party_member_resolution_guide.png" id="3_3kxi6"]
+[ext_resource type="Material" uid="uid://ce7dt4bf5oulv" path="res://materials/custom_texture_rect_material.tres" id="3_42206"]
+[ext_resource type="Texture2D" uid="uid://bvk6ufm8ic5ta" path="res://images/style_guide/menu_resolution_guide.png" id="4_6gj1k"]
+[ext_resource type="Texture2D" uid="uid://637be5vc77ed" path="res://images/style_guide/dialogue_resolution_guide.png" id="4_tflk0"]
 
 [node name="Battle" type="Node2D"]
 
@@ -26,6 +29,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Guide" type="TextureRect" parent="Control/HBoxContainerGuide"]
+texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -47,14 +51,15 @@ pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Enemy1Guide" type="TextureRect" parent="Control/HBoxContainerEnemy1"]
+[node name="Enemy" type="TextureRect" parent="Control/HBoxContainerEnemy1"]
+texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("2_musbg")
 
 [node name="HBoxContainerEnemy2" type="HBoxContainer" parent="Control"]
-anchors_preset = -1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -69,7 +74,8 @@ pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Enemy2Guide" type="TextureRect" parent="Control/HBoxContainerEnemy2"]
+[node name="Enemy" type="TextureRect" parent="Control/HBoxContainerEnemy2"]
+texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -91,7 +97,8 @@ pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Enemy3Guide" type="TextureRect" parent="Control/HBoxContainerEnemy3"]
+[node name="Enemy" type="TextureRect" parent="Control/HBoxContainerEnemy3"]
+texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -100,20 +107,22 @@ texture = ExtResource("2_musbg")
 [node name="HBoxContainerParty1" type="HBoxContainer" parent="Control"]
 anchors_preset = -1
 anchor_left = 0.125
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.125
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -88.0
-offset_top = 98.0
+offset_top = -172.0
 offset_right = 72.0
-offset_bottom = 258.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(80, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Party2Guide" type="TextureRect" parent="Control/HBoxContainerParty1"]
+[node name="PartyMember" type="TextureRect" parent="Control/HBoxContainerParty1"]
+texture_filter = 1
+material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -122,20 +131,22 @@ texture = ExtResource("3_3kxi6")
 [node name="HBoxContainerParty2" type="HBoxContainer" parent="Control"]
 anchors_preset = -1
 anchor_left = 0.375
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.375
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -80.0
-offset_top = 98.0
+offset_top = -172.0
 offset_right = 80.0
-offset_bottom = 258.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(80, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Party3Guide" type="TextureRect" parent="Control/HBoxContainerParty2"]
+[node name="PartyMember" type="TextureRect" parent="Control/HBoxContainerParty2"]
+texture_filter = 1
+material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -144,20 +155,22 @@ texture = ExtResource("3_3kxi6")
 [node name="HBoxContainerParty3" type="HBoxContainer" parent="Control"]
 anchors_preset = -1
 anchor_left = 0.625
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.625
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -80.0
-offset_top = 98.0
+offset_top = -172.0
 offset_right = 80.0
-offset_bottom = 258.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(80, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Party4Guide" type="TextureRect" parent="Control/HBoxContainerParty3"]
+[node name="PartyMember" type="TextureRect" parent="Control/HBoxContainerParty3"]
+texture_filter = 1
+material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -166,21 +179,78 @@ texture = ExtResource("3_3kxi6")
 [node name="HBoxContainerParty4" type="HBoxContainer" parent="Control"]
 anchors_preset = -1
 anchor_left = 0.875
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.875
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -72.0
-offset_top = 98.0
+offset_top = -172.0
 offset_right = 88.0
-offset_bottom = 258.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(80, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Party1Guide" type="TextureRect" parent="Control/HBoxContainerParty4"]
+[node name="PartyMember" type="TextureRect" parent="Control/HBoxContainerParty4"]
+texture_filter = 1
+material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("3_3kxi6")
+
+[node name="HBoxContainerMenu" type="HBoxContainer" parent="Control"]
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = 1.0
+anchor_right = 0.875
+anchor_bottom = 1.0
+offset_left = 160.0
+offset_top = -172.0
+offset_right = 88.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(352, 80)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="MenuGuide" type="NinePatchRect" parent="Control/HBoxContainerMenu"]
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("4_6gj1k")
+region_rect = Rect2(0, -0.334084, 704, 160.334)
+patch_margin_left = 50
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+axis_stretch_vertical = 1
+
+[node name="HBoxContainerDialogue" type="HBoxContainer" parent="Control"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -335.0
+offset_top = 33.0
+offset_right = 337.0
+offset_bottom = 113.0
+grow_horizontal = 2
+pivot_offset = Vector2(352, 80)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="DialogueGuide" type="NinePatchRect" parent="Control/HBoxContainerDialogue"]
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("4_tflk0")
+region_rect = Rect2(-0.176821, -0.334084, 672.242, 80.6433)
+patch_margin_left = 75
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+axis_stretch_vertical = 1

@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ce7dt4bf5oulv"]
+
+[ext_resource type="Shader" path="res://scripts/shaders/custom_texture_rect_shader.gdshader" id="1_gf176"]
+
+[resource]
+shader = ExtResource("1_gf176")
+shader_parameter/oscillation_speed = 1.0
+shader_parameter/flash_enabled = true
