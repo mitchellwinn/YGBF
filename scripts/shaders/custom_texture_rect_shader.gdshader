@@ -1,7 +1,7 @@
 shader_type canvas_item;
 
 // Uniform to control the oscillation speed
-uniform float oscillation_speed = 7.0;
+uniform float oscillation_speed = 1.0;
 // Uniform to toggle the flashing effect
 uniform bool flash_enabled = true;
 

@@ -8,38 +8,45 @@ var participants: Array[Stats] = [] #holds data for all participants including b
 var categorical_menu_buttons: Array[CustomButton] = [] #holds data for the hoverable menu buttons like Talent, Items, etc...
 
 var party_sprites: Array[TextureRect] = []
+var enemy_sprites: Array[TextureRect] = []
+var main_menu_sprite: NinePatchRect
 
 var troop: int #holds data for which troop of enemies will be encountered when a battle starts
 var bg: int #holds data for which background effect will be loaded when battle starts
 
 var in_battle: bool #referenced by other scripts that may halt functions during a battle
 var attacker_index: int = 0 #holds data for which party member is / was last selected to use an attack
-var menu_index: int = 0 #holds data for which menu is / was last selected to access
+var categorical_button_index: int = 0 #holds data for which catergorical button  is / was last selected to access
+var menu_index: int = 0
 var target_index: int = 0 #holds data for which enemy is / was last targeted for attack
 var attacker: Stats = null
 var hovered_selection: CustomButton = null
 var target: Stats = null
 
 var phase: String = ""
+var last_delta: float
 
 ############## BUILT IN FUNCTIONS ######################
 
 func _ready():
 	pass
 
-func _process(_delta):
-	pass
+func _physics_process(delta):
+	last_delta = delta
+	return
 
 ############### INITIALIZATION FUNCTIONS ###############
 
 func start_battle():
 	#remember character's position on the overworld
 	#switch to battle scene
+	party = GameManager.party
+	await EnemyTroops.load(troop)
+	participants = party + enemies
 	get_scene_references()
 	stop_all_flashes()
-	load_troop()
 	in_battle = true
-	battle_process()#starts the battle process loop
+	battle_physics()#starts the battle physics loop
 	return
 	
 func end_battle():
@@ -50,21 +57,44 @@ func end_battle():
 
 func get_scene_references():
 	party_sprites.clear()
+	enemy_sprites.clear()
+	categorical_menu_buttons.clear()
+	main_menu_sprite = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu/Menu")
+	for button in main_menu_sprite.get_child(0).get_children():
+		categorical_menu_buttons.append(button)
+	main_menu_sprite.visible = false
 	for i in range (4):
-		party_sprites.append(get_tree().root.get_node("Battle/Control/HBoxContainerParty"+str(i+1)+"/PartyMember"))
-		party_sprites[i].material = party_sprites[i].material.duplicate()
+		party_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerParty"+str(i+1)+"/PartyMember"))
+		party_sprites[i].visible = false
+	for i in range (party.size()):
+		party_sprites[i].visible = true
+		party_sprites[i].material = party_sprites[i].material.duplicate() #give it unique copy of material so it can flash independently of other sprites
+		match party.size():
+			1:
+				party_sprites[0].get_parent().anchor_left = .5
+			2:
+				party_sprites[0].get_parent().anchor_left = .5-.125
+				party_sprites[1].get_parent().anchor_left = .5+.125
+			3:
+				party_sprites[0].get_parent().anchor_left = .25
+				party_sprites[1].get_parent().anchor_left = .5
+				party_sprites[1].get_parent().anchor_left = .75
+			4:
+				pass #it's already the right anchor setup by default when we load the scene
+		party_sprites[i].anchor_right = party_sprites[i].anchor_left
+	for i in range (enemies.size()):
+		enemy_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerEnemy"+str(i+1)+"/Enemy"))
+		print(enemy_sprites.size())
+		enemy_sprites[i].material = enemy_sprites[i].material.duplicate()
 	return
 	
-func load_troop():
-	#load the enemies into the battle
-	return
 
-############### BATTLE PROCESS FUNCTIONS #####################
+############### BATTLE physics FUNCTIONS #####################
 
-func battle_process():
-	print("Started battle_process")
+func battle_physics():
+	print("Started battle_physics")
 	while true:
-		print("New lap of battle_process")
+		print("New lap of battle_physics")
 		if !all_party_members_exhausted(): #still have a party member we can pick to attack
 			await decide_attacker()
 			await decide_menu_category()
@@ -74,13 +104,15 @@ func battle_process():
 		else:
 			await remaining_enemies_attack()
 		reset_exhaustion()
-		await get_tree().process_frame
+		await get_tree().physics_frame
 	return
 
 func decide_attacker():
 	phase = "decide_attacker"
-	flash_attacker()
+	stop_all_flashes()
+	print("Initial attacker_index before iteration: "+str(attacker_index))
 	await iterate_attacker_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
+	print("Initial attacker_index after iteration: "+str(attacker_index))
 	while(true):
 		if Input.is_action_just_pressed("move_right"):
 			#play some sound effect
@@ -91,32 +123,36 @@ func decide_attacker():
 		if Input.is_action_just_pressed("confirm"):
 			#play some sound effect
 			attacker = party[attacker_index] #sets the attacker equal to the instance of that party member
-			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
+			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
 		phase = ""
-		await get_tree().process_frame
+		await get_tree().physics_frame
 	return
 	
 func decide_menu_category():
-	await iterate_menu_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
+	phase = "decide_menu_category"
+	stop_all_flashes()
+	open_menu()
+	await iterate_categorical_menu_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
 		if Input.is_action_just_pressed("move_right"):
 			#play some sound effect
-			await iterate_menu_index(1)
+			await iterate_categorical_menu_index(1)
 		if Input.is_action_just_pressed("move_left"):
 			#play some sound effect
-			await iterate_menu_index(-1)
+			await iterate_categorical_menu_index(-1)
 		if Input.is_action_just_pressed("move_down"):
 			#play some sound effect
-			await iterate_menu_index(2)
+			await iterate_categorical_menu_index(2)
 		if Input.is_action_just_pressed("move_up"):
 			#play some sound effect
-			await iterate_menu_index(-2)
+			await iterate_categorical_menu_index(-2)
 		if Input.is_action_just_pressed("confirm"):
 			#play some sound effect
-			hovered_selection = categorical_menu_buttons[menu_index] #sets the attacker equal to the instance of that party member
+			hovered_selection = categorical_menu_buttons[categorical_button_index] #sets the hovered button based on categorical_button_index
 			await execute_on_hovered_selection()
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
-		await get_tree().process_frame
+		phase = ""
+		await get_tree().physics_frame
 	return
 	
 func decide_target():
@@ -131,8 +167,8 @@ func decide_target():
 		if Input.is_action_just_pressed("confirm"):
 			#play some sound effect
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
-			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
-		await get_tree().process_frame
+			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
+		await get_tree().physics_frame
 	return
 	
 func determine_enemy_attack():
@@ -158,30 +194,30 @@ func determine_enemy_attack():
 func iterate_attacker_index(value: int):
 	stop_all_flashes()
 	attacker_index += value #pick the member to the left of currently hovered party member
-	attacker_index = attacker_index%party.size() #makes sure the attacker_index stays within the size of the party
+	attacker_index = posmod(attacker_index,party.size()) #makes sure the attacker_index stays within the size of the party
 	while party[attacker_index].is_exhausted():
 		attacker_index = keep_iterating(attacker_index, value) #target the next party member over
-		attacker_index = attacker_index%party.size() #makes sure the attacker_index stays within the size of the party
-		await get_tree().process_frame
-	flash_attacker()
+		attacker_index = posmod(attacker_index,party.size()) #makes sure the attacker_index stays within the size of the party
+		await get_tree().physics_frame
+	select_flash_attacker()
 	return
 
-func iterate_menu_index(value: int):
-	menu_index += value #pick the member to the left of currently hovered party member
-	menu_index = menu_index%4 #makes sure the menu_index stays within the amount of options
-	while !categorical_menu_buttons[menu_index].can_hover:
-		menu_index = keep_iterating(menu_index, value) #target the next button over
-		menu_index = menu_index%4 #makes sure the menu_index stays within the amount of options
-		await get_tree().process_frame
+func iterate_categorical_menu_index(value: int):
+	categorical_button_index += value #pick the member to the left of currently hovered party member
+	categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
+	while !categorical_menu_buttons[categorical_button_index].can_hover:
+		categorical_button_index = keep_iterating(categorical_button_index, value) #target the next button over
+		categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
+		await get_tree().physics_frame
 	return
 	
 func iterate_target_index(value: int):
 	target_index += value #pick the member to the left of currently hovered party member
-	target_index = target_index%enemies.size() #makes sure the attacker_index stays within the size of the enemy troop
+	target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
 	while enemies[target_index].is_subdued(): #can't tareget an enemy that has already been defeated
 		target_index = keep_iterating(target_index, value) #target the next enemy over
-		target_index = target_index%enemies.size() #makes sure the attacker_index stays within the size of the enemy troop
-		await get_tree().process_frame
+		target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
+		await get_tree().physics_frame
 	return
 
 func keep_iterating(index: int, value: int):
@@ -192,7 +228,7 @@ func keep_iterating(index: int, value: int):
 	return index;
 
 func execute_on_hovered_selection():
-	#write code to reference the hovered selection and do what happens when it's confirmed
+	await get_tree().physics_frame
 	return
 
 func compare_speed(enemy: Stats) -> int:
@@ -236,12 +272,40 @@ func reset_exhaustion():
 
 ################### VISUAL HELPER FUNCTIONS #####################
 
-func flash_attacker():
+func select_flash_attacker():
+	print ("Flash select attacker_index"+str(attacker_index))
 	party_sprites[attacker_index].material.set_shader_parameter("flash_enabled", true)
 	party_sprites[attacker_index].material.set_shader_parameter("oscillation_speed", 7)
+	return
+
+func select_flash_enemy():
+	enemy_sprites[target_index].material.set_shader_parameter("flash_enabled", true)
+	enemy_sprites[target_index].material.set_shader_parameter("oscillation_speed", 7)
 	return
 
 func stop_all_flashes():
 	for sprite in party_sprites:
 		sprite.material.set_shader_parameter("flash_enabled", false)
+	for sprite in enemy_sprites:
+		sprite.material.set_shader_parameter("flash_enabled", false)
 	return
+
+func open_menu():
+	for sprite in party_sprites:
+		if sprite != party_sprites[attacker_index]:
+			sprite.visible = false;
+		else:
+			sprite.visible = true
+	var attacker_original_anchor = party_sprites[attacker_index].get_parent().anchor_left
+	main_menu_sprite.visible = true
+	while phase == "decide_menu_category":
+		party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,last_delta*10.0)
+		party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+		await get_tree().physics_frame
+	party_sprites[attacker_index].get_parent().anchor_left = attacker_original_anchor
+	party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+	main_menu_sprite.visible = false
+	for i in range(party.size()):
+		party_sprites[i].visible = true
+	return
+

@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cf1r6ahcjjocb"]
+
+[ext_resource type="FontFile" uid="uid://d1q6ful24b3mu" path="res://fonts/QuerinaHandwritten.otf" id="1_xxm4r"]
+
+[resource]
+default_font = ExtResource("1_xxm4r")

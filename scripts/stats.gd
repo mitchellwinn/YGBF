@@ -7,20 +7,21 @@ var hp: int #holds data for current hp
 var ego: int #holds data for current ego/id shield
 var inner_ego: int #holds data for current inner ego
 var ego_subdue_threshold: float #[0.0-1.0] represents percentage of max ego that ego needs to decrease beyond to subdue
+var hp_subdue_threshold: float #[0.0-1.0] represents percentage of max hp that hp needs to decrease beyond to subdue
 var attacks: Array[int] = [] #holds data for each attack that can be performed per turn and its corresponding speed (thats what the int is for)
 var attack_index: int = 0 #holds data for which index of move the player is on, most of the time this is 0 if they haven't attacked this turn, 1 if they have
 var character_name: String
 var loaded_from_save: bool
 
 func _ready():
-	print("New entity added to scene tree")
+	print("New entity added to scene tree "+character_name)
 	if(!loaded_from_save):
 		initialize_new_party_member()
 
 func initialize_new_party_member():
 	define_attacks()
 	armor = get_max_armor()
-	hp = get_max_hp()
+	hp = get_max_hp() 
 	ego = get_max_ego()
 	inner_ego = get_max_id()
 	return
@@ -54,7 +55,7 @@ func is_exhausted() -> bool:
 	return false 
 
 func is_subdued() -> bool:
-	if hp <= 0:
+	if float(hp)/float(get_max_hp()) <= hp_subdue_threshold:
 		return true
 	if float(ego)/float(get_max_ego()) <= ego_subdue_threshold:
 		return true
