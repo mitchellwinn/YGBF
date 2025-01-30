@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://l6tgy4rqiajq"
-path="res://.godot/imported/emilio.png-32c0698fe0d76cd4a907eefb9677bee4.ctex"
+uid="uid://dkcvrib1y2i6p"
+path="res://.godot/imported/minigame_resolution_guide3.png-cae2f8893a8e549476585b18c9d49b55.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/portraits/emilio.png"
-dest_files=["res://.godot/imported/emilio.png-32c0698fe0d76cd4a907eefb9677bee4.ctex"]
+source_file="res://images/style_guide/minigame_resolution_guide3.png"
+dest_files=["res://.godot/imported/minigame_resolution_guide3.png-cae2f8893a8e549476585b18c9d49b55.ctex"]
 
 [params]
 

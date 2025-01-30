@@ -7,7 +7,7 @@ var enemies: Array[Stats] = [] #holds data for all enemies who will appear in ba
 var participants: Array[Stats] = [] #holds data for all participants including both party and enemies
 var categorical_menu_buttons: Array[CustomButton] = [] #holds data for the hoverable menu buttons like Talent, Items, etc...
 
-var party_sprites: Array[TextureRect] = []
+var party_sprites: Array[TextureButton] = []
 var enemy_sprites: Array[TextureRect] = []
 var main_menu_sprite: NinePatchRect
 
@@ -46,7 +46,7 @@ func start_battle():
 	get_scene_references()
 	stop_all_flashes()
 	in_battle = true
-	battle_physics()#starts the battle physics loop
+	battle_process()#starts the battle process loop
 	return
 	
 func end_battle():
@@ -66,6 +66,7 @@ func get_scene_references():
 	for i in range (4):
 		party_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerParty"+str(i+1)+"/PartyMember"))
 		party_sprites[i].visible = false
+	party_sprites[0].grab_focus()
 	for i in range (party.size()):
 		party_sprites[i].visible = true
 		party_sprites[i].material = party_sprites[i].material.duplicate() #give it unique copy of material so it can flash independently of other sprites
@@ -91,10 +92,10 @@ func get_scene_references():
 
 ############### BATTLE physics FUNCTIONS #####################
 
-func battle_physics():
-	print("Started battle_physics")
+func battle_process():
+	print("Started battle_process")
 	while true:
-		print("New lap of battle_physics")
+		print("New lap of battle_process")
 		if !all_party_members_exhausted(): #still have a party member we can pick to attack
 			await decide_attacker()
 			await decide_menu_category()
@@ -124,9 +125,19 @@ func decide_attacker():
 			#play some sound effect
 			attacker = party[attacker_index] #sets the attacker equal to the instance of that party member
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
-		phase = ""
 		await get_tree().physics_frame
+	phase = ""
 	return
+
+func decide_attacker_button(): #same idea as decide_attacker, but by taking advantage of button class
+	phase = "decide_attacker"
+	stop_all_flashes()
+	while(true):
+		pass
+		await get_tree().physics_frame
+	phase = ""
+	return
+
 	
 func decide_menu_category():
 	phase = "decide_menu_category"
@@ -308,4 +319,3 @@ func open_menu():
 	for i in range(party.size()):
 		party_sprites[i].visible = true
 	return
-
