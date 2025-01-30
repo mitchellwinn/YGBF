@@ -8,7 +8,7 @@ var participants: Array[Stats] = [] #holds data for all participants including b
 var categorical_menu_buttons: Array[CustomButton] = [] #holds data for the hoverable menu buttons like Talent, Items, etc...
 
 var party_sprites: Array[TextureButton] = []
-var enemy_sprites: Array[TextureRect] = []
+var enemy_sprites: Array[TextureButton] = []
 var main_menu_sprite: NinePatchRect
 
 var troop: int #holds data for which troop of enemies will be encountered when a battle starts
@@ -20,7 +20,6 @@ var categorical_button_index: int = 0 #holds data for which catergorical button 
 var menu_index: int = 0
 var target_index: int = 0 #holds data for which enemy is / was last targeted for attack
 var attacker: Stats = null
-var hovered_selection: CustomButton = null
 var target: Stats = null
 
 var phase: String = ""
@@ -66,7 +65,6 @@ func get_scene_references():
 	for i in range (4):
 		party_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerParty"+str(i+1)+"/PartyMember"))
 		party_sprites[i].visible = false
-	party_sprites[0].grab_focus()
 	for i in range (party.size()):
 		party_sprites[i].visible = true
 		party_sprites[i].material = party_sprites[i].material.duplicate() #give it unique copy of material so it can flash independently of other sprites
@@ -83,10 +81,21 @@ func get_scene_references():
 			4:
 				pass #it's already the right anchor setup by default when we load the scene
 		party_sprites[i].anchor_right = party_sprites[i].anchor_left
-	for i in range (enemies.size()):
+	for i in range (3):
 		enemy_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerEnemy"+str(i+1)+"/Enemy"))
+		enemy_sprites[i].visible = false
+	for i in range (enemies.size()):
 		print(enemy_sprites.size())
+		enemy_sprites[i].visible = true
 		enemy_sprites[i].material = enemy_sprites[i].material.duplicate()
+		match enemies.size():
+			1:
+				enemy_sprites[0].get_parent().anchor_left = .5
+			2:
+				enemy_sprites[0].get_parent().anchor_left = .5-.125
+				enemy_sprites[1].get_parent().anchor_left = .5+.125
+			3:
+				pass #it's already the right anchor setup by default when we load the scene
 	return
 	
 
@@ -97,14 +106,30 @@ func battle_process():
 	while true:
 		print("New lap of battle_process")
 		if !all_party_members_exhausted(): #still have a party member we can pick to attack
+			print("decide_attacker")
 			await decide_attacker()
+			print("decide_menu_category")
 			await decide_menu_category()
+			match categorical_button_index:
+				0: #Act
+					continue
+				1: #Main Attack
+					pass
+				2: #Skills
+					continue
+				3: #Item
+					continue
+			print("decide_target")
 			await decide_target()
+			print("determine_enemy_attack")
 			await determine_enemy_attack()
+			print("we_attack_enemy")
 			await we_attack_enemy()
 		else:
+			print("remaining_enemies_attack")
 			await remaining_enemies_attack()
-		reset_exhaustion()
+			print("reset_exhasustion")
+			reset_exhaustion()
 		await get_tree().physics_frame
 	return
 
@@ -121,52 +146,37 @@ func decide_attacker():
 		if Input.is_action_just_pressed("move_left"):
 			#play some sound effect
 			await iterate_attacker_index(-1)
-		if Input.is_action_just_pressed("confirm"):
+		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
+			GameManager.click_button = ""
 			#play some sound effect
 			attacker = party[attacker_index] #sets the attacker equal to the instance of that party member
+			print(attacker.character_name)
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
 		await get_tree().physics_frame
 	phase = ""
+	await get_tree().physics_frame
 	return
-
-func decide_attacker_button(): #same idea as decide_attacker, but by taking advantage of button class
-	phase = "decide_attacker"
-	stop_all_flashes()
-	while(true):
-		pass
-		await get_tree().physics_frame
-	phase = ""
-	return
-
 	
 func decide_menu_category():
 	phase = "decide_menu_category"
 	stop_all_flashes()
+	categorical_menu_buttons[categorical_button_index].grab_focus()
+	print("grabbed focus")
 	open_menu()
-	await iterate_categorical_menu_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
+	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
-		if Input.is_action_just_pressed("move_right"):
+		categorical_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			#play some sound effect
-			await iterate_categorical_menu_index(1)
-		if Input.is_action_just_pressed("move_left"):
-			#play some sound effect
-			await iterate_categorical_menu_index(-1)
-		if Input.is_action_just_pressed("move_down"):
-			#play some sound effect
-			await iterate_categorical_menu_index(2)
-		if Input.is_action_just_pressed("move_up"):
-			#play some sound effect
-			await iterate_categorical_menu_index(-2)
-		if Input.is_action_just_pressed("confirm"):
-			#play some sound effect
-			hovered_selection = categorical_menu_buttons[categorical_button_index] #sets the hovered button based on categorical_button_index
-			await execute_on_hovered_selection()
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
-		phase = ""
 		await get_tree().physics_frame
+	phase = ""
+	await get_tree().physics_frame
 	return
 	
 func decide_target():
+	phase = "decide_target"
+	stop_all_flashes()
 	await iterate_target_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
 		if Input.is_action_just_pressed("move_right"):
@@ -175,11 +185,13 @@ func decide_target():
 		if Input.is_action_just_pressed("move_left"):
 			#play some sound effect
 			await iterate_target_index(-1)
-		if Input.is_action_just_pressed("confirm"):
+		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			#play some sound effect
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
 		await get_tree().physics_frame
+	phase = ""
+	await get_tree().physics_frame
 	return
 	
 func determine_enemy_attack():
@@ -213,22 +225,25 @@ func iterate_attacker_index(value: int):
 	select_flash_attacker()
 	return
 
-func iterate_categorical_menu_index(value: int):
+func iterate_categorical_button_index(value: int):
 	categorical_button_index += value #pick the member to the left of currently hovered party member
 	categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
 	while !categorical_menu_buttons[categorical_button_index].can_hover:
 		categorical_button_index = keep_iterating(categorical_button_index, value) #target the next button over
 		categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
 		await get_tree().physics_frame
+	categorical_menu_buttons[categorical_button_index].grab_focus()
 	return
 	
 func iterate_target_index(value: int):
+	stop_all_flashes()
 	target_index += value #pick the member to the left of currently hovered party member
 	target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
 	while enemies[target_index].is_subdued(): #can't tareget an enemy that has already been defeated
 		target_index = keep_iterating(target_index, value) #target the next enemy over
 		target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
 		await get_tree().physics_frame
+	select_flash_enemy()
 	return
 
 func keep_iterating(index: int, value: int):
@@ -237,10 +252,6 @@ func keep_iterating(index: int, value: int):
 	else:
 		index += value/abs(value) #iterate by 1 in the original direction we were iterating in
 	return index;
-
-func execute_on_hovered_selection():
-	await get_tree().physics_frame
-	return
 
 func compare_speed(enemy: Stats) -> int:
 	var value: int = enemy.attacks[enemy.attack_index]-attacker.attacks[attacker.attack_index]
