@@ -10,7 +10,9 @@
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
 [ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="6_ath8s"]
 [ext_resource type="FontFile" uid="uid://r0exggliqh2q" path="res://fonts/vhs-gothic.ttf" id="8_rb347"]
-[ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="9_w2dp6"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2dt4m"]
+viewport_path = NodePath("MinigameViewport")
 
 [node name="Battle" type="Node2D"]
 
@@ -403,25 +405,48 @@ patch_margin_bottom = 10
 axis_stretch_vertical = 1
 
 [node name="HBoxContainerMinigame" type="HBoxContainer" parent="CanvasLayer"]
-visible = false
-anchors_preset = -1
-anchor_left = 0.75
-anchor_top = 0.5
-anchor_right = 0.75
-anchor_bottom = 0.5
-offset_left = -575.0
-offset_top = -237.0
-offset_right = 97.0
-offset_bottom = 75.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 32.0
+offset_right = -24.0
+offset_bottom = -196.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 
-[node name="MinigameTV" type="TextureRect" parent="CanvasLayer/HBoxContainerMinigame"]
+[node name="Minigame" type="TextureRect" parent="CanvasLayer/HBoxContainerMinigame"]
+visible = false
 texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
-texture = ExtResource("9_w2dp6")
+texture = SubResource("ViewportTexture_2dt4m")
+
+[node name="MinigameSizeGuide" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 32.0
+offset_right = -24.0
+offset_bottom = -196.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="Minigame" type="TextureRect" parent="CanvasLayer/MinigameSizeGuide"]
+visible = false
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("ViewportTexture_2dt4m")
+
+[node name="MinigameViewport" type="SubViewport" parent="."]
+size = Vector2i(912, 312)

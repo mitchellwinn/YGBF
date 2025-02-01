@@ -5,6 +5,8 @@ class_name Stats
 var armor: int #holds data for current armor
 var hp: int #holds data for current hp
 var ego: int #holds data for current ego/id shield
+var pacified: bool #holds data for whether entity has been pacified
+var talent: String
 var inner_ego: int #holds data for current inner ego
 var ego_subdue_threshold: float #[0.0-1.0] represents percentage of max ego that ego needs to decrease beyond to subdue
 var hp_subdue_threshold: float #[0.0-1.0] represents percentage of max hp that hp needs to decrease beyond to subdue
@@ -48,11 +50,20 @@ func define_attacks():
 	return
 
 func is_exhausted() -> bool:
-	if is_subdued(): #if entity is subdued they also cannot attack lol
+	if pacified: #if entity is pacified they also cannot attack lol
 		return true
 	if attack_index>=attacks.size():
 		return true #we have used more attacks than we have available this turn, we are exhausted
 	return false 
+
+func is_defeated() -> bool:
+	if hp <= 0:
+		return true
+	if ego <= 0:
+		return true
+	if pacified:
+		return true
+	return false
 
 func is_subdued() -> bool:
 	if float(hp)/float(get_max_hp()) <= hp_subdue_threshold:

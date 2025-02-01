@@ -9,6 +9,9 @@ var participants: Array[Stats] = [] #holds data for all participants including b
 var party_sprites: Array[TextureButton] = []
 var enemy_sprites: Array[TextureButton] = []
 var menu: NinePatchRect
+var minigame: TextureRect
+var minigame_size_guide: HBoxContainer
+var minigame_viewport: SubViewport
 var categorical_menu: GridContainer
 var act_menu: GridContainer
 
@@ -26,15 +29,16 @@ var target: Stats = null
 
 var battle_option: String
 var phase: String = ""
-var last_delta: float
+var minigame_status: int
+
+var model_minigame = preload("res://scenes/minigames/model.tscn")
 
 ############## BUILT IN FUNCTIONS ######################
 
 func _ready():
 	pass
 
-func _physics_process(delta):
-	last_delta = delta
+func _physics_process(_delta):
 	return
 
 ############### INITIALIZATION FUNCTIONS ###############
@@ -62,6 +66,9 @@ func get_scene_references():
 	enemy_sprites.clear()
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu/Menu")
 	categorical_menu = menu.get_node("GridContainerCategorical")
+	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
+	minigame_viewport = get_tree().root.get_node("Battle/MinigameViewport")
+	minigame_size_guide = get_tree().root.get_node("Battle/CanvasLayer/MinigameSizeGuide")
 	act_menu = menu.get_node("GridContainerAct")
 	menu.visible = false
 	for i in range (4):
@@ -87,7 +94,6 @@ func get_scene_references():
 		enemy_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerEnemy"+str(i+1)+"/Enemy"))
 		enemy_sprites[i].visible = false
 	for i in range (enemies.size()):
-		print(enemy_sprites.size())
 		enemy_sprites[i].visible = true
 		enemy_sprites[i].material = enemy_sprites[i].material.duplicate()
 		match enemies.size():
@@ -135,7 +141,7 @@ func battle_process():
 		else:
 			await remaining_enemies_attack()
 			reset_exhaustion()
-		await get_tree().physics_frame
+		await get_tree().process_frame
 	return
 
 func decide_attacker():
@@ -157,8 +163,8 @@ func decide_attacker():
 			attacker = party[attacker_index] #sets the attacker equal to the instance of that party member
 			print(attacker.character_name)
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
-		await get_tree().physics_frame
-	await get_tree().physics_frame
+		await get_tree().process_frame
+	await get_tree().process_frame
 	return
 	
 func decide_menu_category():
@@ -172,8 +178,8 @@ func decide_menu_category():
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			#play some sound effect
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
-		await get_tree().physics_frame
-	await get_tree().physics_frame
+		await get_tree().process_frame
+	await get_tree().process_frame
 	return
 
 func decide_menu_act():
@@ -188,8 +194,8 @@ func decide_menu_act():
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			#play some sound effect
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
-		await get_tree().physics_frame
-	await get_tree().physics_frame
+		await get_tree().process_frame
+	await get_tree().process_frame
 	return
 	
 func decide_target():
@@ -207,11 +213,12 @@ func decide_target():
 			#play some sound effect
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
-		await get_tree().physics_frame
-	await get_tree().physics_frame
+		await get_tree().process_frame
+	await get_tree().process_frame
 	return
 	
 func determine_enemy_attack():
+	phase = "determine_enemy_attack"
 	for enemy in enemies:
 		if enemy.is_exhausted(): #if the enemy we would compare speed to has already used all their moves, skip them
 			continue
@@ -238,7 +245,7 @@ func iterate_attacker_index(value: int):
 	while party[attacker_index].is_exhausted():
 		attacker_index = keep_iterating(attacker_index, value) #target the next party member over
 		attacker_index = posmod(attacker_index,party.size()) #makes sure the attacker_index stays within the size of the party
-		await get_tree().physics_frame
+		await get_tree().process_frame
 	select_flash_attacker()
 	return
 
@@ -259,7 +266,7 @@ func iterate_target_index(value: int):
 	while enemies[target_index].is_subdued(): #can't tareget an enemy that has already been defeated
 		target_index = keep_iterating(target_index, value) #target the next enemy over
 		target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
-		await get_tree().physics_frame
+		await get_tree().process_frame
 	select_flash_enemy()
 	return
 
@@ -281,9 +288,10 @@ func compare_speed(enemy: Stats) -> int:
 
 	
 func all_party_members_exhausted() -> bool:
+	print("Checking if all party members are exhausted...")
 	for member in party:
 		if !member.is_exhausted():
-			print(member.character_name+" still has it in them!")
+			print(member.character_name+" still has it in them! Keep selecting moves")
 			return false #at least one member can still attack, so return false
 	print("All party members are exhausted")
 	return true
@@ -300,12 +308,32 @@ func we_attack_enemy():
 		"attack":
 			pass
 		"pacify":
-			#put code to spawn minigame
+			await play_minigame()
 			pass
 		_:
 			pass
 	attacker.attack_index += 1 #we now have one less attack this turn
 	return
+
+func play_minigame():
+	minigame_status = -1 #this is redundant as minigames will set this as well for testing in an isolated space
+	var minigame_instance
+	stop_all_flashes()
+	match attacker.talent.to_lower():
+		"model":
+			minigame_instance = model_minigame.instantiate()
+	minigame_viewport.add_child(minigame_instance)
+	minigame.visible = true
+	while(minigame_status == -1):
+		minigame_viewport.size = minigame_size_guide.size
+		await get_tree().process_frame
+	minigame.visible = false
+	minigame_instance.queue_free()
+	match minigame_status:
+		0: #minigame fail
+			pass
+		1: #minigame success
+			target.pacified = true
 
 func remaining_enemies_attack():
 	for enemy in enemies:
@@ -349,12 +377,12 @@ func open_menu():
 			"decide_menu_category":
 				categorical_menu.visible = true
 				act_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,last_delta*10.0)
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*10.0)
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 			"decide_menu_act":
 				act_menu.visible = true
 				categorical_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,last_delta*10.0)
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*10.0)
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 			_:
 				break

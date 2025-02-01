@@ -1,0 +1,40 @@
+[gd_scene load_steps=8 format=3 uid="uid://cwrhu76xkfvv4"]
+
+[ext_resource type="Script" path="res://scripts/minigames/model.gd" id="1_brjkm"]
+[ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="1_idmr5"]
+
+[sub_resource type="Gradient" id="Gradient_r2fxr"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ql7f0"]
+gradient = SubResource("Gradient_r2fxr")
+
+[sub_resource type="Gradient" id="Gradient_bvkrk"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fbhq8"]
+gradient = SubResource("Gradient_bvkrk")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ec63d"]
+size = Vector2(64, 64)
+
+[node name="Model" type="Node2D"]
+script = ExtResource("1_brjkm")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Background" type="Sprite2D" parent="Camera2D"]
+texture_filter = 1
+scale = Vector2(39.1563, 39.1563)
+texture = SubResource("GradientTexture2D_ql7f0")
+
+[node name="Boundary" type="Sprite2D" parent="Camera2D"]
+texture = ExtResource("1_idmr5")
+
+[node name="HitTrigger" type="Sprite2D" parent="Camera2D"]
+texture_filter = 1
+position = Vector2(-356, 0)
+texture = SubResource("GradientTexture2D_fbhq8")
+
+[node name="Area2D" type="Area2D" parent="Camera2D/HitTrigger"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/HitTrigger/Area2D"]
+shape = SubResource("RectangleShape2D_ec63d")
