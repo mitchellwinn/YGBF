@@ -101,7 +101,7 @@ func get_scene_references():
 	return
 	
 
-############### BATTLE physics FUNCTIONS #####################
+############### BATTLE PROCESS FUNCTIONS #####################
 
 func battle_process():
 	print("Started battle_process")
