@@ -5,11 +5,12 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var party: Array[Stats] = [] #holds data for all party members who will appear in battle
 var enemies: Array[Stats] = [] #holds data for all enemies who will appear in battle
 var participants: Array[Stats] = [] #holds data for all participants including both party and enemies
-var categorical_menu_buttons: Array[CustomButton] = [] #holds data for the hoverable menu buttons like Talent, Items, etc...
 
 var party_sprites: Array[TextureButton] = []
 var enemy_sprites: Array[TextureButton] = []
-var main_menu_sprite: NinePatchRect
+var menu: NinePatchRect
+var categorical_menu: GridContainer
+var act_menu: GridContainer
 
 var troop: int #holds data for which troop of enemies will be encountered when a battle starts
 var bg: int #holds data for which background effect will be loaded when battle starts
@@ -17,11 +18,13 @@ var bg: int #holds data for which background effect will be loaded when battle s
 var in_battle: bool #referenced by other scripts that may halt functions during a battle
 var attacker_index: int = 0 #holds data for which party member is / was last selected to use an attack
 var categorical_button_index: int = 0 #holds data for which catergorical button  is / was last selected to access
+var act_button_index: int = 0
 var menu_index: int = 0
 var target_index: int = 0 #holds data for which enemy is / was last targeted for attack
 var attacker: Stats = null
 var target: Stats = null
 
+var battle_option: String
 var phase: String = ""
 var last_delta: float
 
@@ -57,11 +60,10 @@ func end_battle():
 func get_scene_references():
 	party_sprites.clear()
 	enemy_sprites.clear()
-	categorical_menu_buttons.clear()
-	main_menu_sprite = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu/Menu")
-	for button in main_menu_sprite.get_child(0).get_children():
-		categorical_menu_buttons.append(button)
-	main_menu_sprite.visible = false
+	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu/Menu")
+	categorical_menu = menu.get_node("GridContainerCategorical")
+	act_menu = menu.get_node("GridContainerAct")
+	menu.visible = false
 	for i in range (4):
 		party_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerParty"+str(i+1)+"/PartyMember"))
 		party_sprites[i].visible = false
@@ -105,30 +107,33 @@ func battle_process():
 	print("Started battle_process")
 	while true:
 		print("New lap of battle_process")
+		battle_option = ""
 		if !all_party_members_exhausted(): #still have a party member we can pick to attack
-			print("decide_attacker")
 			await decide_attacker()
-			print("decide_menu_category")
 			await decide_menu_category()
-			match categorical_button_index:
+			match categorical_button_index: #this determines what happens based on the menu we picked
 				0: #Act
-					continue
+					await decide_menu_act()
+					match act_button_index:
+						0: #Run
+							continue
+						1: #Negotiate
+							continue
+						2: #Pacify
+							battle_option = "pacify"
+						_:
+							continue
 				1: #Main Attack
-					pass
+					battle_option = "attack"
 				2: #Skills
 					continue
 				3: #Item
 					continue
-			print("decide_target")
 			await decide_target()
-			print("determine_enemy_attack")
 			await determine_enemy_attack()
-			print("we_attack_enemy")
 			await we_attack_enemy()
 		else:
-			print("remaining_enemies_attack")
 			await remaining_enemies_attack()
-			print("reset_exhasustion")
 			reset_exhaustion()
 		await get_tree().physics_frame
 	return
@@ -153,16 +158,14 @@ func decide_attacker():
 			print(attacker.character_name)
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
 		await get_tree().physics_frame
-	phase = ""
 	await get_tree().physics_frame
 	return
 	
 func decide_menu_category():
 	phase = "decide_menu_category"
 	stop_all_flashes()
-	categorical_menu_buttons[categorical_button_index].grab_focus()
-	print("grabbed focus")
 	open_menu()
+	get_tree().get_nodes_in_group("menu_categorical_buttons")[categorical_button_index].grab_focus()
 	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
 		categorical_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
@@ -170,7 +173,22 @@ func decide_menu_category():
 			#play some sound effect
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().physics_frame
-	phase = ""
+	await get_tree().physics_frame
+	return
+
+func decide_menu_act():
+	phase = "decide_menu_act"
+	print(phase)
+	stop_all_flashes()
+	get_tree().get_nodes_in_group("menu_act_buttons")[act_button_index].grab_focus()
+	print("grabbed focus")
+	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
+	while(true):
+		act_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
+			#play some sound effect
+			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
+		await get_tree().physics_frame
 	await get_tree().physics_frame
 	return
 	
@@ -190,7 +208,6 @@ func decide_target():
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
 		await get_tree().physics_frame
-	phase = ""
 	await get_tree().physics_frame
 	return
 	
@@ -225,15 +242,15 @@ func iterate_attacker_index(value: int):
 	select_flash_attacker()
 	return
 
-func iterate_categorical_button_index(value: int):
-	categorical_button_index += value #pick the member to the left of currently hovered party member
-	categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
-	while !categorical_menu_buttons[categorical_button_index].can_hover:
-		categorical_button_index = keep_iterating(categorical_button_index, value) #target the next button over
-		categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
-		await get_tree().physics_frame
-	categorical_menu_buttons[categorical_button_index].grab_focus()
-	return
+# func iterate_categorical_button_index(value: int):
+# 	categorical_button_index += value #pick the member to the left of currently hovered party member
+# 	categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
+# 	while true:
+# 		categorical_button_index = keep_iterating(categorical_button_index, value) #target the next button over
+# 		categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
+# 		await get_tree().physics_frame
+# 	categorical_menu_buttons[categorical_button_index].grab_focus()
+# 	return
 	
 func iterate_target_index(value: int):
 	stop_all_flashes()
@@ -279,7 +296,14 @@ func enemy_attacks_us(enemy: Stats):
 	return
 
 func we_attack_enemy():
-	#write code to deal damage to enemy and do effects and stuff
+	match battle_option:
+		"attack":
+			pass
+		"pacify":
+			#put code to spawn minigame
+			pass
+		_:
+			pass
 	attacker.attack_index += 1 #we now have one less attack this turn
 	return
 
@@ -319,14 +343,25 @@ func open_menu():
 		else:
 			sprite.visible = true
 	var attacker_original_anchor = party_sprites[attacker_index].get_parent().anchor_left
-	main_menu_sprite.visible = true
-	while phase == "decide_menu_category":
-		party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,last_delta*10.0)
-		party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+	menu.visible = true
+	while true:
+		match phase:
+			"decide_menu_category":
+				categorical_menu.visible = true
+				act_menu.visible = false
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,last_delta*10.0)
+				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+			"decide_menu_act":
+				act_menu.visible = true
+				categorical_menu.visible = false
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,last_delta*10.0)
+				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+			_:
+				break
 		await get_tree().physics_frame
 	party_sprites[attacker_index].get_parent().anchor_left = attacker_original_anchor
 	party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
-	main_menu_sprite.visible = false
+	menu.visible = false
 	for i in range(party.size()):
 		party_sprites[i].visible = true
 	return

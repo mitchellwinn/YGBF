@@ -1,0 +1,39 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://r0exggliqh2q"
+path="res://.godot/imported/vhs-gothic.ttf-805a1e06d210ff84c067100f359e4fd6.fontdata"
+
+[deps]
+
+source_file="res://fonts/vhs-gothic.ttf"
+dest_files=["res://.godot/imported/vhs-gothic.ttf-805a1e06d210ff84c067100f359e4fd6.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=0
+generate_mipmaps=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=0
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "New Configuration",
+"size": Vector2i(16, 0)
+}]
+language_support={}
+script_support={}
+opentype_features={}

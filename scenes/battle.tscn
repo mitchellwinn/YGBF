@@ -8,8 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://637be5vc77ed" path="res://images/style_guide/dialogue_resolution_guide.png" id="4_tflk0"]
 [ext_resource type="Script" path="res://scripts/custom_texture_button.gd" id="5_btqqj"]
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
-[ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/categorical_menu_buttons.tres" id="6_ath8s"]
-[ext_resource type="FontFile" uid="uid://d1nuuc2adhn3n" path="res://fonts/yoster.ttf" id="8_w6x1p"]
+[ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="6_ath8s"]
+[ext_resource type="FontFile" uid="uid://r0exggliqh2q" path="res://fonts/vhs-gothic.ttf" id="8_rb347"]
 [ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="9_w2dp6"]
 
 [node name="Battle" type="Node2D"]
@@ -60,13 +60,14 @@ material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("2_musbg")
 script = ExtResource("5_btqqj")
 type = "decide_target"
 index = null
 
 [node name="HBoxContainerEnemy2" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -85,6 +86,7 @@ material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("2_musbg")
 script = ExtResource("5_btqqj")
 type = "decide_target"
@@ -110,6 +112,7 @@ material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("2_musbg")
 script = ExtResource("5_btqqj")
 type = "decide_target"
@@ -144,7 +147,8 @@ patch_margin_right = 10
 patch_margin_bottom = 10
 axis_stretch_vertical = 1
 
-[node name="GridContainerCategoricalButtons" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
+[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
+visible = false
 clip_contents = true
 layout_direction = 2
 layout_mode = 0
@@ -159,52 +163,48 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 2
 
-[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategoricalButtons"]
+[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 56
 text = "Act
 "
 text_direction = 1
 script = ExtResource("6_76cnh")
 
-[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategoricalButtons"]
+[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 56
 text = "Main Attack"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
 
-[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategoricalButtons"]
+[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 56
 text = "Skills"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
 
-[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategoricalButtons"]
+[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 56
 text = "Items"
 text_direction = 1
@@ -212,7 +212,6 @@ script = ExtResource("6_76cnh")
 index = 3
 
 [node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
-visible = false
 clip_contents = true
 layout_direction = 2
 layout_mode = 2
@@ -227,39 +226,42 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 3
 
-[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct"]
+[node name="Run" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
 theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_w6x1p")
+theme_override_fonts/font = ExtResource("8_rb347")
 theme_override_font_sizes/font_size = 24
 text = "Run
 "
 text_direction = 1
 script = ExtResource("6_76cnh")
 
-[node name="Negotiate" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct"]
+[node name="Negotiate" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
 theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_w6x1p")
+theme_override_fonts/font = ExtResource("8_rb347")
 theme_override_font_sizes/font_size = 24
 text = "Negotiate"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
 
-[node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct"]
+[node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
 theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_w6x1p")
+theme_override_fonts/font = ExtResource("8_rb347")
 theme_override_font_sizes/font_size = 24
 text = "Pacify"
 text_direction = 1
@@ -281,11 +283,13 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty1"]
+visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("3_3kxi6")
 script = ExtResource("5_btqqj")
 type = "decide_attacker"
@@ -306,11 +310,13 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty2"]
+visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("3_3kxi6")
 script = ExtResource("5_btqqj")
 type = "decide_attacker"
@@ -331,11 +337,13 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty3"]
+visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("3_3kxi6")
 script = ExtResource("5_btqqj")
 type = "decide_attacker"
@@ -356,11 +364,13 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty4"]
+visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 texture_normal = ExtResource("3_3kxi6")
 script = ExtResource("5_btqqj")
 type = "decide_attacker"

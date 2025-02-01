@@ -19,7 +19,5 @@ func _pressed() -> void:
 	GameManager.click_button = BattleManager.phase
 
 func _on_mouse_entered():
-	match BattleManager.phase:
-		"decide_menu_category":
-			BattleManager.categorical_button_index = index
+	grab_focus()
     # Add your custom hover logic here
