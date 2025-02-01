@@ -18,7 +18,6 @@ func _ready():
 	if get_tree().current_scene.name.to_lower() == "battle":
 		BattleManager.start_battle()
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	last_delta = delta

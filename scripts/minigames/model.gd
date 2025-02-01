@@ -6,5 +6,5 @@ func initialize():
 	countdown = 5.0
 
 func _process(_delta):
-	pass
+	super._process(_delta)
 

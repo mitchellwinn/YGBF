@@ -14,6 +14,7 @@ func _ready():
 func _process(_delta):
 	if get_tree().current_scene.name.to_lower() != "battle":
 		if BattleManager.minigame_status!=-1:
+			self.queue_free()
 			get_tree().quit()
 
 func initialize():
