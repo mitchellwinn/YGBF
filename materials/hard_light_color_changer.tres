@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dsjw0b7a2kej4"]
+
+[ext_resource type="Shader" path="res://scripts/shaders/hard_light_color_changer.gdshader" id="1_1fcxj"]
+
+[resource]
+shader = ExtResource("1_1fcxj")

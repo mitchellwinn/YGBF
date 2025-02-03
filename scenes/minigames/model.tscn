@@ -31,10 +31,12 @@ texture = ExtResource("1_idmr5")
 
 [node name="HitTrigger" type="Sprite2D" parent="Camera2D"]
 texture_filter = 1
-position = Vector2(-356, 0)
 texture = SubResource("GradientTexture2D_fbhq8")
 
 [node name="Area2D" type="Area2D" parent="Camera2D/HitTrigger"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/HitTrigger/Area2D"]
 shape = SubResource("RectangleShape2D_ec63d")
+
+[node name="KeyPressSpawner" type="Node2D" parent="."]
+position = Vector2(533, 0)
