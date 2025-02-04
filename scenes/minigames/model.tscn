@@ -1,7 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://cwrhu76xkfvv4"]
+[gd_scene load_steps=16 format=3 uid="uid://cwrhu76xkfvv4"]
 
 [ext_resource type="Script" path="res://scripts/minigames/model.gd" id="1_brjkm"]
 [ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="1_idmr5"]
+[ext_resource type="Texture2D" uid="uid://jmixsuqv1tgl" path="res://images/minigames/camera.png" id="3_cvs8x"]
+[ext_resource type="Texture2D" uid="uid://bjj70n50grue3" path="res://images/minigames/flash.png" id="4_5xj0p"]
+[ext_resource type="Texture2D" uid="uid://b15djgsi4yopx" path="res://images/minigames/model.png" id="5_uq6xx"]
 
 [sub_resource type="Gradient" id="Gradient_r2fxr"]
 
@@ -16,12 +19,274 @@ gradient = SubResource("Gradient_bvkrk")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ec63d"]
 size = Vector2(64, 64)
 
+[sub_resource type="Animation" id="Animation_g7btu"]
+resource_name = "snap"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.333333),
+"transitions": PackedFloat32Array(0.450625, 1.1487, 1.1487),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.1, 1.1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.333333),
+"transitions": PackedFloat32Array(0.450625, 1.1487, 1.1487),
+"update": 0,
+"values": [Vector2(-173, 99), Vector2(-173, 109), Vector2(-173, 99)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Camera/Flash:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.566667),
+"transitions": PackedFloat32Array(0.0853776, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Camera/Flash:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0333333, 0.0666667, 0.1, 0.166667, 0.2, 0.233333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [true, false, true, false, true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Camera/Flash:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Model:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.333333),
+"transitions": PackedFloat32Array(0.535887, 1.62451, 1),
+"update": 0,
+"values": [Vector2(247, 58), Vector2(247, -4), Vector2(247, 58)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Model_Small:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.333333),
+"transitions": PackedFloat32Array(0.535887, 1.62451, 1),
+"update": 0,
+"values": [Vector2(-173, -89), Vector2(-173, -104), Vector2(-173, -89)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Model:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.333333),
+"transitions": PackedFloat32Array(0.392292, 1.46409, 1),
+"update": 0,
+"values": [Vector2(0.6, 0.6), Vector2(0.49, 0.49), Vector2(0.6, 0.6)]
+}
+
+[sub_resource type="Animation" id="Animation_fgn1r"]
+resource_name = "initialize"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.466667),
+"transitions": PackedFloat32Array(0.297302, 1),
+"update": 0,
+"values": [Vector2(-173, 403), Vector2(-173, 99)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera/Flash:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Model:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.466667),
+"transitions": PackedFloat32Array(0.233258, 1),
+"update": 0,
+"values": [Vector2(1147, 58), Vector2(247, 58)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Model_Small:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.466667),
+"transitions": PackedFloat32Array(0.233, 1),
+"update": 0,
+"values": [Vector2(-173, -476), Vector2(-173, -89)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Label:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.366667, 1),
+"transitions": PackedFloat32Array(2.07053, 2.37841, 2.37841, 1),
+"update": 0,
+"values": [Vector2(-1830, -186), Vector2(-290, -186), Vector2(-290, -186), Vector2(1315, -186)]
+}
+
+[sub_resource type="Animation" id="Animation_t2uv6"]
+resource_name = "finish"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(2, 0.297302),
+"update": 0,
+"values": [Vector2(-173, 99), Vector2(-173, 403)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1.6245, 0.233258),
+"update": 0,
+"values": [Vector2(247, 58), Vector2(1147, 58)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Model_Small:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1.6245, 0.233),
+"update": 0,
+"values": [Vector2(-173, -89), Vector2(-173, -476)]
+}
+
+[sub_resource type="Animation" id="Animation_ahkh8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(247, 58)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model_Small:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-173, -89)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Model:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.49, 0.49)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Label:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-1059, -186)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pj40g"]
+_data = {
+"RESET": SubResource("Animation_ahkh8"),
+"finish": SubResource("Animation_t2uv6"),
+"initialize": SubResource("Animation_fgn1r"),
+"snap": SubResource("Animation_g7btu")
+}
+
 [node name="Model" type="Node2D"]
 script = ExtResource("1_brjkm")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Background" type="Sprite2D" parent="Camera2D"]
+z_index = -10
+z_as_relative = false
 texture_filter = 1
 scale = Vector2(39.1563, 39.1563)
 texture = SubResource("GradientTexture2D_ql7f0")
@@ -30,7 +295,9 @@ texture = SubResource("GradientTexture2D_ql7f0")
 texture = ExtResource("1_idmr5")
 
 [node name="HitTrigger" type="Sprite2D" parent="Camera2D"]
+self_modulate = Color(1, 1, 1, 0)
 texture_filter = 1
+position = Vector2(-173, -8)
 texture = SubResource("GradientTexture2D_fbhq8")
 
 [node name="Area2D" type="Area2D" parent="Camera2D/HitTrigger"]
@@ -39,4 +306,45 @@ texture = SubResource("GradientTexture2D_fbhq8")
 shape = SubResource("RectangleShape2D_ec63d")
 
 [node name="KeyPressSpawner" type="Node2D" parent="."]
-position = Vector2(533, 0)
+position = Vector2(533, -8)
+
+[node name="Camera" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-173, 99)
+texture = ExtResource("3_cvs8x")
+
+[node name="Flash" type="Sprite2D" parent="Camera"]
+visible = false
+z_index = -1
+texture_filter = 1
+position = Vector2(-161, -107)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("4_5xj0p")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_pj40g")
+}
+
+[node name="Model_Small" type="Sprite2D" parent="."]
+z_index = -5
+position = Vector2(-173, -89)
+scale = Vector2(0.131, 0.131)
+texture = ExtResource("5_uq6xx")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -1059.0
+offset_top = -186.0
+offset_right = -471.0
+offset_bottom = 102.0
+theme_override_colors/font_color = Color(0.989074, 0.838189, 0, 1)
+theme_override_colors/font_outline_color = Color(0.670588, 0.356863, 0, 1)
+theme_override_constants/outline_size = 40
+theme_override_font_sizes/font_size = 211
+text = "POSE!"
+
+[node name="Model" type="Sprite2D" parent="."]
+z_index = -5
+position = Vector2(247, 58)
+scale = Vector2(0.49, 0.49)
+texture = ExtResource("5_uq6xx")

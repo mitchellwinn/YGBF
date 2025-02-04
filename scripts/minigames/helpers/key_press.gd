@@ -6,6 +6,7 @@ var direction: String
 var active: bool
 var pressed: bool
 var in_zone: bool
+var speed_mult = 5;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,7 +17,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	position.x -= delta*speed
+	position.x -= delta*speed*speed_mult
+	speed_mult-=delta*6
+	if speed_mult<1:
+		speed_mult = 1
 	if !active:
 		return
 	if test_key_press():
@@ -33,12 +37,16 @@ func _process(delta):
 
 func test_key_press() -> bool:
 	if Input.is_action_just_pressed("move_"+direction):
+		minigame.get_node("AnimationPlayer").stop()
+		minigame.get_node("AnimationPlayer").play("snap")
+		minigame.get_node("Model_Small").texture = load("res://images/minigames/model_"+direction+".png")
+		minigame.get_node("Model").texture = load("res://images/minigames/model_"+direction+".png")
 		$AnimationPlayer.play("press")
 		return true
 	return false
 
 func randomize():
-	match BattleManager.rng.randi()%3:
+	match BattleManager.rng.randi()%4:
 		0:
 			direction = "up"
 		1:
