@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://scripts/custom_texture_button.gd" id="5_btqqj"]
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
 [ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="6_ath8s"]
-[ext_resource type="FontFile" uid="uid://r0exggliqh2q" path="res://fonts/vhs-gothic.ttf" id="8_rb347"]
+[ext_resource type="FontFile" uid="uid://cf8buj8w4ewd5" path="res://fonts/GeneralSans-Medium.otf" id="8_ni1p0"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2dt4m"]
 viewport_path = NodePath("MinigameViewport")
@@ -48,8 +48,10 @@ anchor_left = 0.25
 anchor_top = 0.5
 anchor_right = 0.25
 anchor_bottom = 0.5
-offset_top = -134.0
-offset_bottom = 74.0
+offset_left = -104.0
+offset_top = -162.0
+offset_right = 104.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 104)
@@ -74,8 +76,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -134.0
-offset_bottom = 74.0
+offset_left = -104.0
+offset_top = -162.0
+offset_right = 104.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 104)
@@ -100,8 +104,10 @@ anchor_left = 0.75
 anchor_top = 0.5
 anchor_right = 0.75
 anchor_bottom = 0.5
-offset_top = -134.0
-offset_bottom = 74.0
+offset_left = -104.0
+offset_top = -162.0
+offset_right = 104.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 104)
@@ -150,7 +156,6 @@ patch_margin_bottom = 10
 axis_stretch_vertical = 1
 
 [node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
-visible = false
 clip_contents = true
 layout_direction = 2
 layout_mode = 0
@@ -165,29 +170,16 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 2
 
-[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
-text = "Act
-"
-text_direction = 1
-script = ExtResource("6_76cnh")
-
 [node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 44
 text = "Main Attack"
 text_direction = 1
 script = ExtResource("6_76cnh")
-index = 1
 
 [node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
@@ -195,8 +187,21 @@ layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 44
 text = "Skills"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 1
+
+[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_font_sizes/font_size = 44
+text = "Act
+"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
@@ -207,13 +212,14 @@ layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 44
 text = "Items"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 3
 
 [node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
+visible = false
 clip_contents = true
 layout_direction = 2
 layout_mode = 2
@@ -235,26 +241,27 @@ size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
 theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_rb347")
+theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
 text = "Run
 "
 text_direction = 1
 script = ExtResource("6_76cnh")
 
-[node name="Negotiate" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
+[node name="Study" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
 theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_rb347")
+theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
-text = "Negotiate"
+text = "Study"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
+functionality = "study"
 
 [node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
@@ -263,12 +270,13 @@ size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
 theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_rb347")
+theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
 text = "Pacify"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
+functionality = "pacify"
 
 [node name="HBoxContainerParty1" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -383,9 +391,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -335.0
-offset_top = 33.0
+offset_top = 15.0
 offset_right = 337.0
-offset_bottom = 113.0
+offset_bottom = 95.0
 grow_horizontal = 2
 pivot_offset = Vector2(352, 80)
 size_flags_horizontal = 4
@@ -408,10 +416,10 @@ axis_stretch_vertical = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 32.0
-offset_right = -24.0
-offset_bottom = -196.0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = -12.0
+offset_bottom = -214.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4

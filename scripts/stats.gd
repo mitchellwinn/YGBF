@@ -50,7 +50,7 @@ func define_attacks():
 	return
 
 func is_exhausted() -> bool:
-	if pacified: #if entity is pacified they also cannot attack lol
+	if is_defeated(): #if entity is defeated they also cannot attack lol
 		return true
 	if attack_index>=attacks.size():
 		return true #we have used more attacks than we have available this turn, we are exhausted

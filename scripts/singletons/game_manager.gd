@@ -2,6 +2,8 @@ extends Node
 
 var party: Array[Stats] = [] #holds data for all party members who will appear in battle
 
+var overworld_map: String
+
 var click_button: String
 
 var last_delta: float = 0.0

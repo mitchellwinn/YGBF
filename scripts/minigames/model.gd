@@ -54,7 +54,10 @@ func minigame_countdown():
 			$AnimationPlayer.play("finish")
 			print(countdown)
 			print("Minigame over, out of time")
-			BattleManager.minigame_status = 0 #failed the minigame
+			if points >= 3:
+				BattleManager.minigame_status = 1
+			else:
+				BattleManager.minigame_status = 0 #failed the minigame
 
 func random_approximate_float(from: int, to: int) -> float:
 	var value: float = float(BattleManager.rng.randi_range(from,to))/10.0

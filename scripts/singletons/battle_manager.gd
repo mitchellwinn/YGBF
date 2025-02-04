@@ -15,6 +15,9 @@ var minigame_viewport: SubViewport
 var categorical_menu: GridContainer
 var act_menu: GridContainer
 
+var came_from_overworld: bool
+var overworld_position: Vector3
+
 var troop: int #holds data for which troop of enemies will be encountered when a battle starts
 var bg: int #holds data for which background effect will be loaded when battle starts
 
@@ -23,6 +26,7 @@ var attacker_index: int = 0 #holds data for which party member is / was last sel
 var categorical_button_index: int = 0 #holds data for which catergorical button  is / was last selected to access
 var act_button_index: int = 0
 var menu_index: int = 0
+var current_move_functionality: String
 var target_index: int = 0 #holds data for which enemy is / was last targeted for attack
 var attacker: Stats = null
 var target: Stats = null
@@ -44,8 +48,10 @@ func _physics_process(_delta):
 ############### INITIALIZATION FUNCTIONS ###############
 
 func start_battle():
-	#remember character's position on the overworld
-	#switch to battle scene
+	if get_tree().current_scene.name.to_lower() != "battle":
+		overworld_position = get_node("/root/Player").position
+		get_tree().change_scene_to_file("res://scenes/battle.tscn")
+		came_from_overworld = true
 	party = GameManager.party
 	await EnemyTroops.load(troop)
 	participants = party + enemies
@@ -55,11 +61,20 @@ func start_battle():
 	battle_process()#starts the battle process loop
 	return
 	
-func end_battle():
+func end_battle(result: int):
 	in_battle = false
-	#switch to overworld scene
-	#spawn player at remembered position
-	return
+	match result:
+		0:
+			GameManager.game_over()
+		1:
+			if came_from_overworld:
+				reload_overworld()
+				return
+			get_tree().quit()
+
+func reload_overworld():
+	get_tree().change_scene_to_file.call_deferred("res://scenes/maps/"+GameManager.overworld_map+".tscn")
+	get_node("/root/Player").position = overworld_position
 
 func get_scene_references():
 	party_sprites.clear()
@@ -114,25 +129,36 @@ func battle_process():
 	while true:
 		print("New lap of battle_process")
 		battle_option = ""
+		phase = ""
+		current_move_functionality = ""
+		await get_tree().process_frame
+		if all_party_members_defeated():
+			end_battle(0) #we lost the battle
+			return
+		if all_enemies_defeated():
+			end_battle(1) #we won the battle
+			return
 		if !all_party_members_exhausted(): #still have a party member we can pick to attack
 			await decide_attacker()
-			await decide_menu_category()
+			if await decide_menu_category() == -1:
+				continue
 			match categorical_button_index: #this determines what happens based on the menu we picked
-				0: #Act
-					await decide_menu_act()
+				0: #Main Attack
+					battle_option = "attack"
+				1: #Skills
+					continue
+				2: #Act
+					if await decide_menu_act() == -1:
+						continue
 					match act_button_index:
 						0: #Run
 							continue
-						1: #Negotiate
+						1: #Study
 							continue
 						2: #Pacify
 							battle_option = "pacify"
 						_:
 							continue
-				1: #Main Attack
-					battle_option = "attack"
-				2: #Skills
-					continue
 				3: #Item
 					continue
 			await decide_target()
@@ -174,6 +200,8 @@ func decide_menu_category():
 	get_tree().get_nodes_in_group("menu_categorical_buttons")[categorical_button_index].grab_focus()
 	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
+		if Input.is_action_just_pressed("back"):
+			return -1
 		categorical_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			#play some sound effect
@@ -186,12 +214,22 @@ func decide_menu_act():
 	phase = "decide_menu_act"
 	print(phase)
 	stop_all_flashes()
+	for button in get_tree().get_nodes_in_group("menu_act_buttons"):
+		match button.functionality:
+			"pacify":
+				button.make_unselectable()
+				for enemy in enemies:
+					if enemy.is_subdued():
+						button.make_selectable()
 	get_tree().get_nodes_in_group("menu_act_buttons")[act_button_index].grab_focus()
 	print("grabbed focus")
 	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
+		if Input.is_action_just_pressed("back"):
+			return -1
 		act_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
+			current_move_functionality = get_tree().get_nodes_in_group("menu_act_buttons")[act_button_index].functionality
 			#play some sound effect
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
@@ -242,7 +280,7 @@ func iterate_attacker_index(value: int):
 	stop_all_flashes()
 	attacker_index += value #pick the member to the left of currently hovered party member
 	attacker_index = posmod(attacker_index,party.size()) #makes sure the attacker_index stays within the size of the party
-	while party[attacker_index].is_exhausted():
+	while party[attacker_index].is_exhausted() || party[attacker_index].is_defeated():
 		attacker_index = keep_iterating(attacker_index, value) #target the next party member over
 		attacker_index = posmod(attacker_index,party.size()) #makes sure the attacker_index stays within the size of the party
 		await get_tree().process_frame
@@ -263,7 +301,11 @@ func iterate_target_index(value: int):
 	stop_all_flashes()
 	target_index += value #pick the member to the left of currently hovered party member
 	target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
-	while enemies[target_index].is_subdued(): #can't tareget an enemy that has already been defeated
+	while current_move_functionality == "pacify" and !enemies[target_index].is_subdued(): #can't target an enemy for pacification that has not been subdued
+		target_index = keep_iterating(target_index, value) #target the next enemy over
+		target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
+		await get_tree().process_frame
+	while enemies[target_index].is_defeated(): #can't target an enemy that has already been defeated
 		target_index = keep_iterating(target_index, value) #target the next enemy over
 		target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
 		await get_tree().process_frame
@@ -286,7 +328,24 @@ func compare_speed(enemy: Stats) -> int:
 	else:
 		return 1 #enemy slower
 
-	
+func all_party_members_defeated() -> bool:
+	print("Checking if all party members are defeated...")
+	for member in party:
+		if !member.is_defeated():
+			print(member.character_name+" is still alive! Keep battling")
+			return false #at least one member is still alive, so return false
+	print("All party members are defeated")
+	return true
+
+func all_enemies_defeated() -> bool:
+	print("Checking if all enemies have been defeated...")
+	for enemy in enemies:
+		if !enemy.is_defeated():
+			print(enemy.character_name+" is still alive! Keep battling")
+			return false #at least one enemy is alive, so return false
+	print("All enemies are defeated")
+	return true
+
 func all_party_members_exhausted() -> bool:
 	print("Checking if all party members are exhausted...")
 	for member in party:
