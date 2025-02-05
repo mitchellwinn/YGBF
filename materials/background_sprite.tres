@@ -5,8 +5,11 @@
 
 [resource]
 shader = ExtResource("1_jmy8o")
+shader_parameter/palette_shift = true
+shader_parameter/ping_pong_shift = true
+shader_parameter/palette_size = 5
 shader_parameter/wave_amplitude = 0.145
 shader_parameter/wave_frequency = 2.18
 shader_parameter/scroll_speed = 0.1
-shader_parameter/palette_shift_speed = 1.0
+shader_parameter/palette_shift_speed = 2.0
 shader_parameter/palette_texture = ExtResource("2_e6e20")
