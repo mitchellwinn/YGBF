@@ -1,9 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://cwe6q66isus1c"]
+[gd_scene load_steps=12 format=3 uid="uid://cwe6q66isus1c"]
 
 [ext_resource type="Texture2D" uid="uid://b4gecnjuu0nna" path="res://images/style_guide/enemy_resolution_guide.png" id="2_musbg"]
 [ext_resource type="Texture2D" uid="uid://boojsykjd02qx" path="res://images/style_guide/party_member_resolution_guide.png" id="3_3kxi6"]
 [ext_resource type="Material" uid="uid://ce7dt4bf5oulv" path="res://materials/custom_texture_rect_material.tres" id="3_42206"]
-[ext_resource type="Texture2D" uid="uid://bvk6ufm8ic5ta" path="res://images/style_guide/menu_resolution_guide.png" id="4_6gj1k"]
 [ext_resource type="Texture2D" uid="uid://637be5vc77ed" path="res://images/style_guide/dialogue_resolution_guide.png" id="4_tflk0"]
 [ext_resource type="Script" path="res://scripts/custom_texture_button.gd" id="5_btqqj"]
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
@@ -12,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bill73lwgqhyj" path="res://prefabs/battle_bg.tscn" id="10_q4ian"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kbckk"]
-viewport_path = NodePath("BGViewport")
+viewport_path = NodePath("BgViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2dt4m"]
 viewport_path = NodePath("MinigameViewport")
@@ -22,15 +21,9 @@ viewport_path = NodePath("MinigameViewport")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="BgContainer" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = -270.0
-offset_right = 480.0
-offset_bottom = 270.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(480, 270)
@@ -131,48 +124,81 @@ index = 2
 [node name="HBoxContainerMenu" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.247
-anchor_top = 1.0
-anchor_right = 0.952
-anchor_bottom = 1.0
-offset_top = -172.0
-offset_right = 6.53998
-offset_bottom = -12.0
+anchor_top = 0.5
+anchor_right = 0.959
+anchor_bottom = 0.5
+offset_top = 98.0
+offset_bottom = 257.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(352, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Menu" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu"]
-texture_filter = 1
-clip_contents = true
-layout_direction = 1
-layout_mode = 2
-size_flags_horizontal = 3
-texture = ExtResource("4_6gj1k")
-region_rect = Rect2(0, -0.334084, 704, 160.334)
-patch_margin_left = 50
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
-axis_stretch_vertical = 1
-
-[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
+[node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
 clip_contents = true
 layout_direction = 2
-layout_mode = 0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = 671.0
-offset_bottom = 147.0
-pivot_offset = Vector2(341, 0)
+layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="Run" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "Run
+"
+text_direction = 1
+script = ExtResource("6_76cnh")
+
+[node name="Study" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "Study"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 1
+functionality = "study"
+
+[node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "Pacify"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 2
+functionality = "pacify"
+
+[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
+clip_contents = true
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 2
 
-[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -183,7 +209,7 @@ text = "Main Attack"
 text_direction = 1
 script = ExtResource("6_76cnh")
 
-[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -195,7 +221,7 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
 
-[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -208,7 +234,7 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
 
-[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -220,73 +246,13 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 3
 
-[node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
-visible = false
-clip_contents = true
-layout_direction = 2
-layout_mode = 2
-offset_left = 15.0
-offset_top = 15.0
-offset_right = 671.0
-offset_bottom = 47.0
-pivot_offset = Vector2(341, 0)
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 3
-
-[node name="Run" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_ni1p0")
-theme_override_font_sizes/font_size = 24
-text = "Run
-"
-text_direction = 1
-script = ExtResource("6_76cnh")
-
-[node name="Study" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_ni1p0")
-theme_override_font_sizes/font_size = 24
-text = "Study"
-text_direction = 1
-script = ExtResource("6_76cnh")
-index = 1
-functionality = "study"
-
-[node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_ni1p0")
-theme_override_font_sizes/font_size = 24
-text = "Pacify"
-text_direction = 1
-script = ExtResource("6_76cnh")
-index = 2
-functionality = "pacify"
-
 [node name="HBoxContainerParty1" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.125
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.125
-anchor_bottom = 1.0
-offset_top = -172.0
+anchor_bottom = 0.5
+offset_top = 368.0
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -295,7 +261,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty1"]
-visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -310,10 +275,10 @@ index = null
 [node name="HBoxContainerParty2" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.375
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.375
-anchor_bottom = 1.0
-offset_top = -172.0
+anchor_bottom = 0.5
+offset_top = 368.0
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -322,7 +287,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty2"]
-visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -337,10 +301,10 @@ index = 1
 [node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.625
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.625
-anchor_bottom = 1.0
-offset_top = -172.0
+anchor_bottom = 0.5
+offset_top = 368.0
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -349,7 +313,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty3"]
-visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -364,10 +327,10 @@ index = 2
 [node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.875
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.875
-anchor_bottom = 1.0
-offset_top = -172.0
+anchor_bottom = 0.5
+offset_top = 368.0
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -376,7 +339,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty4"]
-visible = false
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -436,11 +398,25 @@ layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("ViewportTexture_2dt4m")
 
+[node name="MinigameSizeGuide" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = -12.0
+offset_bottom = -214.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
 [node name="MinigameViewport" type="SubViewport" parent="."]
 size = Vector2i(912, 312)
 
-[node name="BGViewport" type="SubViewport" parent="."]
-size = Vector2i(960, 540)
+[node name="BgViewport" type="SubViewport" parent="."]
+size = Vector2i(2880, 1620)
 
-[node name="BattleBg" parent="BGViewport" instance=ExtResource("10_q4ian")]
+[node name="BattleBg" parent="BgViewport" instance=ExtResource("10_q4ian")]
 position = Vector2(729.544, 168.719)

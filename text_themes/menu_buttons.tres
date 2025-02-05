@@ -1,24 +1,69 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cf1r6ahcjjocb"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://cf1r6ahcjjocb"]
 
 [ext_resource type="FontFile" uid="uid://e43ihqjm1hk4" path="res://fonts/Stardom-Regular.otf" id="1_i5apk"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iwacp"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v60ou"]
+bg_color = Color(0.208, 0.135, 0.155, 0.622)
+border_width_left = 12
+border_width_right = 12
+border_color = Color(0.966, 1, 0.66, 1)
+border_blend = true
+corner_radius_top_left = 225
+corner_radius_top_right = 65
+corner_radius_bottom_right = 225
+corner_radius_bottom_left = 65
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7y17"]
+bg_color = Color(1, 0.796758, 0.401179, 1)
+border_width_left = 12
+border_width_right = 12
+border_color = Color(36.757, 43.784, 38.378, 1)
+border_blend = true
+corner_radius_top_left = 225
+corner_radius_top_right = 65
+corner_radius_bottom_right = 225
+corner_radius_bottom_left = 65
+shadow_color = Color(1, 1, 1, 1)
 shadow_size = 5
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bwbth"]
+bg_color = Color(0.541, 0.39, 0.43, 1)
+border_width_left = 12
+border_width_right = 12
+border_color = Color(0.966, 1, 0.66, 1)
+border_blend = true
+corner_radius_top_left = 225
+corner_radius_top_right = 65
+corner_radius_bottom_right = 225
+corner_radius_bottom_left = 65
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdi8n"]
+bg_color = Color(0.541, 0.39, 0.43, 1)
+border_width_left = 12
+border_width_right = 12
+border_color = Color(0.966, 1, 0.66, 1)
+border_blend = true
+corner_radius_top_left = 225
+corner_radius_top_right = 65
+corner_radius_bottom_right = 225
+corner_radius_bottom_left = 65
+anti_aliasing = false
+anti_aliasing_size = 0.01
 
 [resource]
 default_font = ExtResource("1_i5apk")
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_disabled_color = Color(0, 0, 0, 1)
-Button/colors/font_focus_color = Color(0, 0, 0, 1)
-Button/colors/font_hover_color = Color(0, 0, 0, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 0.317647)
 Button/colors/font_pressed_color = Color(0, 0, 0, 1)
 Button/colors/icon_disabled_color = Color(0, 0, 0, 1)
 Button/colors/icon_focus_color = Color(0, 0, 0, 1)
@@ -29,11 +74,11 @@ Button/colors/icon_pressed_color = Color(0, 0, 0, 1)
 Button/constants/align_to_largest_stylebox = 0
 Button/constants/h_separation = 0
 Button/constants/icon_max_width = 0
-Button/constants/outline_size = 0
+Button/constants/outline_size = 5
 Button/font_sizes/font_size = 16
 Button/fonts/font = ExtResource("1_i5apk")
-Button/styles/disabled = null
-Button/styles/focus = SubResource("StyleBoxFlat_iwacp")
-Button/styles/hover = null
-Button/styles/normal = null
+Button/styles/disabled = SubResource("StyleBoxFlat_v60ou")
+Button/styles/focus = SubResource("StyleBoxFlat_y7y17")
+Button/styles/hover = SubResource("StyleBoxFlat_bwbth")
+Button/styles/normal = SubResource("StyleBoxFlat_wdi8n")
 Button/styles/pressed = null

@@ -8,7 +8,7 @@ var participants: Array[Stats] = [] #holds data for all participants including b
 
 var party_sprites: Array[TextureButton] = []
 var enemy_sprites: Array[TextureButton] = []
-var menu: NinePatchRect
+var menu: HBoxContainer
 var minigame: TextureRect
 var minigame_size_guide: HBoxContainer
 var minigame_viewport: SubViewport
@@ -43,7 +43,8 @@ func _ready():
 	pass
 
 func _physics_process(_delta):
-	return
+	pass
+
 
 ############### INITIALIZATION FUNCTIONS ###############
 
@@ -79,7 +80,7 @@ func reload_overworld():
 func get_scene_references():
 	party_sprites.clear()
 	enemy_sprites.clear()
-	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu/Menu")
+	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
 	categorical_menu = menu.get_node("GridContainerCategorical")
 	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
 	minigame_viewport = get_tree().root.get_node("Battle/MinigameViewport")
