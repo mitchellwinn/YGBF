@@ -31,7 +31,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Bg" type="TextureRect" parent="CanvasLayer/BgContainer"]
-texture_filter = 1
+texture_filter = 5
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -136,6 +136,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
 clip_contents = true
 layout_direction = 2
 layout_mode = 2
