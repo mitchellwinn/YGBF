@@ -92,7 +92,7 @@ func get_scene_references():
 		party_sprites[i].visible = false
 	for i in range (party.size()):
 		party_sprites[i].visible = true
-		party_sprites[i].material = party_sprites[i].material.duplicate() #give it unique copy of material so it can flash independently of other sprites
+		party_sprites[i].get_node("Character").material = party_sprites[i].get_node("Character").material.duplicate() #give it unique copy of material so it can flash independently of other sprites
 		match party.size():
 			1:
 				party_sprites[0].get_parent().anchor_left = .5
@@ -408,8 +408,8 @@ func reset_exhaustion():
 
 func select_flash_attacker():
 	print ("Flash select attacker_index"+str(attacker_index))
-	party_sprites[attacker_index].material.set_shader_parameter("flash_enabled", true)
-	party_sprites[attacker_index].material.set_shader_parameter("oscillation_speed", 7)
+	party_sprites[attacker_index].get_node("Character").material.set_shader_parameter("flash_enabled", true)
+	party_sprites[attacker_index].get_node("Character").material.set_shader_parameter("oscillation_speed", 7)
 	return
 
 func select_flash_enemy():
@@ -419,7 +419,7 @@ func select_flash_enemy():
 
 func stop_all_flashes():
 	for sprite in party_sprites:
-		sprite.material.set_shader_parameter("flash_enabled", false)
+		sprite.get_node("Character").material.set_shader_parameter("flash_enabled", false)
 	for sprite in enemy_sprites:
 		sprite.material.set_shader_parameter("flash_enabled", false)
 	return
@@ -437,12 +437,12 @@ func open_menu():
 			"decide_menu_category":
 				categorical_menu.visible = true
 				act_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*10.0)
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 			"decide_menu_act":
 				act_menu.visible = true
 				categorical_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*10.0)
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 			_:
 				break
