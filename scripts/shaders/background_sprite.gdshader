@@ -2,7 +2,8 @@ shader_type canvas_item;
 
 uniform bool palette_shift;
 uniform bool ping_pong_shift;
-uniform sampler2D palette_texture; // Palette texture
+uniform sampler2D main_texture_1;
+uniform sampler2D palette_texture_1; // Palette main_texture_1
 uniform int palette_size = 5;
 uniform float wave_amplitude = 0.05; // Amplitude of the wave
 uniform float wave_frequency = 10.0; // Frequency of the wave
@@ -11,6 +12,7 @@ uniform float palette_shift_speed = 2; // Speed for palette shifting
 
 void fragment() {
     vec2 uv = UV;
+	
     uv.y += sin(uv.x * wave_frequency + TIME) * wave_amplitude;
     uv.x += sin(uv.x * wave_frequency + TIME) * wave_amplitude;
     uv.y += TIME * scroll_speed;
@@ -18,7 +20,7 @@ void fragment() {
     uv.x = mod(uv.x, 1.0);
     uv.y = mod(uv.y, 1.0);
     
-	vec4 color = texture(TEXTURE, uv);
+	vec4 color = texture(main_texture_1, uv);
 	
 	if(palette_shift){
 	    vec4 new_color = color;
@@ -35,15 +37,14 @@ void fragment() {
 	        shift = palette_size * 2 - shift - 1;
 	    }
 	    for (int i = 0; i < palette_size; i++) {
-	        vec4 palette_color = texelFetch(palette_texture, ivec2(i, 0), 0);
-	        if (distance(color, palette_color) < 0.01) { // Use a small threshold to match colors
-	            new_color = texelFetch(palette_texture, ivec2((i + shift) % palette_size, 0), 0);
+	        vec4 palette_color = texelFetch(palette_texture_1, ivec2(i, 0), 0);
+	        if (distance(color, palette_color) < 0.1) { // Use a small threshold to match colors
+	            new_color = texelFetch(palette_texture_1, ivec2((i + shift) % palette_size, 0), 0);
 	            break;
 	        }
 	    }
-		COLOR = new_color; // Assign the new color to the current pixel	
+		color = new_color;
 	}
-	else{
-		COLOR = color;
-	}
+	
+	COLOR = color;
 }

@@ -1,6 +1,7 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://5rfu1ytlqs0g"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://5rfu1ytlqs0g"]
 
 [ext_resource type="Shader" path="res://scripts/shaders/background_sprite.gdshader" id="1_jmy8o"]
+[ext_resource type="Texture2D" uid="uid://drx75p5irj31o" path="res://images/battle_backgrounds/1.png" id="2_86r1q"]
 [ext_resource type="Texture2D" uid="uid://cgg843kd6ddc2" path="res://images/battle_backgrounds/1_palette.png" id="2_e6e20"]
 
 [resource]
@@ -12,4 +13,5 @@ shader_parameter/wave_amplitude = 0.145
 shader_parameter/wave_frequency = 2.18
 shader_parameter/scroll_speed = 0.1
 shader_parameter/palette_shift_speed = 2.0
-shader_parameter/palette_texture = ExtResource("2_e6e20")
+shader_parameter/main_texture_1 = ExtResource("2_86r1q")
+shader_parameter/palette_texture_1 = ExtResource("2_e6e20")
