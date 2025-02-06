@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cwe6q66isus1c"]
+[gd_scene load_steps=17 format=3 uid="uid://cwe6q66isus1c"]
 
 [ext_resource type="Texture2D" uid="uid://de3b8okmyqlv3" path="res://images/battles_system/tv.png" id="1_f7vsy"]
 [ext_resource type="Texture2D" uid="uid://b4gecnjuu0nna" path="res://images/style_guide/enemy_resolution_guide.png" id="2_musbg"]
@@ -10,8 +10,10 @@
 [ext_resource type="Texture2D" uid="uid://biv1ktiokn2dr" path="res://images/battles_system/player_window.png" id="8_75ms7"]
 [ext_resource type="FontFile" uid="uid://cf8buj8w4ewd5" path="res://fonts/GeneralSans-Medium.otf" id="8_ni1p0"]
 [ext_resource type="Texture2D" uid="uid://cto3afusr6ju5" path="res://images/battles_system/player_placeholder.png" id="8_v261t"]
+[ext_resource type="Texture2D" uid="uid://c7bctb28yw32s" path="res://images/battles_system/button_main.png" id="9_qx3y5"]
 [ext_resource type="PackedScene" uid="uid://bill73lwgqhyj" path="res://prefabs/battle_bg.tscn" id="10_q4ian"]
 [ext_resource type="Texture2D" uid="uid://cy0u3utb81ray" path="res://images/battles_system/player_window_bg.png" id="10_smeqf"]
+[ext_resource type="Script" path="res://scripts/nine_patch_resizer.gd" id="12_3507t"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kbckk"]
 viewport_path = NodePath("BgViewport")
@@ -94,7 +96,6 @@ focus_mode = 0
 texture_normal = ExtResource("2_musbg")
 script = ExtResource("5_btqqj")
 type = "decide_target"
-index = null
 
 [node name="HBoxContainerEnemy2" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 8
@@ -153,6 +154,7 @@ type = "decide_target"
 index = 2
 
 [node name="HBoxContainerParty1" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
 anchors_preset = -1
 anchor_left = 0.125
 anchor_top = 1.0
@@ -179,7 +181,6 @@ size_flags_horizontal = 3
 focus_mode = 0
 script = ExtResource("5_btqqj")
 type = "decide_attacker"
-index = null
 
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
 z_index = 10
@@ -193,6 +194,7 @@ texture = ExtResource("8_75ms7")
 z_index = 5
 z_as_relative = false
 material = ExtResource("3_42206")
+layout_mode = 0
 offset_right = 127.0
 offset_bottom = 127.0
 texture = ExtResource("8_v261t")
@@ -208,6 +210,7 @@ offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
 [node name="HBoxContainerParty2" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
 anchors_preset = -1
 anchor_left = 0.375
 anchor_top = 1.0
@@ -238,6 +241,7 @@ index = 1
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
 z_index = 10
 z_as_relative = false
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
@@ -246,6 +250,7 @@ texture = ExtResource("8_75ms7")
 z_index = 5
 z_as_relative = false
 material = ExtResource("3_42206")
+layout_mode = 0
 offset_right = 127.0
 offset_bottom = 127.0
 texture = ExtResource("8_v261t")
@@ -253,6 +258,7 @@ texture = ExtResource("8_v261t")
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
 z_index = 1
 z_as_relative = false
+layout_mode = 0
 offset_left = 2.5
 offset_top = 3.0
 offset_right = 123.5
@@ -260,6 +266,7 @@ offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
 [node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
 anchors_preset = -1
 anchor_left = 0.625
 anchor_top = 1.0
@@ -291,6 +298,7 @@ index = 2
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
 z_index = 10
 z_as_relative = false
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
@@ -299,6 +307,7 @@ texture = ExtResource("8_75ms7")
 z_index = 5
 z_as_relative = false
 material = ExtResource("3_42206")
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_v261t")
@@ -306,6 +315,7 @@ texture = ExtResource("8_v261t")
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
 z_index = 1
 z_as_relative = false
+layout_mode = 0
 offset_left = 2.5
 offset_top = 3.0
 offset_right = 123.5
@@ -313,6 +323,7 @@ offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
 [node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
 anchors_preset = -1
 anchor_left = 0.875
 anchor_top = 1.0
@@ -344,6 +355,7 @@ index = 3
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
 z_index = 10
 z_as_relative = false
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
@@ -352,6 +364,7 @@ texture = ExtResource("8_75ms7")
 z_index = 5
 z_as_relative = false
 material = ExtResource("3_42206")
+layout_mode = 0
 offset_right = 127.0
 offset_bottom = 127.0
 texture = ExtResource("8_v261t")
@@ -359,6 +372,7 @@ texture = ExtResource("8_v261t")
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
 z_index = 1
 z_as_relative = false
+layout_mode = 0
 offset_left = 2.5
 offset_top = 3.0
 offset_right = 123.5
@@ -372,9 +386,9 @@ anchor_top = 1.0
 anchor_right = 0.959
 anchor_bottom = 1.0
 offset_left = -14.12
-offset_top = -134.0
-offset_right = -14.12
-offset_bottom = -16.0
+offset_top = -140.0
+offset_right = -13.64
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(352, 80)
@@ -406,6 +420,19 @@ text = "Run
 text_direction = 1
 script = ExtResource("6_76cnh")
 
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct/Run"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
 [node name="Study" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
@@ -419,6 +446,19 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
 functionality = "study"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct/Study"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
 
 [node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
@@ -434,14 +474,27 @@ script = ExtResource("6_76cnh")
 index = 2
 functionality = "pacify"
 
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct/Pacify"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
 [node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
 clip_contents = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
 columns = 2
 
 [node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
@@ -455,6 +508,19 @@ text = "Main Attack"
 text_direction = 1
 script = ExtResource("6_76cnh")
 
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/MainAttack"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
 [node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
@@ -466,6 +532,19 @@ text = "Skills"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Skills"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
 
 [node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
@@ -480,6 +559,19 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
 
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Act"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
 [node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
@@ -491,6 +583,19 @@ text = "Items"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 3
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Items"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
 
 [node name="HBoxContainerDialogue" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 5

@@ -3,6 +3,7 @@ extends TextureButton
 class_name CustomTextureButton
 
 @export var type: String
+@export var functionality: String
 @export var index: int
 
 # Called when the node enters the scene tree for the first time.
@@ -15,6 +16,9 @@ func _process(_delta):
 	pass
 
 func _pressed() -> void:
+	if type == "": #when type is "" that means it's just a menu button and not an entity
+		print("click")
+		GameManager.click_button = BattleManager.phase
 	if type!=BattleManager.phase:
 		return
 	match BattleManager.phase:
@@ -25,6 +29,8 @@ func _pressed() -> void:
 	GameManager.click_button = BattleManager.phase
 
 func _on_mouse_entered():
+	if type == "": #when type is "" that means it's just a menu button and not an entity
+		grab_focus()
 	match BattleManager.phase:
 		"decide_attacker":
 			match type:
@@ -43,3 +49,11 @@ func _on_mouse_entered():
 					BattleManager.stop_all_flashes()
 					BattleManager.select_flash_enemy()
     # Add your custom hover logic here
+
+func make_unselectable():
+	disabled = true
+	focus_mode = FOCUS_NONE
+
+func make_selectable():
+	disabled = true
+	focus_mode = FOCUS_ALL
