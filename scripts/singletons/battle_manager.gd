@@ -14,6 +14,7 @@ var minigame_size_guide: HBoxContainer
 var minigame_viewport: SubViewport
 var categorical_menu: GridContainer
 var act_menu: GridContainer
+var dialogue_label: Label
 
 var came_from_overworld: bool
 var overworld_position: Vector3
@@ -80,6 +81,8 @@ func reload_overworld():
 func get_scene_references():
 	party_sprites.clear()
 	enemy_sprites.clear()
+	dialogue_label = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerDialogue/DialogueGuide/Label")
+	dialogue_label.get_parent().visible = false
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
 	categorical_menu = menu.get_node("GridContainerCategorical")
 	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
@@ -129,6 +132,7 @@ func battle_process():
 	print("Started battle_process")
 	while true:
 		print("New lap of battle_process")
+		await DialogueManager.print_dialogue("A new turn of the battle system.",dialogue_label)
 		battle_option = ""
 		phase = ""
 		current_move_functionality = ""
@@ -167,6 +171,7 @@ func battle_process():
 			await we_attack_enemy()
 		else:
 			await remaining_enemies_attack()
+			await DialogueManager.print_dialogue("Everyone is exhausted.",dialogue_label)
 			reset_exhaustion()
 		await get_tree().process_frame
 	return

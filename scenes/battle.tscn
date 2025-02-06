@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://de3b8okmyqlv3" path="res://images/battles_system/tv.png" id="1_f7vsy"]
 [ext_resource type="Texture2D" uid="uid://b4gecnjuu0nna" path="res://images/style_guide/enemy_resolution_guide.png" id="2_musbg"]
 [ext_resource type="Material" uid="uid://ce7dt4bf5oulv" path="res://materials/custom_texture_rect_material.tres" id="3_42206"]
-[ext_resource type="Texture2D" uid="uid://637be5vc77ed" path="res://images/style_guide/dialogue_resolution_guide.png" id="4_tflk0"]
 [ext_resource type="Script" path="res://scripts/custom_texture_button.gd" id="5_btqqj"]
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
 [ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="6_ath8s"]
@@ -14,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bill73lwgqhyj" path="res://prefabs/battle_bg.tscn" id="10_q4ian"]
 [ext_resource type="Texture2D" uid="uid://cy0u3utb81ray" path="res://images/battles_system/player_window_bg.png" id="10_smeqf"]
 [ext_resource type="Script" path="res://scripts/nine_patch_resizer.gd" id="12_3507t"]
+[ext_resource type="Texture2D" uid="uid://b8xjflw3fip8y" path="res://images/battles_system/dialogue.png" id="13_ln60n"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kbckk"]
 viewport_path = NodePath("BgViewport")
@@ -612,18 +612,29 @@ size_flags_vertical = 4
 mouse_filter = 2
 
 [node name="DialogueGuide" type="NinePatchRect" parent="CanvasLayer/HBoxContainerDialogue"]
-visible = false
 texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
-texture = ExtResource("4_tflk0")
+texture = ExtResource("13_ln60n")
 region_rect = Rect2(-0.176821, -0.334084, 672.242, 80.6433)
 patch_margin_left = 75
 patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 axis_stretch_vertical = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainerDialogue/DialogueGuide"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 3.0
+offset_right = 638.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 26
+text = "Enemies draw near! How are we gonna deal with this? Do something! Fast! AAAAAAAAAaaaaaaaa!"
+autowrap_mode = 3
+clip_text = true
 
 [node name="HBoxContainerMinigame" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 15
