@@ -24,7 +24,7 @@ func use(user: Stats, target: Stats):
 	target_name = target.character_name
 	owner_name = user.character_name
 	await DialogueManager.print_dialogue(use_text(),BattleManager.dialogue_label)
-	await get_tree().create_timer(0.5).timeout #skill effect would go here
+	#await get_tree().create_timer(0.5).timeout #skill effect would go here
 	if BattleManager.rng.randi()%100<=accuracy:
 		if BattleManager.rng.randi()%100<=crit_chance:
 			await DialogueManager.print_dialogue(crit_text(),BattleManager.dialogue_label)

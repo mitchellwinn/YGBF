@@ -28,7 +28,11 @@ func initialize_new_party_member():
 	inner_hp = get_max_hp() 
 	ego_armor = get_max_ego_armor()
 	inner_ego = get_max_ego()
+	initialize_other_stats()
 	return
+
+func initialize_other_stats():
+	pass
 
 func get_max_hp_armor() -> int:
 	var value: int = 100 #write code later to calculate this based on level or other factors
@@ -81,7 +85,10 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
 	ego_dmg = int(ego_dmg*crit)
 	var remainder: int = 0
 	var not_yet_subdued: bool = !is_subdued()
+	var ego_not_yet_broken: bool
+	var hp_not_yet_broken: bool
 	if hp_armor>0:
+		hp_not_yet_broken = true
 		if hp_dmg>hp_armor:
 			remainder = hp_dmg-hp_armor
 			hp_armor = 0
@@ -93,6 +100,7 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
 	#ego dmg
 	remainder = 0
 	if ego_armor>0:
+		ego_not_yet_broken = true
 		if ego_dmg>ego_armor:
 			remainder = ego_dmg-ego_armor
 			ego_armor = 0
@@ -107,9 +115,9 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
 		await DialogueManager.print_dialogue(character_name+" took "+str(hp_dmg)+" damage to their HP!",BattleManager.dialogue_label)
 	if ego_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(ego_dmg)+" damage to their EGO!",BattleManager.dialogue_label)
-	if hp_armor<=0:
+	if hp_armor<=0 and hp_not_yet_broken:
 		await DialogueManager.print_dialogue(character_name+"'s HP armor has been broken!",BattleManager.dialogue_label)
-	if ego_armor<=0:
+	if ego_armor<=0 and ego_not_yet_broken:
 		await DialogueManager.print_dialogue(character_name+"'s EGO armor has been broken!",BattleManager.dialogue_label)
 	if inner_hp<=0:
 		await DialogueManager.print_dialogue(character_name+" passed out!",BattleManager.dialogue_label)

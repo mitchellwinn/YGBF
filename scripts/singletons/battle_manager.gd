@@ -241,7 +241,7 @@ func decide_menu_act():
 			"pacify":
 				button.make_unselectable()
 				for enemy in enemies:
-					if enemy.is_subdued():
+					if enemy.is_subdued() and !enemy.is_defeated():
 						button.make_selectable()
 	get_tree().get_nodes_in_group("menu_act_buttons")[act_button_index].grab_focus()
 	print("grabbed focus")
@@ -411,6 +411,9 @@ func all_party_members_exhausted() -> bool:
 	return true
 
 func enemy_attacks_us(enemy: Stats):
+	if enemy.is_defeated():
+		await DialogueManager.print_dialogue(enemy.character_name+" was defeated before it had a chance to use its next attack!",dialogue_label)
+		return
 	var viable_party_targets: Array[Stats]
 	for member in party:
 		if !member.is_defeated():
@@ -420,6 +423,9 @@ func enemy_attacks_us(enemy: Stats):
 	return
 
 func we_attack_enemy():
+	if attacker.is_defeated():
+		await DialogueManager.print_dialogue(attacker.character_name+" can no longer go through with the plan!",dialogue_label)
+		return
 	match battle_option:
 		"skill":
 			await prepared_skill.use(attacker,target)
