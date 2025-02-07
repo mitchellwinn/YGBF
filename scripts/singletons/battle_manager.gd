@@ -208,7 +208,7 @@ func decide_attacker():
 			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			attacker = party[attacker_index] #sets the attacker equal to the instance of that party member
 			print(attacker.character_name)
-			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
+			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
 	await get_tree().process_frame
 	return
@@ -242,13 +242,15 @@ func decide_menu_act():
 				button.make_unselectable()
 				for enemy in enemies:
 					if enemy.is_subdued() and !enemy.is_defeated():
-						button.make_selectable()
+						button.make_selectable()		
 	get_tree().get_nodes_in_group("menu_act_buttons")[act_button_index].grab_focus()
 	print("grabbed focus")
 	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
+		
+		print("the gui focus goes to: "+get_tree().root.get_viewport().gui_get_focus_owner().name)
 		if (act_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
 			act_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
 			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
@@ -305,7 +307,7 @@ func decide_target():
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
-			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
+			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
 	await get_tree().process_frame
 	return
@@ -348,7 +350,7 @@ func iterate_attacker_index(value: int):
 # 	while true:
 # 		categorical_button_index = keep_iterating(categorical_button_index, value) #target the next button over
 # 		categorical_button_index = posmod(categorical_button_index,4) #makes sure the categorical_button_index stays within the amount of options
-# 		await get_tree().physics_frame
+# 		await get_tree().process_frame
 # 	categorical_menu_buttons[categorical_button_index].grab_focus()
 # 	return
 	
@@ -457,6 +459,10 @@ func play_minigame():
 			await DialogueManager.print_dialogue(target.character_name+" was unimpressed with "+attacker.character_name+"'s performance!",dialogue_label)
 		1: #minigame success
 			target.pacified = true
+			act_button_index = 0
+			for enemy in enemies:
+				if enemy.is_subdued() and !enemy.is_defeated():
+					act_button_index = 2
 			GameManager.play_sound(sfx_player,"res://sounds/you did it.wav")
 			await DialogueManager.print_dialogue(target.character_name+" was pacified by "+attacker.character_name+"'s performance!",dialogue_label)
 
@@ -532,7 +538,7 @@ func open_menu():
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 			_:
 				break
-		await get_tree().physics_frame
+		await get_tree().process_frame
 	party_sprites[attacker_index].get_parent().anchor_left = attacker_original_anchor
 	party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 	menu.visible = false

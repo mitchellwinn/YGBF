@@ -22,5 +22,4 @@ func load_test_troop():
 		var enemy: Stats = BigMenace.new()
 		get_tree().root.add_child.call_deferred(enemy)
 		BattleManager.enemies.append.call_deferred(enemy)
-		enemy.character_name = enemy.character_name+" "+str(i+1)
 		await get_tree().process_frame
