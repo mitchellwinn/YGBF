@@ -55,5 +55,5 @@ func make_unselectable():
 	focus_mode = FOCUS_NONE
 
 func make_selectable():
-	disabled = true
+	disabled = false
 	focus_mode = FOCUS_ALL

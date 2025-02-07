@@ -14,7 +14,10 @@ var minigame_size_guide: HBoxContainer
 var minigame_viewport: SubViewport
 var categorical_menu: GridContainer
 var act_menu: GridContainer
+var skill_menu: GridContainer
 var dialogue_label: Label
+var sfx_player: AudioStreamPlayer2D
+var dialogue_sfx_player: AudioStreamPlayer2D
 
 var came_from_overworld: bool
 var overworld_position: Vector3
@@ -26,11 +29,13 @@ var in_battle: bool #referenced by other scripts that may halt functions during 
 var attacker_index: int = 0 #holds data for which party member is / was last selected to use an attack
 var categorical_button_index: int = 0 #holds data for which catergorical button  is / was last selected to access
 var act_button_index: int = 0
+var skill_button_index: int = 0
 var menu_index: int = 0
 var current_move_functionality: String
 var target_index: int = 0 #holds data for which enemy is / was last targeted for attack
 var attacker: Stats = null
 var target: Stats = null
+var prepared_skill: Skill = null
 
 var battle_option: String
 var phase: String = ""
@@ -83,12 +88,15 @@ func get_scene_references():
 	enemy_sprites.clear()
 	dialogue_label = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerDialogue/DialogueGuide/Label")
 	dialogue_label.get_parent().visible = false
+	sfx_player = get_tree().root.get_node("Battle/SfxPlayer")
+	dialogue_sfx_player = get_tree().root.get_node("Battle/DialogueSfxPlayer")
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
 	categorical_menu = menu.get_node("GridContainerCategorical")
 	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
 	minigame_viewport = get_tree().root.get_node("Battle/MinigameViewport")
 	minigame_size_guide = get_tree().root.get_node("Battle/CanvasLayer/MinigameSizeGuide")
 	act_menu = menu.get_node("GridContainerAct")
+	skill_menu = menu.get_node("GridContainerSkills")
 	menu.visible = false
 	for i in range (4):
 		party_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerParty"+str(i+1)+"/PartyMember"))
@@ -130,9 +138,11 @@ func get_scene_references():
 
 func battle_process():
 	print("Started battle_process")
+	await DialogueManager.print_dialogue(EnemyTroops.entry_message(troop), dialogue_label)
+	await DialogueManager.print_dialogue("How are we gonna deal with this?", dialogue_label)
 	while true:
 		print("New lap of battle_process")
-		await DialogueManager.print_dialogue("A new turn of the battle system.",dialogue_label)
+		#await DialogueManager.print_dialogue("A new turn of the battle system.",dialogue_label)
 		battle_option = ""
 		phase = ""
 		current_move_functionality = ""
@@ -151,7 +161,10 @@ func battle_process():
 				0: #Main Attack
 					battle_option = "attack"
 				1: #Skills
-					continue
+					if await decide_menu_skill() == -1:
+						continue
+					battle_option = "skill"
+					prepared_skill = attacker.skills[skill_button_index]
 				2: #Act
 					if await decide_menu_act() == -1:
 						continue
@@ -166,12 +179,13 @@ func battle_process():
 							continue
 				3: #Item
 					continue
-			await decide_target()
+			if await decide_target() == -1:
+				continue
 			await determine_enemy_attack()
 			await we_attack_enemy()
 		else:
 			await remaining_enemies_attack()
-			await DialogueManager.print_dialogue("Everyone is exhausted.",dialogue_label)
+			#await DialogueManager.print_dialogue("Everyone is exhausted.",dialogue_label)
 			reset_exhaustion()
 		await get_tree().process_frame
 	return
@@ -184,14 +198,14 @@ func decide_attacker():
 	print("Initial attacker_index after iteration: "+str(attacker_index))
 	while(true):
 		if Input.is_action_just_pressed("move_right"):
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			await iterate_attacker_index(1)
 		if Input.is_action_just_pressed("move_left"):
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			await iterate_attacker_index(-1)
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			GameManager.click_button = ""
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			attacker = party[attacker_index] #sets the attacker equal to the instance of that party member
 			print(attacker.character_name)
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
@@ -208,9 +222,11 @@ func decide_menu_category():
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
-		categorical_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+		if (categorical_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
+			categorical_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
 	await get_tree().process_frame
@@ -233,10 +249,41 @@ func decide_menu_act():
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
-		act_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+		if (act_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
+			act_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			current_move_functionality = get_tree().get_nodes_in_group("menu_act_buttons")[act_button_index].functionality
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
+			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
+		await get_tree().process_frame
+	await get_tree().process_frame
+	return
+
+func decide_menu_skill():
+	phase = "decide_menu_skill"
+	print(phase)
+	stop_all_flashes()
+	await populate_skill_buttons()
+	for button in get_tree().get_nodes_in_group("menu_skill_buttons"):
+		if attacker.skills[button.index].hp_cost>attacker.inner_hp or attacker.skills[button.index].ego_cost>attacker.inner_ego:
+			button.make_unselectable()
+			print("unselectable")
+		else:
+			button.make_selectable()
+			print("selectable")
+	get_tree().get_nodes_in_group("menu_skill_buttons")[skill_button_index].grab_focus()
+	print("grabbed focus")
+	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
+	while(true):
+		if Input.is_action_just_pressed("back"):
+			return -1
+		if (skill_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
+			skill_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
+			current_move_functionality = "skill"
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
 	await get_tree().process_frame
@@ -247,14 +294,16 @@ func decide_target():
 	stop_all_flashes()
 	await iterate_target_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
+		if Input.is_action_just_pressed("back"):
+			return -1
 		if Input.is_action_just_pressed("move_right"):
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			await iterate_target_index(1)
 		if Input.is_action_just_pressed("move_left"):
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			await iterate_target_index(-1)
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
-			#play some sound effect
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
 			break #break out of the loop, return to the battle_physics function, keep on going, yadayadayada
 		await get_tree().process_frame
@@ -362,16 +411,18 @@ func all_party_members_exhausted() -> bool:
 	return true
 
 func enemy_attacks_us(enemy: Stats):
-	#enemy might be another unique class that extends from Stats; haven't decided yet, 
-	#but they will have parameters for what skills they know, and maybe a basic
-	#algorithm to decide which one they will use
+	var viable_party_targets: Array[Stats]
+	for member in party:
+		if !member.is_defeated():
+			viable_party_targets.append(member)
+	await enemy.skills[rng.randi()%enemy.skills.size()].use(enemy,viable_party_targets[rng.randi()%viable_party_targets.size()])
 	enemy.attack_index += 1 #enemy now has one less attack this turn
 	return
 
 func we_attack_enemy():
 	match battle_option:
-		"attack":
-			pass
+		"skill":
+			await prepared_skill.use(attacker,target)
 		"pacify":
 			await play_minigame()
 			pass
@@ -396,9 +447,12 @@ func play_minigame():
 	minigame_instance.queue_free()
 	match minigame_status:
 		0: #minigame fail
-			pass
+			GameManager.play_sound(sfx_player,"res://sounds/oh great job dumbass.wav")
+			await DialogueManager.print_dialogue(target.character_name+" was unimpressed with "+attacker.character_name+"'s performance!",dialogue_label)
 		1: #minigame success
 			target.pacified = true
+			GameManager.play_sound(sfx_player,"res://sounds/you did it.wav")
+			await DialogueManager.print_dialogue(target.character_name+" was pacified by "+attacker.character_name+"'s performance!",dialogue_label)
 
 func remaining_enemies_attack():
 	for enemy in enemies:
@@ -408,6 +462,19 @@ func remaining_enemies_attack():
 func reset_exhaustion():
 	for participant in participants:
 		participant.attack_index = 0
+
+func populate_skill_buttons():
+	for button in skill_menu.get_children():
+		button.queue_free()
+	var i: int = 0
+	for skill in attacker.skills:
+		var new_button = await load("res://prefabs/battle_button.tscn").instantiate()
+		skill_menu.add_child(new_button)
+		new_button.text = attacker.skills[i].skill_name
+		new_button.index = i
+		new_button.add_to_group("menu_skill_buttons")
+		i+=1
+	await get_tree().process_frame
 
 ################### VISUAL HELPER FUNCTIONS #####################
 
@@ -441,11 +508,19 @@ func open_menu():
 		match phase:
 			"decide_menu_category":
 				categorical_menu.visible = true
+				skill_menu.visible = false
 				act_menu.visible = false
 				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 			"decide_menu_act":
 				act_menu.visible = true
+				skill_menu.visible = false
+				categorical_menu.visible = false
+				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
+				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+			"decide_menu_skill":
+				skill_menu.visible = true
+				act_menu.visible = false
 				categorical_menu.visible = false
 				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
 				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left

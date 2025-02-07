@@ -87,6 +87,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy1"]
+z_index = -7
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -114,6 +115,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy2"]
+z_index = -7
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -142,6 +144,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy3"]
+z_index = -7
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -487,6 +490,18 @@ patch_margin_right = 15
 patch_margin_bottom = 15
 script = ExtResource("12_3507t")
 
+[node name="GridContainerSkills" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
+clip_contents = true
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
 [node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
 clip_contents = true
 layout_direction = 2
@@ -641,9 +656,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 14.0
-offset_top = 33.0
+offset_top = 32.07
 offset_right = -12.0
-offset_bottom = -195.0
+offset_bottom = -192.65
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
@@ -652,6 +667,7 @@ mouse_filter = 2
 
 [node name="Minigame" type="TextureRect" parent="CanvasLayer/HBoxContainerMinigame"]
 visible = false
+z_index = -5
 texture_filter = 1
 layout_direction = 1
 layout_mode = 2
@@ -663,9 +679,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 14.0
-offset_top = 33.0
+offset_top = 32.07
 offset_right = -12.0
-offset_bottom = -195.0
+offset_bottom = -192.65
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
@@ -680,3 +696,9 @@ size = Vector2i(2880, 1620)
 
 [node name="BattleBg" parent="BgViewport" instance=ExtResource("10_q4ian")]
 position = Vector2(729.544, 168.719)
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="DialogueSfxPlayer" type="AudioStreamPlayer2D" parent="."]
+
+[node name="SfxPlayer" type="AudioStreamPlayer2D" parent="."]

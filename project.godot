@@ -29,6 +29,12 @@ window/size/viewport_height=540
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[global_group]
+
+menu_act_buttons=""
+menu_categorical_buttons=""
+menu_skill_buttons=""
+
 [input]
 
 move_up={

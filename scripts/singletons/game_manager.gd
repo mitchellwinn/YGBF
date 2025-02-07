@@ -14,7 +14,11 @@ func _ready():
 		var party_member: Stats = Stats.new()
 		party_member.character_name = "Dummy "+str(i+1)
 		party_member.talent = "model"
+		party_member.skills.append(FashionInsult.new())
+		party_member.skills.append(BasicAttack.new())
 		get_tree().root.add_child.call_deferred(party_member)
+		for skill in party_member.skills:
+			party_member.add_child(skill)
 		party.append.call_deferred(party_member)
 		await get_tree().process_frame
 	if get_tree().current_scene.name.to_lower() == "battle":
@@ -29,3 +33,7 @@ func _process(delta):
 				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN, 0)
 			DisplayServer.WINDOW_MODE_FULLSCREEN:
 				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED, 0)
+
+func play_sound(player: AudioStreamPlayer2D, stream: String):
+	player.stream = load(stream)
+	player.play()
