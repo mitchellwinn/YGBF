@@ -2,104 +2,97 @@ extends Minigame
 
 class_name Punchout
 
-# Player Stats
+const WAIT_TIME: float = 2.0
+var timer: Timer
+var thread: Thread
+# Player
 var player_heath: int
-var player_dodge_state: int		# -1 -> not dodging, 0 -> dodge left, 1 -> dodge right
-const PLAYER_ACTION_COOLDOWN: float = 0.5
-const PLAYER_SUCCESSFUL_DODGE_TIMER: float = 0.5
+enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, NONE}
 
-# Enemy stats
+# Enemy
 var enemy_health: int
-var is_enemy_guarding: bool
-const ENEMY_GUARD_DURATION: float = 0.5
+enum ENEMY_STATE {IDLE, GUARD, ATTACK_LEFT, ATTACK_RIGHT}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	super()
+	BattleManager.minigame_status = -1
+	initialize()
+	minigame_process()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	super(delta)
 
 func initialize():
-	countdown = 10.0
+	timer = Timer.new()
+	timer.wait_time = WAIT_TIME
+	timer.autostart = false
+	timer.one_shot = true
+	timer.timeout.connect(func(): print("Next Action"))
+	add_child(timer)
+
+	thread = Thread.new()
 
 	player_heath = 3
-	player_dodge_state = -1
-	
 	enemy_health = 3
-	is_enemy_guarding = false
-
-func minigame_countdown():
-	while countdown > 0:
-		await get_tree().create_timer(0.1).timeout
-		countdown -= 0.1
-	# Ran out of time for minigame
-	# TODO maybe reconsider failure state for running out of time
-	print("Minigame Fail: Ran out of time")
-	BattleManager.minigame_status = 0
 
 func minigame_process():
-	enemy_action()
+	var enemy_state: ENEMY_STATE
+	var player_state: PLAYER_STATE
 	while true:
-		# Dodge left
-		if Input.is_action_just_pressed("move_left"):
-			await player_dodge(0)
-		# Dodge right
-		if Input.is_action_just_pressed("move_right"):
-			await player_dodge(1)
-		# Punch
-		if Input.is_action_just_pressed("move_up"):
-			await player_punch()
-			
+		# Select a random state for enemy
+		enemy_state = ENEMY_STATE.values().pick_random()
+		print("Enemy State: " + ENEMY_STATE.find_key(enemy_state))
+
+		thread.start(player_action.bind())
+		timer.start()
+		await timer.timeout
+		player_state = thread.wait_to_finish()
+
+		process_states(enemy_state, player_state)
+
+		if enemy_health <= 0:
+			print("Minigame Success")
+			BattleManager.minigame_status = 1
+		elif player_heath <= 0:
+			print("Minigame Fail")
+			BattleManager.minigame_status = 0
+
 		await get_tree().process_frame
 
-func player_dodge(dodge_state: int):
-	print("Player Dodge: " + str(dodge_state))
-	player_dodge_state = dodge_state
-	await get_tree().create_timer(PLAYER_ACTION_COOLDOWN).timeout
-	player_dodge_state = -1
+func player_action() -> PLAYER_STATE:
+	while timer.time_left > 0:
+		# Dodge left
+		if Input.is_action_just_pressed("move_left"):
+			print("Dodged Left")
+			# Signals aren't thread safe, need to defer the call
+			timer.emit_signal.call_deferred("timeout")
+			return PLAYER_STATE.DODGE_LEFT
+		# Dodge right
+		if Input.is_action_just_pressed("move_right"):
+			print("Dodged Right")
+			timer.emit_signal.call_deferred("timeout")
+			return PLAYER_STATE.DODGE_RIGHT
+		# Punch
+		if Input.is_action_just_pressed("move_up"):
+			print("Punched")
+			timer.emit_signal.call_deferred("timeout")
+			return PLAYER_STATE.ATTACK
 
-func player_punch():
-	print("Player punches")
-	if !is_enemy_guarding:
-		print("HIT")
-		enemy_health -= 1
-	# TODO maybe some sort of player punishment for punching on enemy guard
+	return PLAYER_STATE.NONE
 
-	if enemy_health <= 0:
-		print("Minigame Success: Beat enemy")
-		BattleManager.minigame_status = 1
-		
-	await get_tree().create_timer(PLAYER_ACTION_COOLDOWN).timeout
-
-func enemy_action():
-	# Enemy can guard, punch, or do nothing
-	var actions: Array[Callable] = [_enemy_guard, _enemy_punch, func(): print("Enemy Passes")]
-
-	while true:
-		await get_tree().create_timer(randf_range(0.7, 1.2)).timeout
-		await actions.pick_random().call()
-
-func _enemy_punch():
-	# 0 -> punch left, 1 -> punch right
-	var punch_direction: int = randi_range(0, 1)
-	print("Enemy Punches " + str(punch_direction))
-
-	# Only deal damage if player is not dodging, or dodges towards the punch
-	if punch_direction != player_dodge_state:
-		print("HIT")
-		player_heath -= 1
-	# If player successfully dodges, then stun the enemy
-	else:
-		await get_tree().create_timer(PLAYER_SUCCESSFUL_DODGE_TIMER).timeout
-
-	if player_heath <= 0:
-		print("Minigame Fail: Lost all heath")
-		BattleManager.minigame_status = 0
-
-func _enemy_guard():
-	print("Enemy Guards")
-	is_enemy_guarding = true
-	await get_tree().create_timer(ENEMY_GUARD_DURATION).timeout
-	is_enemy_guarding = false
+func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE):
+	if enemy_state == ENEMY_STATE.IDLE:
+		if player_state == PLAYER_STATE.ATTACK:
+			print("Enemy Health -1")
+			enemy_health -= 1
+	elif enemy_state == ENEMY_STATE.GUARD:
+		pass
+	elif enemy_state == ENEMY_STATE.ATTACK_LEFT:
+		if player_state != PLAYER_STATE.DODGE_RIGHT:
+			print("Player Health -1")
+			player_heath -= 1
+	elif  enemy_state == ENEMY_STATE.ATTACK_RIGHT:
+		if player_state != PLAYER_STATE.DODGE_LEFT:
+			print("Player Health -1")
+			player_heath -= 1
