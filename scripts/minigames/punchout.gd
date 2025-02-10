@@ -38,7 +38,8 @@ func initialize():
 	timer.wait_time = WAIT_TIME
 	timer.autostart = false
 	timer.one_shot = true
-	timer.timeout.connect(func(): print("Next Action"))
+	# Intentionally empty
+	timer.timeout.connect(func():)
 	add_child(timer)
 
 	thread = Thread.new()
@@ -140,18 +141,17 @@ func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> voi
 				print("Player Health -1")
 				player_heath -= 1
 				return
-			_windup_helper()
+			_determine_counter_status()
 		ENEMY_STATE.WINDUP_RIGHT:
 			if player_state != PLAYER_STATE.DODGE_LEFT:
 				play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
 				print("Player Health -1")
 				player_heath -= 1
 				return
-			_windup_helper()
+			_determine_counter_status()
 
-func _windup_helper():
-	# Player successfully dodges and counter is available,
-	# Make next state countered
+func _determine_counter_status():
+	# Counter is only available when player chain dodges
 	if counter_available:
 		enemy_action_queue.insert(0, ENEMY_STATE.COUNTERED)
 		counter_available = false
