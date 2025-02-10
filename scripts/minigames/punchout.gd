@@ -11,7 +11,17 @@ enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, NONE}
 
 # Enemy
 var enemy_health: int
-enum ENEMY_STATE {IDLE, GUARD, ATTACK_LEFT, ATTACK_RIGHT}
+var counter_available: bool
+enum ENEMY_STATE {IDLE, GUARD, ATTACK_LEFT, 
+				  ATTACK_RIGHT, WINDUP_LEFT, 
+				  WINDUP_RIGHT, COUNTERED,
+				  HURT}
+var enemy_animator: AnimationPlayer
+var enemy_action_queue: Array[ENEMY_STATE]
+const possible_actions: Array[ENEMY_STATE] = [ENEMY_STATE.IDLE, 
+											  ENEMY_STATE.GUARD,
+											  ENEMY_STATE.WINDUP_LEFT,
+											  ENEMY_STATE.WINDUP_RIGHT] 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -33,17 +43,30 @@ func initialize():
 
 	thread = Thread.new()
 
+	enemy_animator = $Enemy.get_node("AnimationPlayer")
+	enemy_action_queue = []
+
 	player_heath = 3
 	enemy_health = 3
+	counter_available = false
 
 func minigame_process():
 	var enemy_state: ENEMY_STATE
 	var player_state: PLAYER_STATE
+
+	# NOTE: Don't go below 2 minimum actions
+	for i in range(2):
+		enemy_action_queue.append(possible_actions.pick_random())
+
 	while true:
 		# Select a random state for enemy
-		enemy_state = ENEMY_STATE.values().pick_random()
+		enemy_state = enemy_action_queue.pop_front()
 		print("Enemy State: " + ENEMY_STATE.find_key(enemy_state))
+		play_enemy_animation(enemy_state)
+		# Add next enemy state to queue
+		enemy_action_queue.append(possible_actions.pick_random())
 
+		# Check for any player input within WAIT_TIME seconds
 		thread.start(player_action.bind())
 		timer.start()
 		await timer.timeout
@@ -59,6 +82,25 @@ func minigame_process():
 			BattleManager.minigame_status = 0
 
 		await get_tree().process_frame
+
+func play_enemy_animation(enemy_state: ENEMY_STATE):
+	match enemy_state:
+		ENEMY_STATE.ATTACK_LEFT:
+			enemy_animator.play("ATTACK_LEFT")
+		ENEMY_STATE.ATTACK_RIGHT:
+			enemy_animator.play("ATTACK_RIGHT")
+		ENEMY_STATE.GUARD:
+			enemy_animator.play("GUARD")
+		ENEMY_STATE.IDLE:
+			enemy_animator.play("IDLE")
+		ENEMY_STATE.WINDUP_LEFT:
+			enemy_animator.play("WINDUP_LEFT")
+		ENEMY_STATE.WINDUP_RIGHT:
+			enemy_animator.play("WINDUP_RIGHT")
+		ENEMY_STATE.COUNTERED:
+			enemy_animator.play("IDLE")	
+		ENEMY_STATE.HURT:
+			enemy_animator.play("HURT")
 
 func player_action() -> PLAYER_STATE:
 	while timer.time_left > 0:
@@ -81,18 +123,41 @@ func player_action() -> PLAYER_STATE:
 
 	return PLAYER_STATE.NONE
 
-func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE):
-	if enemy_state == ENEMY_STATE.IDLE:
-		if player_state == PLAYER_STATE.ATTACK:
-			print("Enemy Health -1")
-			enemy_health -= 1
-	elif enemy_state == ENEMY_STATE.GUARD:
-		pass
-	elif enemy_state == ENEMY_STATE.ATTACK_LEFT:
-		if player_state != PLAYER_STATE.DODGE_RIGHT:
-			print("Player Health -1")
-			player_heath -= 1
-	elif  enemy_state == ENEMY_STATE.ATTACK_RIGHT:
-		if player_state != PLAYER_STATE.DODGE_LEFT:
-			print("Player Health -1")
-			player_heath -= 1
+func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> void:
+	match enemy_state:
+		ENEMY_STATE.IDLE, ENEMY_STATE.COUNTERED:
+			if player_state == PLAYER_STATE.ATTACK:
+				play_enemy_animation(ENEMY_STATE.HURT)
+				print("Enemy Health -1")
+				enemy_health -= 1
+				return
+		ENEMY_STATE.GUARD:
+			return
+		ENEMY_STATE.WINDUP_LEFT:
+			# Damage player and move to next round if they didn't dodge correctly
+			if player_state != PLAYER_STATE.DODGE_RIGHT:
+				play_enemy_animation(ENEMY_STATE.ATTACK_LEFT)
+				print("Player Health -1")
+				player_heath -= 1
+				return
+			_windup_helper()
+		ENEMY_STATE.WINDUP_RIGHT:
+			if player_state != PLAYER_STATE.DODGE_LEFT:
+				play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
+				print("Player Health -1")
+				player_heath -= 1
+				return
+			_windup_helper()
+
+func _windup_helper():
+	# Player successfully dodges and counter is available,
+	# Make next state countered
+	if counter_available:
+		enemy_action_queue.insert(0, ENEMY_STATE.COUNTERED)
+		counter_available = false
+		return
+
+	# Check passes only when the windup chain will end at the next state
+	const windups: Array[ENEMY_STATE] = [ENEMY_STATE.WINDUP_LEFT, ENEMY_STATE.WINDUP_RIGHT]
+	if enemy_action_queue[0] in windups && enemy_action_queue[1] not in windups :
+		counter_available = true
