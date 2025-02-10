@@ -15,6 +15,7 @@ var minigame_viewport: SubViewport
 var categorical_menu: GridContainer
 var act_menu: GridContainer
 var skill_menu: GridContainer
+var main_attack_diva #not sure on the type yet
 var dialogue_label: Label
 var sfx_player: AudioStreamPlayer2D
 var dialogue_sfx_player: AudioStreamPlayer2D
@@ -41,7 +42,7 @@ var battle_option: String
 var phase: String = ""
 var minigame_status: int
 
-var model_minigame = preload("res://scenes/minigames/model.tscn")
+var diva_minigame = preload("res://scenes/minigames/diva.tscn")
 
 ############## BUILT IN FUNCTIONS ######################
 
@@ -91,6 +92,7 @@ func get_scene_references():
 	sfx_player = get_tree().root.get_node("Battle/SfxPlayer")
 	dialogue_sfx_player = get_tree().root.get_node("Battle/DialogueSfxPlayer")
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
+	main_attack_diva = menu.get_node("MainAttackDiva")
 	categorical_menu = menu.get_node("GridContainerCategorical")
 	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
 	minigame_viewport = get_tree().root.get_node("Battle/MinigameViewport")
@@ -98,6 +100,8 @@ func get_scene_references():
 	act_menu = menu.get_node("GridContainerAct")
 	skill_menu = menu.get_node("GridContainerSkills")
 	menu.visible = false
+	for flashable in get_tree().get_nodes_in_group("flashable"):
+		flashable.material = flashable.material.duplicate()
 	for i in range (4):
 		party_sprites.append(get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerParty"+str(i+1)+"/PartyMember"))
 		party_sprites[i].visible = false
@@ -160,6 +164,8 @@ func battle_process():
 			match categorical_button_index: #this determines what happens based on the menu we picked
 				0: #Main Attack
 					battle_option = "attack"
+					if await decide_menu_main() == -1:
+						continue
 				1: #Skills
 					if await decide_menu_skill() == -1:
 						continue
@@ -212,7 +218,42 @@ func decide_attacker():
 		await get_tree().process_frame
 	await get_tree().process_frame
 	return
-	
+
+func decide_menu_main():
+	phase = "decide_menu_"+attacker.talent
+	stop_all_flashes()
+	await get_tree().process_frame
+	var index: int = 0
+	get_tree().get_nodes_in_group("menu_"+attacker.talent+"_buttons")[0].grab_focus()
+	get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
+	attacker.main_attack_resource_limit = 4
+	attacker.main_attack_resource_count = 0
+	match attacker.talent:
+			"diva":
+				attacker.main_attack_diva_ego = 0
+				attacker.main_attack_diva_hp = 0
+				for i in range(10):
+					main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+					main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+	while(true):
+		if Input.is_action_just_pressed("back"):
+			return -1
+		match attacker.talent:
+			"diva":
+				diva_main_actions(index)
+		if (index != get_tree().root.get_viewport().gui_get_focus_owner().index):
+			index = get_tree().root.get_viewport().gui_get_focus_owner().index
+			stop_all_flashes()
+			if get_tree().root.get_viewport().gui_get_focus_owner().is_in_group("flashable"):
+				get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+		if (Input.is_action_just_pressed("confirm") || GameManager.click_button == phase) and get_tree().root.get_viewport().gui_get_focus_owner().functionality == "finish":
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
+			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
+		await get_tree().process_frame
+	await get_tree().process_frame
+	return
+
 func decide_menu_category():
 	phase = "decide_menu_category"
 	stop_all_flashes()
@@ -331,6 +372,47 @@ func determine_enemy_attack():
 				pass #we are faster than the enemy, enemy does not get to attack us
 	return
 
+############### TALENT SPECIFIC ACTIONS ###############
+
+func diva_main_actions(index: int):
+	var value = 0
+	if Input.is_action_just_pressed("move_right"):
+		if attacker.main_attack_resource_count>=attacker.main_attack_resource_limit: #no more resources to allocate
+			return
+		value = 1
+	if Input.is_action_just_pressed("move_left"):
+		if attacker.main_attack_resource_count<=0: #bar is already zero
+			return
+		value = -1
+	GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+	match index:
+		0: #we are hovering the HP bar
+			if attacker.main_attack_diva_hp<=0 and value == -1:
+				return
+			attacker.main_attack_diva_hp += value
+			attacker.main_attack_resource_count += value
+		1: #we are hovering the EGO bar
+			if attacker.main_attack_diva_ego<=0 and value == -1:
+				return
+			attacker.main_attack_diva_ego += value
+			attacker.main_attack_resource_count += value
+		_:
+			pass
+	if Input.is_action_just_pressed("move_right") or Input.is_action_just_pressed("move_left"):
+		for i in range(10):
+			main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.duplicate()
+			main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.duplicate()
+			if i<= attacker.main_attack_diva_ego-1:
+				main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
+			else:
+				main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+			main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.duplicate()
+			main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.duplicate()
+			if i<= attacker.main_attack_diva_hp-1:
+				main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
+			else:
+				main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+
 ############### BATTLE HELPER FUNCTIONS ###############
 
 func iterate_attacker_index(value: int):
@@ -444,8 +526,8 @@ func play_minigame():
 	var minigame_instance
 	stop_all_flashes()
 	match attacker.talent.to_lower():
-		"model":
-			minigame_instance = model_minigame.instantiate()
+		"diva":
+			minigame_instance = diva_minigame.instantiate()
 	minigame_viewport.add_child(minigame_instance)
 	minigame.visible = true
 	while(minigame_status == -1):
@@ -506,6 +588,8 @@ func stop_all_flashes():
 		sprite.get_node("Character").material.set_shader_parameter("flash_enabled", false)
 	for sprite in enemy_sprites:
 		sprite.material.set_shader_parameter("flash_enabled", false)
+	for flashable in get_tree().get_nodes_in_group("flashable"):
+		flashable.material.set_shader_parameter("flash_enabled", false)
 	return
 
 func open_menu():
@@ -516,29 +600,40 @@ func open_menu():
 			sprite.visible = true
 	var attacker_original_anchor = party_sprites[attacker_index].get_parent().anchor_left
 	menu.visible = true
+	var phase_last_frame = ""
 	while true:
+		party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
+		party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+		if phase!=phase_last_frame:
+			categorical_menu.visible = false
+			skill_menu.visible = false
+			act_menu.visible = false
+			main_attack_diva.visible = false
+			match phase:
+				"decide_menu_category":
+					categorical_menu.visible = true
+				"decide_menu_act":
+					act_menu.visible = true
+				"decide_menu_skill":
+					skill_menu.visible = true
+				"decide_menu_diva":
+					main_attack_diva.visible = true
+					main_attack_diva.get_node("HpBar").size.x = menu.size.x
+					print(menu.size.x)
+				_:
+					break
 		match phase:
-			"decide_menu_category":
-				categorical_menu.visible = true
-				skill_menu.visible = false
-				act_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
-				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
-			"decide_menu_act":
-				act_menu.visible = true
-				skill_menu.visible = false
-				categorical_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
-				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
-			"decide_menu_skill":
-				skill_menu.visible = true
-				act_menu.visible = false
-				categorical_menu.visible = false
-				party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
-				party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
+			"decide_menu_diva":
+				main_attack_diva.get_node("HpBar").size.x = menu.size.x
+				main_attack_diva.get_node("HpBar").get_child(0).size.x = menu.size.x-9
+				main_attack_diva.get_node("EgoBar").size.x = menu.size.x
+				main_attack_diva.get_node("EgoBar").get_child(0).size.x = menu.size.x-9
+				main_attack_diva.get_node("Count").text = str(attacker.main_attack_resource_limit-attacker.main_attack_resource_count)+"/"+str(attacker.main_attack_resource_limit)+" Available"
 			_:
-				break
+				pass
+		phase_last_frame = phase
 		await get_tree().process_frame
+	print("put stuff back to normal")
 	party_sprites[attacker_index].get_parent().anchor_left = attacker_original_anchor
 	party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 	menu.visible = false

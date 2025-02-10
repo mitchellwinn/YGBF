@@ -23,3 +23,4 @@ func load_test_troop():
 		get_tree().root.add_child.call_deferred(enemy)
 		BattleManager.enemies.append.call_deferred(enemy)
 		await get_tree().process_frame
+		enemy.character_name = enemy.character_name+" "+str(i+1)

@@ -13,7 +13,7 @@ func _ready():
 	for i in range(2): #make a dummy party with 4 characters
 		var party_member: Stats = Stats.new()
 		party_member.character_name = "Dummy "+str(i+1)
-		party_member.talent = "model"
+		party_member.talent = "diva"
 		party_member.skills.append(FashionInsult.new())
 		party_member.skills.append(BasicAttack.new())
 		get_tree().root.add_child.call_deferred(party_member)

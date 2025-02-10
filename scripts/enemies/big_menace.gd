@@ -3,13 +3,7 @@ extends Stats
 class_name BigMenace
 
 func initialize_other_stats():
-	var i: int = 0
-	for enemy in BattleManager.enemies:
-		if enemy.character_name.substr(5) == character_name.substr(5):
-			i+=1
-	character_name = "Big Menace"
-	if i > 1:
-		character_name = character_name+" "+str(i+1)
+	character_name = "New Kleo Hustler"
 	ego_subdue_threshold = .9
 	skills.append(BasicAttack.new())
 	for skill in skills:

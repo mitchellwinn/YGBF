@@ -1,10 +1,10 @@
 [gd_scene load_steps=16 format=3 uid="uid://cwrhu76xkfvv4"]
 
-[ext_resource type="Script" path="res://scripts/minigames/model.gd" id="1_brjkm"]
-[ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="1_idmr5"]
-[ext_resource type="Texture2D" uid="uid://jmixsuqv1tgl" path="res://images/minigames/camera.png" id="3_cvs8x"]
-[ext_resource type="Texture2D" uid="uid://bjj70n50grue3" path="res://images/minigames/flash.png" id="4_5xj0p"]
-[ext_resource type="Texture2D" uid="uid://b15djgsi4yopx" path="res://images/minigames/model.png" id="5_uq6xx"]
+[ext_resource type="Script" path="res://scripts/minigames/diva.gd" id="1_ic6gi"]
+[ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="2_i24l2"]
+[ext_resource type="Texture2D" uid="uid://jmixsuqv1tgl" path="res://images/minigames/camera.png" id="3_jlpfc"]
+[ext_resource type="Texture2D" uid="uid://bjj70n50grue3" path="res://images/minigames/flash.png" id="4_rfskm"]
+[ext_resource type="Texture2D" uid="uid://b15djgsi4yopx" path="res://images/minigames/model.png" id="5_ol8wy"]
 
 [sub_resource type="Gradient" id="Gradient_r2fxr"]
 
@@ -280,7 +280,7 @@ _data = {
 }
 
 [node name="Model" type="Node2D"]
-script = ExtResource("1_brjkm")
+script = ExtResource("1_ic6gi")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -292,7 +292,7 @@ scale = Vector2(39.1563, 39.1563)
 texture = SubResource("GradientTexture2D_ql7f0")
 
 [node name="Boundary" type="Sprite2D" parent="Camera2D"]
-texture = ExtResource("1_idmr5")
+texture = ExtResource("2_i24l2")
 
 [node name="HitTrigger" type="Sprite2D" parent="Camera2D"]
 self_modulate = Color(1, 1, 1, 0)
@@ -311,7 +311,7 @@ position = Vector2(533, -8)
 [node name="Camera" type="Sprite2D" parent="."]
 texture_filter = 1
 position = Vector2(-173, 99)
-texture = ExtResource("3_cvs8x")
+texture = ExtResource("3_jlpfc")
 
 [node name="Flash" type="Sprite2D" parent="Camera"]
 visible = false
@@ -319,7 +319,7 @@ z_index = -1
 texture_filter = 1
 position = Vector2(-161, -107)
 scale = Vector2(1e-05, 1e-05)
-texture = ExtResource("4_5xj0p")
+texture = ExtResource("4_rfskm")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -330,7 +330,7 @@ libraries = {
 z_index = -5
 position = Vector2(-173, -89)
 scale = Vector2(0.131, 0.131)
-texture = ExtResource("5_uq6xx")
+texture = ExtResource("5_ol8wy")
 
 [node name="Label" type="Label" parent="."]
 offset_left = -1059.0
@@ -347,4 +347,4 @@ text = "POSE!"
 z_index = -5
 position = Vector2(247, 58)
 scale = Vector2(0.49, 0.49)
-texture = ExtResource("5_uq6xx")
+texture = ExtResource("5_ol8wy")

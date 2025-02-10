@@ -48,7 +48,7 @@ func _on_mouse_entered():
 					BattleManager.target_index = index
 					BattleManager.stop_all_flashes()
 					BattleManager.select_flash_enemy()
-    # Add your custom hover logic here
+	# Add your custom hover logic here
 
 func make_unselectable():
 	disabled = true

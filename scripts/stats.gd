@@ -17,6 +17,11 @@ var character_name: String
 var loaded_from_save: bool
 var animator: AnimationPlayer
 
+var main_attack_resource_count: int
+var main_attack_resource_limit: int
+var main_attack_diva_hp: int
+var main_attack_diva_ego: int
+
 func _ready():
 	print("New entity added to scene tree "+character_name)
 	if(!loaded_from_save):
