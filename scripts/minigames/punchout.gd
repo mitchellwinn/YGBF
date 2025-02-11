@@ -9,7 +9,7 @@ var thread: Thread
 var player_heath: int
 var success_counter: int
 var player_animator: AnimationPlayer
-enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, IDLE}
+enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, IDLE, HURT}
 
 # Enemy
 var enemy_health: int
@@ -58,12 +58,13 @@ func initialize():
 
 func minigame_process():
 	var enemy_state: ENEMY_STATE
-	var player_state: PLAYER_STATE
+	var player_state: PLAYER_STATE = PLAYER_STATE.IDLE
 
 	# NOTE: Don't go below 2 minimum actions
 	for i in range(2):
 		enemy_action_queue.append(possible_actions.pick_random())
 
+	play_player_animation(player_state)
 	while true:
 		# Select a random state for enemy
 		enemy_state = enemy_action_queue.pop_front()
@@ -112,6 +113,7 @@ func play_enemy_animation(enemy_state: ENEMY_STATE):
 			enemy_animator.play("HURT")
 
 func play_player_animation(player_state: PLAYER_STATE):
+	player_animator.play("RESET")
 	match player_state:
 		PLAYER_STATE.ATTACK:
 			player_animator.play("ATTACK")
@@ -121,6 +123,8 @@ func play_player_animation(player_state: PLAYER_STATE):
 			player_animator.play("DODGE_RIGHT")
 		PLAYER_STATE.IDLE:
 			player_animator.play("IDLE")
+		PLAYER_STATE.HURT:
+			player_animator.play("HURT")
 
 func player_action() -> PLAYER_STATE:
 	while timer.time_left > 0:
@@ -163,26 +167,26 @@ func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> voi
 		ENEMY_STATE.GUARD:
 			return
 		ENEMY_STATE.WINDUP_LEFT:
+			play_enemy_animation(ENEMY_STATE.ATTACK_LEFT)
 			# Damage player and move to next round if they didn't dodge correctly
 			if player_state != PLAYER_STATE.DODGE_LEFT:
 				handle_success_counter(false)
-				play_enemy_animation(ENEMY_STATE.ATTACK_LEFT)
-				await enemy_animator.animation_finished
 				print("Player Health -1")
 				player_heath -= 1
 				return
 			handle_success_counter(true)
 			_determine_counter_status()
+			await enemy_animator.animation_finished
 		ENEMY_STATE.WINDUP_RIGHT:
+			play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
 			if player_state != PLAYER_STATE.DODGE_RIGHT:
 				handle_success_counter(false)
-				play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
-				await enemy_animator.animation_finished
 				print("Player Health -1")
 				player_heath -= 1
 				return
 			handle_success_counter(true)
 			_determine_counter_status()
+			await enemy_animator.animation_finished
 
 func _determine_counter_status():
 	# Counter is only available when player chain dodges
