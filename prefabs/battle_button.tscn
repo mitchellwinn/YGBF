@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://b5iq2fh4pbgws"]
+
+[ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="1_h3xqy"]
+[ext_resource type="FontFile" uid="uid://cf8buj8w4ewd5" path="res://fonts/GeneralSans-Medium.otf" id="2_rt16o"]
+[ext_resource type="Script" path="res://scripts/custom_button.gd" id="3_x58ce"]
+[ext_resource type="Texture2D" uid="uid://c7bctb28yw32s" path="res://images/battles_system/button_main.png" id="4_txm46"]
+[ext_resource type="Script" path="res://scripts/nine_patch_resizer.gd" id="5_8rkdx"]
+
+[node name="BattleButton" type="Button"]
+texture_filter = 1
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("1_h3xqy")
+theme_override_fonts/font = ExtResource("2_rt16o")
+theme_override_font_sizes/font_size = 24
+text = "Placeholder
+"
+text_direction = 1
+script = ExtResource("3_x58ce")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("4_txm46")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("5_8rkdx")

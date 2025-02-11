@@ -8,7 +8,7 @@ uniform bool flash_enabled = true;
 void fragment() {
     // Sample the texture to get the normal color
     vec4 normal_color = texture(TEXTURE, UV);
-    
+
     if (flash_enabled) {
         // Calculate the oscillation factor using sine function and time
         float oscillation = abs(sin(TIME * oscillation_speed));

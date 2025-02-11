@@ -1,6 +1,66 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cf1r6ahcjjocb"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://cf1r6ahcjjocb"]
 
-[ext_resource type="FontFile" uid="uid://d1q6ful24b3mu" path="res://fonts/QuerinaHandwritten.otf" id="1_xxm4r"]
+[ext_resource type="FontFile" uid="uid://e43ihqjm1hk4" path="res://fonts/Stardom-Regular.otf" id="1_i5apk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ldoc"]
+bg_color = Color(0.72549, 0.270588, 0.113725, 0)
+border_color = Color(1, 1, 1, 1)
+corner_detail = 20
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qb2gk"]
+bg_color = Color(0.72549, 0.270588, 0.113725, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_detail = 20
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6dv3"]
+bg_color = Color(0.72549, 0.270588, 0.113725, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_detail = 20
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_errlf"]
+bg_color = Color(0.72549, 0.270588, 0.113725, 0)
+border_color = Color(1, 1, 1, 1)
+corner_detail = 20
+anti_aliasing = false
+anti_aliasing_size = 0.01
 
 [resource]
-default_font = ExtResource("1_xxm4r")
+default_font = ExtResource("1_i5apk")
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0, 0, 0, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 0)
+Button/colors/font_pressed_color = Color(0, 0, 0, 1)
+Button/colors/icon_disabled_color = Color(0, 0, 0, 1)
+Button/colors/icon_focus_color = Color(0, 0, 0, 1)
+Button/colors/icon_hover_color = Color(0, 0, 0, 1)
+Button/colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
+Button/colors/icon_normal_color = Color(0, 0, 0, 1)
+Button/colors/icon_pressed_color = Color(0, 0, 0, 1)
+Button/constants/align_to_largest_stylebox = 0
+Button/constants/h_separation = 0
+Button/constants/icon_max_width = 0
+Button/constants/outline_size = 5
+Button/font_sizes/font_size = 16
+Button/fonts/font = ExtResource("1_i5apk")
+Button/styles/disabled = SubResource("StyleBoxFlat_8ldoc")
+Button/styles/focus = SubResource("StyleBoxFlat_qb2gk")
+Button/styles/hover = SubResource("StyleBoxFlat_r6dv3")
+Button/styles/normal = SubResource("StyleBoxFlat_errlf")
+Button/styles/pressed = null

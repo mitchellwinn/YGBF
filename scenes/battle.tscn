@@ -1,15 +1,34 @@
-[gd_scene load_steps=12 format=3 uid="uid://cwe6q66isus1c"]
+[gd_scene load_steps=21 format=3 uid="uid://cwe6q66isus1c"]
 
-[ext_resource type="Texture2D" uid="uid://b0jwpjq381q5v" path="res://images/style_guide/battle_ui_style_guide.png" id="1_v6csx"]
+[ext_resource type="Texture2D" uid="uid://de3b8okmyqlv3" path="res://images/battles_system/tv.png" id="1_f7vsy"]
 [ext_resource type="Texture2D" uid="uid://b4gecnjuu0nna" path="res://images/style_guide/enemy_resolution_guide.png" id="2_musbg"]
-[ext_resource type="Texture2D" uid="uid://boojsykjd02qx" path="res://images/style_guide/party_member_resolution_guide.png" id="3_3kxi6"]
 [ext_resource type="Material" uid="uid://ce7dt4bf5oulv" path="res://materials/custom_texture_rect_material.tres" id="3_42206"]
-[ext_resource type="Texture2D" uid="uid://bvk6ufm8ic5ta" path="res://images/style_guide/menu_resolution_guide.png" id="4_6gj1k"]
-[ext_resource type="Texture2D" uid="uid://637be5vc77ed" path="res://images/style_guide/dialogue_resolution_guide.png" id="4_tflk0"]
 [ext_resource type="Script" path="res://scripts/custom_texture_button.gd" id="5_btqqj"]
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
 [ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="6_ath8s"]
-[ext_resource type="FontFile" uid="uid://r0exggliqh2q" path="res://fonts/vhs-gothic.ttf" id="8_rb347"]
+[ext_resource type="Texture2D" uid="uid://biv1ktiokn2dr" path="res://images/battles_system/player_window.png" id="8_75ms7"]
+[ext_resource type="FontFile" uid="uid://cf8buj8w4ewd5" path="res://fonts/GeneralSans-Medium.otf" id="8_ni1p0"]
+[ext_resource type="Texture2D" uid="uid://cto3afusr6ju5" path="res://images/battles_system/player_placeholder.png" id="8_v261t"]
+[ext_resource type="Texture2D" uid="uid://c7bctb28yw32s" path="res://images/battles_system/button_main.png" id="9_qx3y5"]
+[ext_resource type="PackedScene" uid="uid://bill73lwgqhyj" path="res://prefabs/battle_bg.tscn" id="10_q4ian"]
+[ext_resource type="Texture2D" uid="uid://cy0u3utb81ray" path="res://images/battles_system/player_window_bg.png" id="10_smeqf"]
+[ext_resource type="Script" path="res://scripts/nine_patch_resizer.gd" id="12_3507t"]
+[ext_resource type="Script" path="res://scripts/focusable.gd" id="13_2q8b1"]
+[ext_resource type="Texture2D" uid="uid://b8xjflw3fip8y" path="res://images/battles_system/dialogue.png" id="13_ln60n"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_kbckk"]
+viewport_path = NodePath("BgViewport")
+
+[sub_resource type="Gradient" id="Gradient_4cngp"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bixc5"]
+gradient = SubResource("Gradient_4cngp")
+width = 1
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_o7jra"]
+gradient = SubResource("Gradient_4cngp")
+width = 1
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2dt4m"]
 viewport_path = NodePath("MinigameViewport")
@@ -18,29 +37,50 @@ viewport_path = NodePath("MinigameViewport")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="HBoxContainerGuide" type="HBoxContainer" parent="CanvasLayer"]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = -270.0
-offset_right = 480.0
-offset_bottom = 270.0
+[node name="HBoxContainerTv" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(480, 270)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="Tv" type="NinePatchRect" parent="CanvasLayer/HBoxContainerTv"]
+z_index = -1
+z_as_relative = false
+texture_filter = 5
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+texture = ExtResource("1_f7vsy")
+region_rect = Rect2(0, 0, 960, 540)
+patch_margin_left = 217
+patch_margin_top = 148
+patch_margin_right = 310
+patch_margin_bottom = 284
+
+[node name="HBoxContainerBg" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(480, 270)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Guide" type="TextureRect" parent="CanvasLayer/HBoxContainerGuide"]
-texture_filter = 1
+[node name="Bg" type="TextureRect" parent="CanvasLayer/HBoxContainerBg"]
+z_index = -10
+z_as_relative = false
+texture_filter = 5
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
-texture = ExtResource("1_v6csx")
+texture = SubResource("ViewportTexture_kbckk")
 
 [node name="HBoxContainerEnemy1" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -48,8 +88,10 @@ anchor_left = 0.25
 anchor_top = 0.5
 anchor_right = 0.25
 anchor_bottom = 0.5
-offset_top = -134.0
-offset_bottom = 74.0
+offset_left = -104.0
+offset_top = -162.0
+offset_right = 104.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 104)
@@ -57,6 +99,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy1"]
+z_index = -7
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -66,7 +109,6 @@ focus_mode = 0
 texture_normal = ExtResource("2_musbg")
 script = ExtResource("5_btqqj")
 type = "decide_target"
-index = null
 
 [node name="HBoxContainerEnemy2" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 8
@@ -74,8 +116,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -134.0
-offset_bottom = 74.0
+offset_left = -104.0
+offset_top = -162.0
+offset_right = 104.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 104)
@@ -83,6 +127,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy2"]
+z_index = -7
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -100,8 +145,10 @@ anchor_left = 0.75
 anchor_top = 0.5
 anchor_right = 0.75
 anchor_bottom = 0.5
-offset_top = -134.0
-offset_bottom = 74.0
+offset_left = -104.0
+offset_top = -162.0
+offset_right = 104.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 104)
@@ -109,6 +156,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy3"]
+z_index = -7
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_direction = 1
@@ -120,14 +168,245 @@ script = ExtResource("5_btqqj")
 type = "decide_target"
 index = 2
 
+[node name="HBoxContainerParty1" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = 1.0
+anchor_right = 0.125
+anchor_bottom = 1.0
+offset_left = -63.5
+offset_top = -139.0
+offset_right = 63.5
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(80, 80)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty1"]
+visible = false
+z_index = 5
+z_as_relative = false
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+script = ExtResource("5_btqqj")
+type = "decide_attacker"
+
+[node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
+z_index = 10
+z_as_relative = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("8_75ms7")
+
+[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
+z_index = 5
+z_as_relative = false
+material = ExtResource("3_42206")
+layout_mode = 0
+offset_right = 127.0
+offset_bottom = 127.0
+texture = ExtResource("8_v261t")
+
+[node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
+z_index = 1
+z_as_relative = false
+layout_mode = 0
+offset_left = 2.5
+offset_top = 3.0
+offset_right = 123.5
+offset_bottom = 124.0
+texture = ExtResource("10_smeqf")
+
+[node name="HBoxContainerParty2" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
+anchors_preset = -1
+anchor_left = 0.375
+anchor_top = 1.0
+anchor_right = 0.375
+anchor_bottom = 1.0
+offset_left = -63.5
+offset_top = -139.0
+offset_right = 63.5
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(80, 80)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty2"]
+visible = false
+z_index = 5
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+script = ExtResource("5_btqqj")
+type = "decide_attacker"
+index = 1
+
+[node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
+z_index = 10
+z_as_relative = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("8_75ms7")
+
+[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
+z_index = 5
+z_as_relative = false
+material = ExtResource("3_42206")
+layout_mode = 0
+offset_right = 127.0
+offset_bottom = 127.0
+texture = ExtResource("8_v261t")
+
+[node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
+z_index = 1
+z_as_relative = false
+layout_mode = 0
+offset_left = 2.5
+offset_top = 3.0
+offset_right = 123.5
+offset_bottom = 124.0
+texture = ExtResource("10_smeqf")
+
+[node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
+anchors_preset = -1
+anchor_left = 0.625
+anchor_top = 1.0
+anchor_right = 0.625
+anchor_bottom = 1.0
+offset_left = -63.5
+offset_top = -139.0
+offset_right = 63.5
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(80, 80)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty3"]
+visible = false
+z_index = 5
+z_as_relative = false
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+script = ExtResource("5_btqqj")
+type = "decide_attacker"
+index = 2
+
+[node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
+z_index = 10
+z_as_relative = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("8_75ms7")
+
+[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
+z_index = 5
+z_as_relative = false
+material = ExtResource("3_42206")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("8_v261t")
+
+[node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
+z_index = 1
+z_as_relative = false
+layout_mode = 0
+offset_left = 2.5
+offset_top = 3.0
+offset_right = 123.5
+offset_bottom = 124.0
+texture = ExtResource("10_smeqf")
+
+[node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
+clip_contents = true
+anchors_preset = -1
+anchor_left = 0.875
+anchor_top = 1.0
+anchor_right = 0.875
+anchor_bottom = 1.0
+offset_left = -63.5
+offset_top = -139.0
+offset_right = 63.5
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(80, 80)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty4"]
+visible = false
+z_index = 5
+z_as_relative = false
+texture_filter = 1
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+script = ExtResource("5_btqqj")
+type = "decide_attacker"
+index = 3
+
+[node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
+z_index = 10
+z_as_relative = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("8_75ms7")
+
+[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
+z_index = 5
+z_as_relative = false
+material = ExtResource("3_42206")
+layout_mode = 0
+offset_right = 127.0
+offset_bottom = 127.0
+texture = ExtResource("8_v261t")
+
+[node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
+z_index = 1
+z_as_relative = false
+layout_mode = 0
+offset_left = 2.5
+offset_top = 3.0
+offset_right = 123.5
+offset_bottom = 124.0
+texture = ExtResource("10_smeqf")
+
 [node name="HBoxContainerMenu" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.247
 anchor_top = 1.0
-anchor_right = 0.952
+anchor_right = 0.959
 anchor_bottom = 1.0
-offset_top = -172.0
-offset_right = 6.53998
+offset_left = -14.12
+offset_top = -139.0
+offset_right = -13.64
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -135,268 +414,489 @@ pivot_offset = Vector2(352, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Menu" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu"]
-texture_filter = 1
-clip_contents = true
-layout_direction = 1
-layout_mode = 2
-size_flags_horizontal = 3
-texture = ExtResource("4_6gj1k")
-region_rect = Rect2(0, -0.334084, 704, 160.334)
-patch_margin_left = 50
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
-axis_stretch_vertical = 1
-
-[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
+[node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
 visible = false
 clip_contents = true
 layout_direction = 2
-layout_mode = 0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = 671.0
-offset_bottom = 147.0
-pivot_offset = Vector2(341, 0)
+layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 2
-
-[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
-text = "Act
-"
-text_direction = 1
-script = ExtResource("6_76cnh")
-
-[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
-text = "Main Attack"
-text_direction = 1
-script = ExtResource("6_76cnh")
-index = 1
-
-[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
-text = "Skills"
-text_direction = 1
-script = ExtResource("6_76cnh")
-index = 2
-
-[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
-texture_filter = 1
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 7
-theme = ExtResource("6_ath8s")
-theme_override_font_sizes/font_size = 56
-text = "Items"
-text_direction = 1
-script = ExtResource("6_76cnh")
-index = 3
-
-[node name="GridContainerAct" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Menu"]
-clip_contents = true
-layout_direction = 2
-layout_mode = 2
-offset_left = 15.0
-offset_top = 15.0
-offset_right = 671.0
-offset_bottom = 47.0
-pivot_offset = Vector2(341, 0)
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 3
 
-[node name="Run" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
+[node name="Run" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_rb347")
+theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
 text = "Run
 "
 text_direction = 1
 script = ExtResource("6_76cnh")
 
-[node name="Negotiate" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct/Run"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Study" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_rb347")
+theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
-text = "Negotiate"
+text = "Study"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
+functionality = "study"
 
-[node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/Menu/GridContainerAct" groups=["menu_act_buttons"]]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct/Study"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Pacify" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct" groups=["menu_act_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
 size_flags_vertical = 7
 theme = ExtResource("6_ath8s")
-theme_override_constants/outline_size = -620
-theme_override_fonts/font = ExtResource("8_rb347")
+theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
 text = "Pacify"
 text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
+functionality = "pacify"
 
-[node name="HBoxContainerParty1" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.125
-anchor_top = 1.0
-anchor_right = 0.125
-anchor_bottom = 1.0
-offset_top = -172.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(80, 80)
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty1"]
-visible = false
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerAct/Pacify"]
+z_index = -1
 texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="GridContainerSkills" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
+clip_contents = true
+layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("3_3kxi6")
-script = ExtResource("5_btqqj")
-type = "decide_attacker"
-index = null
-
-[node name="HBoxContainerParty2" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.375
-anchor_top = 1.0
-anchor_right = 0.375
-anchor_bottom = 1.0
-offset_top = -172.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(80, 80)
-size_flags_horizontal = 4
 size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
 
-[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty2"]
-visible = false
-texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+[node name="MainAttackDiva" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
+layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("3_3kxi6")
-script = ExtResource("5_btqqj")
-type = "decide_attacker"
+size_flags_stretch_ratio = 0.0
+
+[node name="HpBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["flashable", "menu_diva_buttons"]]
+texture_filter = 1
+material = ExtResource("3_42206")
+layout_mode = 2
+offset_top = 17.68
+offset_right = 684.0
+offset_bottom = 47.68
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_mode = 2
+texture = ExtResource("9_qx3y5")
+region_rect = Rect2(0, 0, 117, 117)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 5
+script = ExtResource("13_2q8b1")
+
+[node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar"]
+layout_mode = 2
+offset_left = 4.0
+offset_top = 3.65
+offset_right = 679.525
+offset_bottom = 26.61
+columns = 10
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="EgoBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["flashable", "menu_diva_buttons"]]
+texture_filter = 1
+material = ExtResource("3_42206")
+layout_mode = 2
+offset_top = 76.0
+offset_right = 684.0
+offset_bottom = 106.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_mode = 2
+texture = ExtResource("9_qx3y5")
+region_rect = Rect2(0, 0, 117, 117)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 5
+script = ExtResource("13_2q8b1")
 index = 1
 
-[node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.625
-anchor_top = 1.0
-anchor_right = 0.625
-anchor_bottom = 1.0
-offset_top = -172.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(80, 80)
-size_flags_horizontal = 4
-size_flags_vertical = 4
+[node name="GridContainerEgo" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar"]
+layout_mode = 2
+offset_left = 4.0
+offset_top = 3.65
+offset_right = 679.525
+offset_bottom = 26.61
+columns = 10
 
-[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty3"]
-visible = false
-texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("3_3kxi6")
-script = ExtResource("5_btqqj")
-type = "decide_attacker"
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_o7jra")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="Finish" type="Button" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["menu_diva_buttons"]]
+texture_filter = 1
+layout_mode = 2
+offset_top = -32.0
+offset_right = 136.0
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "Finish"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 2
+functionality = "finish"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/Finish"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Patch" type="Button" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["menu_diva_buttons"]]
+texture_filter = 1
+layout_mode = 2
+offset_left = 141.0
+offset_top = -32.0
+offset_right = 277.0
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "Patch"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 3
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/Patch"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Count" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 310.0
+offset_top = -31.0
+offset_right = 458.0
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "X/Y Available"
+
+[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
+clip_contents = true
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
+columns = 2
+
+[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_font_sizes/font_size = 44
+text = "Main Attack"
+text_direction = 1
+script = ExtResource("6_76cnh")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/MainAttack"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_font_sizes/font_size = 44
+text = "Skills"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 1
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Skills"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_font_sizes/font_size = 44
+text = "Act
+"
+text_direction = 1
+script = ExtResource("6_76cnh")
 index = 2
 
-[node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.875
-anchor_top = 1.0
-anchor_right = 0.875
-anchor_bottom = 1.0
-offset_top = -172.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(80, 80)
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty4"]
-visible = false
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Act"]
+z_index = -1
 texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+texture_filter = 1
 layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("3_3kxi6")
-script = ExtResource("5_btqqj")
-type = "decide_attacker"
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_font_sizes/font_size = 44
+text = "Items"
+text_direction = 1
+script = ExtResource("6_76cnh")
 index = 3
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Items"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
 
 [node name="HBoxContainerDialogue" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -335.0
-offset_top = 33.0
+offset_top = 49.0
 offset_right = 337.0
-offset_bottom = 113.0
+offset_bottom = 129.0
 grow_horizontal = 2
 pivot_offset = Vector2(352, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 
 [node name="DialogueGuide" type="NinePatchRect" parent="CanvasLayer/HBoxContainerDialogue"]
 texture_filter = 1
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 3
-texture = ExtResource("4_tflk0")
+texture = ExtResource("13_ln60n")
 region_rect = Rect2(-0.176821, -0.334084, 672.242, 80.6433)
 patch_margin_left = 75
 patch_margin_top = 10
@@ -404,14 +904,26 @@ patch_margin_right = 10
 patch_margin_bottom = 10
 axis_stretch_vertical = 1
 
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainerDialogue/DialogueGuide"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 3.0
+offset_right = 638.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 26
+text = "Enemies draw near! How are we gonna deal with this? Do something! Fast! AAAAAAAAAaaaaaaaa!"
+autowrap_mode = 3
+clip_text = true
+
 [node name="HBoxContainerMinigame" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 32.0
-offset_right = -24.0
-offset_bottom = -196.0
+offset_left = 14.0
+offset_top = 32.07
+offset_right = -12.0
+offset_bottom = -192.65
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
@@ -420,6 +932,7 @@ mouse_filter = 2
 
 [node name="Minigame" type="TextureRect" parent="CanvasLayer/HBoxContainerMinigame"]
 visible = false
+z_index = -5
 texture_filter = 1
 layout_direction = 1
 layout_mode = 2
@@ -430,23 +943,27 @@ texture = SubResource("ViewportTexture_2dt4m")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 32.0
-offset_right = -24.0
-offset_bottom = -196.0
+offset_left = 14.0
+offset_top = 32.07
+offset_right = -12.0
+offset_bottom = -192.65
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="Minigame" type="TextureRect" parent="CanvasLayer/MinigameSizeGuide"]
-visible = false
-texture_filter = 1
-layout_direction = 1
-layout_mode = 2
-size_flags_horizontal = 3
-texture = SubResource("ViewportTexture_2dt4m")
-
 [node name="MinigameViewport" type="SubViewport" parent="."]
 size = Vector2i(912, 312)
+
+[node name="BgViewport" type="SubViewport" parent="."]
+size = Vector2i(2880, 1620)
+
+[node name="BattleBg" parent="BgViewport" instance=ExtResource("10_q4ian")]
+position = Vector2(729.544, 168.719)
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="DialogueSfxPlayer" type="AudioStreamPlayer2D" parent="."]
+
+[node name="SfxPlayer" type="AudioStreamPlayer2D" parent="."]

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bill73lwgqhyj"]
+
+[ext_resource type="Material" uid="uid://5rfu1ytlqs0g" path="res://materials/background_sprite.tres" id="1_t2l7r"]
+[ext_resource type="Texture2D" uid="uid://uv872kufyvvo" path="res://images/battle_backgrounds/basis.png" id="2_arecu"]
+
+[node name="BattleBg" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 2
+material = ExtResource("1_t2l7r")
+texture = ExtResource("2_arecu")
+region_enabled = true
+region_rect = Rect2(0, 0, 12800, 12800)

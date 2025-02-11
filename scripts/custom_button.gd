@@ -3,7 +3,9 @@ extends Button
 class_name CustomButton
 
 @export var index: int
-var can_hover: bool = true
+@export var functionality: String #optional field used for some buttons to disable them at times
+
+#var can_hover: bool = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,3 +23,11 @@ func _pressed() -> void:
 func _on_mouse_entered():
 	grab_focus()
     # Add your custom hover logic here
+
+func make_unselectable():
+	disabled = true
+	focus_mode = FOCUS_NONE
+
+func make_selectable():
+	disabled = false
+	focus_mode = FOCUS_ALL
