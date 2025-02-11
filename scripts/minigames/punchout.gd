@@ -179,22 +179,17 @@ func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> voi
 			await enemy_animator.animation_finished
 		ENEMY_STATE.GUARD:
 			return
-		ENEMY_STATE.WINDUP_LEFT:
-			play_enemy_animation(ENEMY_STATE.ATTACK_LEFT)
+		ENEMY_STATE.WINDUP_LEFT, ENEMY_STATE.WINDUP_RIGHT:
+			var mapping: Dictionary = {
+				ENEMY_STATE.WINDUP_LEFT: [ENEMY_STATE.ATTACK_LEFT, PLAYER_STATE.DODGE_LEFT],
+				ENEMY_STATE.WINDUP_RIGHT: [ENEMY_STATE.ATTACK_RIGHT, PLAYER_STATE.DODGE_RIGHT]
+			}
+			var direction = mapping.get(enemy_state)
+			play_enemy_animation(direction[0])
 			# Damage player and move to next round if they didn't dodge correctly
-			if player_state != PLAYER_STATE.DODGE_LEFT:
-				play_player_animation(PLAYER_STATE.HURT)
-				handle_success_counter(false)
-				print("Player Health -1")
-				player_heath -= 1
-				await enemy_animator.animation_finished
-				return
-			handle_success_counter(true)
-			_determine_counter_status()
-			await enemy_animator.animation_finished
-		ENEMY_STATE.WINDUP_RIGHT:
-			play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
-			if player_state != PLAYER_STATE.DODGE_RIGHT:
+			if player_state != direction[1]:
+				# Failed, reset counter availability
+				counter_available = false
 				play_player_animation(PLAYER_STATE.HURT)
 				handle_success_counter(false)
 				print("Player Health -1")
