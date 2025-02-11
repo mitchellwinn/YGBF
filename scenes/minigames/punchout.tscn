@@ -50,10 +50,10 @@ tracks/2/path = NodePath("RightFist:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.25, 0.500008),
+"transitions": PackedFloat32Array(0.5, 0.5, 1),
 "update": 0,
-"values": [Vector2(-60, 60)]
+"values": [Vector2(-60, 60), Vector2(-62.1314, 50.286), Vector2(-60, 60)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -115,10 +115,23 @@ tracks/7/keys = {
 "update": 0,
 "values": [0.176278, -0.131525, 0.0]
 }
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("RightFist:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(0.5, 0.5, 1),
+"update": 0,
+"values": [0.0, -0.155527, 0.0]
+}
 
 [sub_resource type="Animation" id="Animation_6ris3"]
 resource_name = "ATTACK_RIGHT"
-step = 0.333333
+length = 0.500008
+step = 0.0833333
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -150,10 +163,10 @@ tracks/2/path = NodePath("LeftFist:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(65, 60)]
+"values": [Vector2(65, 60), Vector2(68.929, 51.7166), Vector2(65, 60)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -214,6 +227,18 @@ tracks/7/keys = {
 "transitions": PackedFloat32Array(0.5, 0.5, 1),
 "update": 0,
 "values": [-0.211801, 0.125299, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("LeftFist:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
+"update": 0,
+"values": [0.0, 0.158703, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_opcxg"]
@@ -299,10 +324,10 @@ tracks/6/path = NodePath(".:position")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.333333),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.0833333, 0.333333),
+"transitions": PackedFloat32Array(0.5, 1, 1),
 "update": 0,
-"values": [Vector2(0, -75), Vector2(-10, -68)]
+"values": [Vector2(0, -75), Vector2(-4.375, -71.9375), Vector2(-10, -68)]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
@@ -730,6 +755,42 @@ tracks/4/keys = {
 "update": 0,
 "values": [Vector2(0, -75), Vector2(24, -65), Vector2(0, -75), Vector2(-31, -62)]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("LeftFist:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.750001),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.862099, 0.862099), Vector2(1.00756, 1.00756), Vector2(1.10946, 1.10946)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("RightFist:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.750001),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.08178, 1.08178), Vector2(1.04279, 1.04279), Vector2(0.983015, 0.983015)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.333334, 0.666667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, -0.0455419, 0.046411]
+}
 
 [sub_resource type="Animation" id="Animation_viodt"]
 length = 0.001
@@ -880,6 +941,7 @@ tracks/11/keys = {
 
 [sub_resource type="Animation" id="Animation_wm73x"]
 resource_name = "WINDUP_LEFT"
+length = 0.500005
 step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -992,6 +1054,7 @@ tracks/8/keys = {
 
 [sub_resource type="Animation" id="Animation_khj73"]
 resource_name = "WINDUP_RIGHT"
+length = 0.500005
 step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
