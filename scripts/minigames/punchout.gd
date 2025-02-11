@@ -17,7 +17,7 @@ var counter_available: bool
 enum ENEMY_STATE {IDLE, GUARD, ATTACK_LEFT, 
 				  ATTACK_RIGHT, WINDUP_LEFT, 
 				  WINDUP_RIGHT, COUNTERED,
-				  HURT}
+				  HURT, COUNTERED_HURT}
 var enemy_animator: AnimationPlayer
 var enemy_action_queue: Array[ENEMY_STATE]
 const possible_actions: Array[ENEMY_STATE] = [ENEMY_STATE.IDLE, 
@@ -109,6 +109,8 @@ func play_enemy_animation(enemy_state: ENEMY_STATE):
 			enemy_animator.play("WINDUP_RIGHT")
 		ENEMY_STATE.COUNTERED:
 			enemy_animator.play("COUNTERED")	
+		ENEMY_STATE.COUNTERED_HURT:
+			enemy_animator.play("COUNTERED_HURT")	
 		ENEMY_STATE.HURT:
 			enemy_animator.play("HURT")
 
@@ -157,22 +159,27 @@ func handle_success_counter(is_successful: bool):
 func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> void:
 	match enemy_state:
 		ENEMY_STATE.IDLE, ENEMY_STATE.COUNTERED:
-			if player_state == PLAYER_STATE.ATTACK:
-				handle_success_counter(true)
-				play_enemy_animation(ENEMY_STATE.HURT)
-				await enemy_animator.animation_finished
-				print("Enemy Health -1")
-				enemy_health -= 1
+			if player_state != PLAYER_STATE.ATTACK:
 				return
+			handle_success_counter(true)
+			print("Enemy Health -1")
+			enemy_health -= 1
+			if enemy_state == ENEMY_STATE.COUNTERED:
+				play_enemy_animation(ENEMY_STATE.COUNTERED_HURT)
+			else:
+				play_enemy_animation(ENEMY_STATE.HURT)
+			await enemy_animator.animation_finished
 		ENEMY_STATE.GUARD:
 			return
 		ENEMY_STATE.WINDUP_LEFT:
 			play_enemy_animation(ENEMY_STATE.ATTACK_LEFT)
 			# Damage player and move to next round if they didn't dodge correctly
 			if player_state != PLAYER_STATE.DODGE_LEFT:
+				play_player_animation(PLAYER_STATE.HURT)
 				handle_success_counter(false)
 				print("Player Health -1")
 				player_heath -= 1
+				await enemy_animator.animation_finished
 				return
 			handle_success_counter(true)
 			_determine_counter_status()
@@ -180,9 +187,11 @@ func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> voi
 		ENEMY_STATE.WINDUP_RIGHT:
 			play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
 			if player_state != PLAYER_STATE.DODGE_RIGHT:
+				play_player_animation(PLAYER_STATE.HURT)
 				handle_success_counter(false)
 				print("Player Health -1")
 				player_heath -= 1
+				await enemy_animator.animation_finished
 				return
 			handle_success_counter(true)
 			_determine_counter_status()
