@@ -219,7 +219,7 @@ tracks/7/keys = {
 [sub_resource type="Animation" id="Animation_opcxg"]
 resource_name = "COUNTERED"
 length = 0.333351
-step = 0.166667
+step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -315,6 +315,18 @@ tracks/7/keys = {
 "transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
 "values": [0.0, -0.143786]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath(".:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.0833333, 0.25),
+"transitions": PackedFloat32Array(0, 0, 0),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_u1lc1"]
@@ -1207,8 +1219,8 @@ tracks/7/keys = {
 
 [sub_resource type="Animation" id="Animation_gepnx"]
 resource_name = "DODGE_LEFT"
-length = 0.500017
-step = 0.166667
+length = 1.00001
+step = 0.0833333
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -1216,10 +1228,10 @@ tracks/0/path = NodePath("LeftFist:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(-100, 0), Vector2(-169, -14)]
+"values": [Vector2(-100, 0), Vector2(-169, -14), Vector2(-100, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -1228,10 +1240,10 @@ tracks/1/path = NodePath("LeftFist:region_rect")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(0, 1),
 "update": 0,
-"values": [Rect2(240, 161, 100, 145)]
+"values": [Rect2(240, 161, 100, 145), Rect2(9, 153, 105, 154)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -1240,10 +1252,10 @@ tracks/2/path = NodePath("RightFist:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(100, 0), Vector2(-29, -1)]
+"values": [Vector2(100, 0), Vector2(-29, -1), Vector2(100, 0)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -1252,10 +1264,10 @@ tracks/3/path = NodePath("RightFist:region_rect")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(0, 1),
 "update": 0,
-"values": [Rect2(346, 161, 100, 145)]
+"values": [Rect2(346, 161, 100, 145), Rect2(117, 153, 105, 154)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -1264,10 +1276,10 @@ tracks/4/path = NodePath("LeftFist:scale")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(1, 1), Vector2(1.4, 1.4)]
+"values": [Vector2(1, 1), Vector2(1.4, 1.4), Vector2(1, 1)]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
@@ -1276,10 +1288,10 @@ tracks/5/path = NodePath("LeftFist:rotation")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [0.0, 0.0846897]
+"values": [0.0, 0.0846897, 0.0]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
@@ -1288,10 +1300,10 @@ tracks/6/path = NodePath("RightFist:rotation")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [0.0, -0.150565]
+"values": [0.0, -0.150565, 0.0]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
@@ -1300,16 +1312,16 @@ tracks/7/path = NodePath("RightFist:scale")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(1, 1), Vector2(1.4, 1.4)]
+"values": [Vector2(1, 1), Vector2(1.4, 1.4), Vector2(1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_yuuuo"]
 resource_name = "DODGE_RIGHT"
-length = 0.500017
-step = 0.166667
+length = 1.00001
+step = 0.0833333
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -1317,10 +1329,10 @@ tracks/0/path = NodePath("LeftFist:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(-100, 0), Vector2(43, 0)]
+"values": [Vector2(-100, 0), Vector2(43, 0), Vector2(-100, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -1329,10 +1341,10 @@ tracks/1/path = NodePath("LeftFist:region_rect")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(0, 1),
 "update": 0,
-"values": [Rect2(240, 161, 100, 145)]
+"values": [Rect2(240, 161, 100, 145), Rect2(9, 153, 105, 154)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -1341,10 +1353,10 @@ tracks/2/path = NodePath("RightFist:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(100, 0), Vector2(180, -24)]
+"values": [Vector2(100, 0), Vector2(180, -24), Vector2(100, 0)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -1353,10 +1365,10 @@ tracks/3/path = NodePath("RightFist:region_rect")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(0, 1),
 "update": 0,
-"values": [Rect2(346, 161, 100, 145)]
+"values": [Rect2(346, 161, 100, 145), Rect2(117, 153, 105, 154)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -1365,10 +1377,10 @@ tracks/4/path = NodePath("LeftFist:rotation")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [0.0, 0.0939756]
+"values": [0.0, 0.0939756, 0.0]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
@@ -1377,10 +1389,10 @@ tracks/5/path = NodePath("LeftFist:scale")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(1, 1), Vector2(1.4, 1.4)]
+"values": [Vector2(1, 1), Vector2(1.4, 1.4), Vector2(1, 1)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
@@ -1389,10 +1401,10 @@ tracks/6/path = NodePath("RightFist:rotation")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [0.0, -0.177651]
+"values": [0.0, -0.177651, 0.0]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
@@ -1401,10 +1413,10 @@ tracks/7/path = NodePath("RightFist:scale")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [Vector2(1, 1), Vector2(1.4, 1.4)]
+"values": [Vector2(1, 1), Vector2(1.4, 1.4), Vector2(1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_cx38h"]
