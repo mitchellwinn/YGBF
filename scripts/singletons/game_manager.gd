@@ -16,6 +16,8 @@ func _ready():
 		party_member.talent = "diva"
 		party_member.skills.append(FashionInsult.new())
 		party_member.skills.append(BasicAttack.new())
+		party_member.main_attack = MainAttackDiva.new()
+		party_member.add_child(party_member.main_attack)
 		get_tree().root.add_child.call_deferred(party_member)
 		for skill in party_member.skills:
 			party_member.add_child(skill)

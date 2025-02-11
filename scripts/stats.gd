@@ -3,8 +3,10 @@ extends Node
 class_name Stats
 
 var hp_armor: int #holds data for current hp_armor
+var temporary_hp_armor: int
 var inner_hp: int #holds data for current inner_hp
 var ego_armor: int #holds data for current ego_armor/id shield
+var temporary_ego_armor: int
 var pacified: bool #holds data for whether entity has been pacified
 var talent: String
 var inner_ego: int #holds data for current inner ego_armor
@@ -12,6 +14,7 @@ var ego_subdue_threshold: float #[0.0-1.0] represents percentage of max ego_armo
 var hp_subdue_threshold: float #[0.0-1.0] represents percentage of max inner_hp that inner_hp needs to decrease beyond to subdue
 var attacks: Array[int] = [] #holds data for each attack that can be performed per turn and its corresponding speed (thats what the int is for)
 var skills: Array[Skill] = [] #holds data for each skill known
+var main_attack: Skill #the skill that represents the main attack
 var attack_index: int = 0 #holds data for which index of move the player is on, most of the time this is 0 if they haven't attacked this turn, 1 if they have
 var character_name: String
 var loaded_from_save: bool
@@ -84,14 +87,43 @@ func is_subdued() -> bool:
 		subdued = true
 	return subdued
 
-func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
+func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp_armor):
 	#hp dmg
 	hp_dmg = int(hp_dmg*crit)
 	ego_dmg = int(ego_dmg*crit)
+	hp_temp_armor = int(hp_temp_armor*crit)
+	ego_temp_armor = int(ego_temp_armor*crit)
 	var remainder: int = 0
 	var not_yet_subdued: bool = !is_subdued()
 	var ego_not_yet_broken: bool
 	var hp_not_yet_broken: bool
+	if temporary_hp_armor < hp_temp_armor:
+		temporary_hp_armor = hp_temp_armor
+		await DialogueManager.print_dialogue(character_name+" gained "+str(hp_temp_armor)+" points of HP armor!",BattleManager.dialogue_label)
+	if temporary_ego_armor < ego_temp_armor:
+		temporary_ego_armor = ego_temp_armor
+		await DialogueManager.print_dialogue(character_name+" gained "+str(ego_temp_armor)+" points of EGO armor!",BattleManager.dialogue_label)
+
+	if temporary_hp_armor>0:
+		if hp_dmg>temporary_hp_armor:
+			hp_dmg = hp_dmg-temporary_hp_armor
+			temporary_hp_armor = 0
+			await DialogueManager.print_dialogue(character_name+"'s extra HP shield has been broken!",BattleManager.dialogue_label)
+		elif hp_dmg>0:
+			temporary_hp_armor-=hp_dmg
+			hp_dmg = 0
+			await DialogueManager.print_dialogue(character_name+" had their HP completely protected by the shield!",BattleManager.dialogue_label)
+
+	if temporary_ego_armor>0:
+		if ego_dmg>temporary_ego_armor:
+			ego_dmg = ego_dmg-temporary_ego_armor
+			temporary_ego_armor = 0
+			await DialogueManager.print_dialogue(character_name+"'s extra EGO shield has been broken!",BattleManager.dialogue_label)
+		elif ego_dmg>0:
+			temporary_ego_armor-=ego_dmg
+			ego_dmg = 0
+			await DialogueManager.print_dialogue(character_name+" had their EGO completely protected by the shield!",BattleManager.dialogue_label)
+
 	if hp_armor>0:
 		hp_not_yet_broken = true
 		if hp_dmg>hp_armor:
@@ -118,8 +150,12 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
 		animator.play("dmg")
 	if hp_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(hp_dmg)+" damage to their HP!",BattleManager.dialogue_label)
+	elif hp_dmg<0:
+		await DialogueManager.print_dialogue(character_name+" recovered "+str(hp_dmg)+" points of damage from their HP!",BattleManager.dialogue_label)
 	if ego_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(ego_dmg)+" damage to their EGO!",BattleManager.dialogue_label)
+	elif ego_dmg<0:
+		await DialogueManager.print_dialogue(character_name+" recovered "+str(ego_dmg)+" points of damage from their EGO!",BattleManager.dialogue_label)
 	if hp_armor<=0 and hp_not_yet_broken:
 		await DialogueManager.print_dialogue(character_name+"'s HP armor has been broken!",BattleManager.dialogue_label)
 	if ego_armor<=0 and ego_not_yet_broken:

@@ -34,9 +34,12 @@ var skill_button_index: int = 0
 var menu_index: int = 0
 var current_move_functionality: String
 var target_index: int = 0 #holds data for which enemy is / was last targeted for attack
+var ally_index: int = 0
 var attacker: Stats = null
 var target: Stats = null
+var ally: Stats = null
 var prepared_skill: Skill = null
+var target_ally: bool
 
 var battle_option: String
 var phase: String = ""
@@ -150,6 +153,7 @@ func battle_process():
 		battle_option = ""
 		phase = ""
 		current_move_functionality = ""
+		target_ally = false
 		await get_tree().process_frame
 		if all_party_members_defeated():
 			end_battle(0) #we lost the battle
@@ -164,6 +168,7 @@ func battle_process():
 			match categorical_button_index: #this determines what happens based on the menu we picked
 				0: #Main Attack
 					battle_option = "attack"
+					prepared_skill = attacker.main_attack
 					if await decide_menu_main() == -1:
 						continue
 				1: #Skills
@@ -185,8 +190,13 @@ func battle_process():
 							continue
 				3: #Item
 					continue
-			if await decide_target() == -1:
-				continue
+			if target_ally:
+				if await decide_ally() == -1:
+					continue
+			else:
+				if await decide_target() == -1:
+					continue
+			stop_all_flashes()
 			await determine_enemy_attack()
 			await we_attack_enemy()
 		else:
@@ -232,6 +242,7 @@ func decide_menu_main():
 			"diva":
 				attacker.main_attack_diva_ego = 0
 				attacker.main_attack_diva_hp = 0
+				target_ally = true
 				for i in range(10):
 					main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
 					main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
@@ -246,8 +257,14 @@ func decide_menu_main():
 			stop_all_flashes()
 			if get_tree().root.get_viewport().gui_get_focus_owner().is_in_group("flashable"):
 				get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
-			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+				GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if (Input.is_action_just_pressed("confirm") || GameManager.click_button == phase) and get_tree().root.get_viewport().gui_get_focus_owner().functionality == "finish":
+			match attacker.talent:
+				"diva":
+					if attacker.main_attack_resource_count<=0:
+						await get_tree().process_frame
+						print("continue")
+						continue
 			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
@@ -309,7 +326,7 @@ func decide_menu_skill():
 	stop_all_flashes()
 	await populate_skill_buttons()
 	for button in get_tree().get_nodes_in_group("menu_skill_buttons"):
-		if attacker.skills[button.index].hp_cost>attacker.inner_hp or attacker.skills[button.index].ego_cost>attacker.inner_ego:
+		if attacker.skills[button.index].hp_cost()>attacker.inner_hp or attacker.skills[button.index].ego_cost()>attacker.inner_ego:
 			button.make_unselectable()
 			print("unselectable")
 		else:
@@ -352,6 +369,27 @@ func decide_target():
 		await get_tree().process_frame
 	await get_tree().process_frame
 	return
+
+func decide_ally():
+	phase = "decide_ally"
+	stop_all_flashes()
+	await iterate_ally_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
+	while(true):
+		if Input.is_action_just_pressed("back"):
+			return -1
+		if Input.is_action_just_pressed("move_right"):
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
+			await iterate_ally_index(1)
+		if Input.is_action_just_pressed("move_left"):
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+			await iterate_ally_index(-1)
+		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+			ally = party[ally_index] #sets the attacker equal to the instance of that troop member
+			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
+		await get_tree().process_frame
+	await get_tree().process_frame
+	return
 	
 func determine_enemy_attack():
 	phase = "determine_enemy_attack"
@@ -377,14 +415,15 @@ func determine_enemy_attack():
 func diva_main_actions(index: int):
 	var value = 0
 	if Input.is_action_just_pressed("move_right"):
+		GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if attacker.main_attack_resource_count>=attacker.main_attack_resource_limit: #no more resources to allocate
 			return
 		value = 1
 	if Input.is_action_just_pressed("move_left"):
+		GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if attacker.main_attack_resource_count<=0: #bar is already zero
 			return
 		value = -1
-	GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 	match index:
 		0: #we are hovering the HP bar
 			if attacker.main_attack_diva_hp<=0 and value == -1:
@@ -451,6 +490,17 @@ func iterate_target_index(value: int):
 	select_flash_enemy()
 	return
 
+func iterate_ally_index(value: int):
+	stop_all_flashes()
+	ally_index += value #pick the member to the left of currently hovered party member
+	ally_index = posmod(ally_index,party.size()) #makes sure the ally_index stays within the size of the party
+	while party[ally_index].is_defeated(): #can't pick a defeated ally
+		ally_index = keep_iterating(ally_index, value) #target next ally over
+		ally_index = posmod(ally_index,party.size()) #makes sure the ally_index stays within the size of the party
+		await get_tree().process_frame
+	select_flash_ally()
+	return
+
 func keep_iterating(index: int, value: int):
 	if value == 0:
 		index += 1
@@ -511,8 +561,11 @@ func we_attack_enemy():
 		await DialogueManager.print_dialogue(attacker.character_name+" can no longer go through with the plan!",dialogue_label)
 		return
 	match battle_option:
-		"skill":
-			await prepared_skill.use(attacker,target)
+		"attack","skill":
+			if target_ally:
+				await prepared_skill.use(attacker,ally)
+			else:
+				await prepared_skill.use(attacker,target)
 		"pacify":
 			await play_minigame()
 			pass
@@ -520,6 +573,8 @@ func we_attack_enemy():
 			pass
 	attacker.attack_index += 1 #we now have one less attack this turn
 	return
+
+
 
 func play_minigame():
 	minigame_status = -1 #this is redundant as minigames will set this as well for testing in an isolated space
@@ -576,6 +631,12 @@ func select_flash_attacker():
 	print ("Flash select attacker_index"+str(attacker_index))
 	party_sprites[attacker_index].get_node("Character").material.set_shader_parameter("flash_enabled", true)
 	party_sprites[attacker_index].get_node("Character").material.set_shader_parameter("oscillation_speed", 7)
+	return
+
+func select_flash_ally():
+	print ("Flash select attacker_index"+str(ally_index))
+	party_sprites[ally_index].get_node("Character").material.set_shader_parameter("flash_enabled", true)
+	party_sprites[ally_index].get_node("Character").material.set_shader_parameter("oscillation_speed", 7)
 	return
 
 func select_flash_enemy():

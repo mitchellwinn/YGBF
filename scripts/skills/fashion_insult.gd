@@ -4,8 +4,6 @@ class_name FashionInsult
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    ego_cost = 10
-    ego_damage = 30
     skill_name = "Fashion Insult"
     crit_chance = 10
     accuracy = 80
@@ -21,3 +19,9 @@ func  crit_text() -> String:
 
 func  miss_text() -> String:
     return "But "+target_name+" was preoccupied with something else!"
+
+func ego_cost() -> int:
+    return 10
+
+func ego_damage() -> int:
+    return 30

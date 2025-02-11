@@ -4,8 +4,6 @@ class_name BasicAttack
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    ego_cost = 10
-    hp_damage = 20
     skill_name = "Cowardly Smack"
     crit_chance = 10
     accuracy = 80
@@ -21,3 +19,9 @@ func  crit_text() -> String:
 
 func  miss_text() -> String:
     return "But "+target_name+" simply stepped out of the way!"
+
+func ego_cost() -> int:
+    return 10
+
+func hp_damage() -> int:
+    return 10
