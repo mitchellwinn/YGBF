@@ -7,7 +7,9 @@ var timer: Timer
 var thread: Thread
 # Player
 var player_heath: int
-enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, NONE}
+var success_counter: int
+var player_animator: AnimationPlayer
+enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, IDLE}
 
 # Enemy
 var enemy_health: int
@@ -44,10 +46,13 @@ func initialize():
 
 	thread = Thread.new()
 
+	player_animator = $Player.get_node("AnimationPlayer")
 	enemy_animator = $Enemy.get_node("AnimationPlayer")
+
 	enemy_action_queue = []
 
 	player_heath = 3
+	success_counter = 0
 	enemy_health = 3
 	counter_available = false
 
@@ -73,7 +78,9 @@ func minigame_process():
 		await timer.timeout
 		player_state = thread.wait_to_finish()
 
-		process_states(enemy_state, player_state)
+		play_player_animation(player_state)
+
+		await process_states(enemy_state, player_state)
 
 		if enemy_health <= 0:
 			print("Minigame Success")
@@ -85,6 +92,7 @@ func minigame_process():
 		await get_tree().process_frame
 
 func play_enemy_animation(enemy_state: ENEMY_STATE):
+	enemy_animator.play("RESET")
 	match enemy_state:
 		ENEMY_STATE.ATTACK_LEFT:
 			enemy_animator.play("ATTACK_LEFT")
@@ -99,9 +107,20 @@ func play_enemy_animation(enemy_state: ENEMY_STATE):
 		ENEMY_STATE.WINDUP_RIGHT:
 			enemy_animator.play("WINDUP_RIGHT")
 		ENEMY_STATE.COUNTERED:
-			enemy_animator.play("IDLE")	
+			enemy_animator.play("COUNTERED")	
 		ENEMY_STATE.HURT:
 			enemy_animator.play("HURT")
+
+func play_player_animation(player_state: PLAYER_STATE):
+	match player_state:
+		PLAYER_STATE.ATTACK:
+			player_animator.play("ATTACK")
+		PLAYER_STATE.DODGE_LEFT:
+			player_animator.play("DODGE_LEFT")
+		PLAYER_STATE.DODGE_RIGHT:
+			player_animator.play("DODGE_RIGHT")
+		PLAYER_STATE.IDLE:
+			player_animator.play("IDLE")
 
 func player_action() -> PLAYER_STATE:
 	while timer.time_left > 0:
@@ -122,13 +141,22 @@ func player_action() -> PLAYER_STATE:
 			timer.emit_signal.call_deferred("timeout")
 			return PLAYER_STATE.ATTACK
 
-	return PLAYER_STATE.NONE
+	return PLAYER_STATE.IDLE
 
+func handle_success_counter(is_successful: bool):
+	# TODO sfx for increasing counter and losing the streak
+	if is_successful:
+		success_counter += 1
+		return
+	success_counter = 0
+	
 func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> void:
 	match enemy_state:
 		ENEMY_STATE.IDLE, ENEMY_STATE.COUNTERED:
 			if player_state == PLAYER_STATE.ATTACK:
+				handle_success_counter(true)
 				play_enemy_animation(ENEMY_STATE.HURT)
+				await enemy_animator.animation_finished
 				print("Enemy Health -1")
 				enemy_health -= 1
 				return
@@ -136,18 +164,24 @@ func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> voi
 			return
 		ENEMY_STATE.WINDUP_LEFT:
 			# Damage player and move to next round if they didn't dodge correctly
-			if player_state != PLAYER_STATE.DODGE_RIGHT:
+			if player_state != PLAYER_STATE.DODGE_LEFT:
+				handle_success_counter(false)
 				play_enemy_animation(ENEMY_STATE.ATTACK_LEFT)
+				await enemy_animator.animation_finished
 				print("Player Health -1")
 				player_heath -= 1
 				return
+			handle_success_counter(true)
 			_determine_counter_status()
 		ENEMY_STATE.WINDUP_RIGHT:
-			if player_state != PLAYER_STATE.DODGE_LEFT:
+			if player_state != PLAYER_STATE.DODGE_RIGHT:
+				handle_success_counter(false)
 				play_enemy_animation(ENEMY_STATE.ATTACK_RIGHT)
+				await enemy_animator.animation_finished
 				print("Player Health -1")
 				player_heath -= 1
 				return
+			handle_success_counter(true)
 			_determine_counter_status()
 
 func _determine_counter_status():
