@@ -5,6 +5,8 @@ class_name Punchout
 const WAIT_TIME: float = 2.0
 var timer: Timer
 var thread: Thread
+var scene_animator: AnimationPlayer
+
 # Player
 var player_heath: int
 var success_counter: int
@@ -14,12 +16,12 @@ enum PLAYER_STATE {ATTACK, DODGE_LEFT, DODGE_RIGHT, IDLE, HURT}
 # Enemy
 var enemy_health: int
 var counter_available: bool
+var enemy_animator: AnimationPlayer
+var enemy_action_queue: Array[ENEMY_STATE]
 enum ENEMY_STATE {IDLE, GUARD, ATTACK_LEFT, 
 				  ATTACK_RIGHT, WINDUP_LEFT, 
 				  WINDUP_RIGHT, COUNTERED,
 				  HURT, COUNTERED_HURT}
-var enemy_animator: AnimationPlayer
-var enemy_action_queue: Array[ENEMY_STATE]
 const possible_actions: Array[ENEMY_STATE] = [ENEMY_STATE.IDLE, 
 											  ENEMY_STATE.GUARD,
 											  ENEMY_STATE.WINDUP_LEFT,
@@ -48,6 +50,7 @@ func initialize():
 
 	player_animator = $Player.get_node("AnimationPlayer")
 	enemy_animator = $Enemy.get_node("AnimationPlayer")
+	scene_animator = $AnimationPlayer
 
 	enemy_action_queue = []
 
@@ -59,11 +62,14 @@ func initialize():
 func minigame_process():
 	var enemy_state: ENEMY_STATE
 	var player_state: PLAYER_STATE = PLAYER_STATE.IDLE
+	scene_animator.play("INTRO")
 
 	# NOTE: Don't go below 2 minimum actions
 	for i in range(2):
 		enemy_action_queue.append(possible_actions.pick_random())
 
+	await scene_animator.animation_finished
+	
 	play_player_animation(player_state)
 	while true:
 		# Select a random state for enemy
@@ -86,9 +92,11 @@ func minigame_process():
 		if enemy_health <= 0:
 			print("Minigame Success")
 			BattleManager.minigame_status = 1
+			scene_animator.play("OUTRO")
 		elif player_heath <= 0:
 			print("Minigame Fail")
 			BattleManager.minigame_status = 0
+			scene_animator.play("OUTRO")
 
 		await get_tree().process_frame
 
