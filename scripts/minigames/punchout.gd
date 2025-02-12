@@ -70,7 +70,7 @@ func minigame_process():
 
 	await scene_animator.animation_finished
 
-	play_player_animation(player_state)
+	play_player_animation(PLAYER_STATE.IDLE)
 	while true:
 		# Select a random state for enemy
 		enemy_state = enemy_action_queue.pop_front()
@@ -79,6 +79,8 @@ func minigame_process():
 		# Add next enemy state to queue
 		enemy_action_queue.append(possible_actions.pick_random())
 
+		# TODO fix idle animation overwriting previous animations
+		# Play idle animation while waiting
 		# Check for any player input within WAIT_TIME seconds
 		thread.start(player_action.bind())
 		timer.start()
@@ -86,9 +88,7 @@ func minigame_process():
 		player_state = thread.wait_to_finish()
 
 		play_player_animation(player_state)
-
 		await process_states(enemy_state, player_state)
-
 		if enemy_health <= 0:
 			print("Minigame Success")
 			scene_animator.play("OUTRO")
@@ -195,6 +195,7 @@ func process_states(enemy_state: ENEMY_STATE, player_state: PLAYER_STATE) -> voi
 				print("Player Health -1")
 				player_heath -= 1
 				await enemy_animator.animation_finished
+				await player_animator.animation_finished
 				return
 			handle_success_counter(true)
 			_determine_counter_status()

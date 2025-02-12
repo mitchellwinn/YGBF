@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/minigames/punchout.gd" id="1_lrnin"]
 [ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="2_5oe5l"]
-[ext_resource type="Texture2D" uid="uid://b3152teiobui2" path="res://images/minigames/boxing.png" id="3_a54ji"]
+[ext_resource type="Texture2D" uid="uid://dad1voqaos7yo" path="res://images/minigames/boxing_gloves.png" id="3_1hvgm"]
 
 [sub_resource type="Gradient" id="Gradient_r2fxr"]
 
@@ -1820,6 +1820,46 @@ tracks/3/keys = {
 "values": [Vector2(685, 0), Vector2(100, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_kd6b7"]
+resource_name = "OUTRO"
+length = 0.500003
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player/LeftFist:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [Vector2(-100, 0), Vector2(-756, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player/RightFist:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [Vector2(100, 0), Vector2(664, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Enemy:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [Vector2(0, -75), Vector2(0, -501)]
+}
+
 [sub_resource type="Animation" id="Animation_wat38"]
 length = 0.001
 tracks/0/type = "value"
@@ -1871,46 +1911,6 @@ tracks/3/keys = {
 "values": [Vector2(100, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_kd6b7"]
-resource_name = "OUTRO"
-length = 0.500003
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Player/LeftFist:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(-100, 0), Vector2(-756, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Player/RightFist:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(100, 0), Vector2(664, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Enemy:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(0, -75), Vector2(0, -501)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_oalj4"]
 _data = {
 "INTRO": SubResource("Animation_qnjlr"),
@@ -1935,7 +1935,7 @@ texture = ExtResource("2_5oe5l")
 [node name="Enemy" type="Sprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_ey11b")
 position = Vector2(0, -75)
-texture = ExtResource("3_a54ji")
+texture = ExtResource("3_1hvgm")
 region_enabled = true
 region_rect = Rect2(549, 2, 96, 120)
 
@@ -1947,13 +1947,13 @@ libraries = {
 
 [node name="LeftFist" type="Sprite2D" parent="Enemy"]
 position = Vector2(60, 60)
-texture = ExtResource("3_a54ji")
+texture = ExtResource("3_1hvgm")
 region_enabled = true
 region_rect = Rect2(99, 3, 78, 102)
 
 [node name="RightFist" type="Sprite2D" parent="Enemy"]
 position = Vector2(-60, 60)
-texture = ExtResource("3_a54ji")
+texture = ExtResource("3_1hvgm")
 region_enabled = true
 region_rect = Rect2(15, 3, 78, 102)
 
@@ -1968,13 +1968,13 @@ libraries = {
 
 [node name="LeftFist" type="Sprite2D" parent="Player"]
 position = Vector2(-100, 0)
-texture = ExtResource("3_a54ji")
+texture = ExtResource("3_1hvgm")
 region_enabled = true
 region_rect = Rect2(9, 153, 105, 154)
 
 [node name="RightFist" type="Sprite2D" parent="Player"]
 position = Vector2(100, 0)
-texture = ExtResource("3_a54ji")
+texture = ExtResource("3_1hvgm")
 region_enabled = true
 region_rect = Rect2(117, 153, 105, 154)
 
