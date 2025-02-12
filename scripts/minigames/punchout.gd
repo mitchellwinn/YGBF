@@ -3,6 +3,7 @@ extends Minigame
 class_name Punchout
 
 const WAIT_TIME: float = 2.0
+const ANIM_SPEED: float = 1.5
 var timer: Timer
 var thread: Thread
 var scene_animator: AnimationPlayer
@@ -23,7 +24,7 @@ enum ENEMY_STATE {IDLE, GUARD, ATTACK_LEFT,
 				  WINDUP_RIGHT, COUNTERED,
 				  HURT, COUNTERED_HURT}
 const possible_actions: Array[ENEMY_STATE] = [ENEMY_STATE.IDLE, 
-											  ENEMY_STATE.GUARD,
+											  #ENEMY_STATE.GUARD,
 											  ENEMY_STATE.WINDUP_LEFT,
 											  ENEMY_STATE.WINDUP_RIGHT] 
 
@@ -50,6 +51,8 @@ func initialize():
 
 	player_animator = $Player.get_node("AnimationPlayer")
 	enemy_animator = $Enemy.get_node("AnimationPlayer")
+	player_animator.speed_scale = ANIM_SPEED
+	enemy_animator.speed_scale = ANIM_SPEED
 	scene_animator = $AnimationPlayer
 
 	enemy_action_queue = []
