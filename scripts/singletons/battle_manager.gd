@@ -433,7 +433,7 @@ func diva_main_actions(index: int):
 		value = 1
 	if Input.is_action_just_pressed("move_left"):
 		GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
-		if attacker.main_attack_resource_count<=0: #bar is already zero
+		if attacker.main_attack_diva_resource_count<=0: #bar is already zero
 			return
 		value = -1
 	match index:

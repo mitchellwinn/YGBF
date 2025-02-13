@@ -34,7 +34,6 @@ width = 1
 viewport_path = NodePath("MinigameViewport")
 
 [node name="Battle" type="Node2D"]
-position = Vector2(1, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
