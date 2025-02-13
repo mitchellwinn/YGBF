@@ -20,8 +20,9 @@ var character_name: String
 var loaded_from_save: bool
 var animator: AnimationPlayer
 
-var main_attack_resource_count: int
-var main_attack_resource_limit: int
+var main_attack_diva_resource_count: int
+var main_attack_diva_resource_limit: int
+var main_attack_diva_resource_limit_cap: int
 var main_attack_diva_hp: int
 var main_attack_diva_ego: int
 
@@ -36,8 +37,17 @@ func initialize_new_party_member():
 	inner_hp = get_max_hp() 
 	ego_armor = get_max_ego_armor()
 	inner_ego = get_max_ego()
+	main_attack_diva_resource_limit_cap = 4
+	main_attack_diva_resource_limit = main_attack_diva_resource_limit_cap
 	initialize_other_stats()
 	return
+
+func restore_resources_full():
+	main_attack_diva_resource_limit = main_attack_diva_resource_limit_cap
+
+func restore_resources_iterate():
+	main_attack_diva_resource_limit += 1  
+	main_attack_diva_resource_limit = clamp(main_attack_diva_resource_limit, 0, main_attack_diva_resource_limit_cap)
 
 func initialize_other_stats():
 	pass

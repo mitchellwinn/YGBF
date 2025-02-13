@@ -145,6 +145,8 @@ func get_scene_references():
 
 func battle_process():
 	print("Started battle_process")
+	for participant in participants:
+		participant.restore_resources_full()
 	await DialogueManager.print_dialogue(EnemyTroops.entry_message(troop), dialogue_label)
 	await DialogueManager.print_dialogue("How are we gonna deal with this?", dialogue_label)
 	while true:
@@ -202,7 +204,7 @@ func battle_process():
 		else:
 			await remaining_enemies_attack()
 			#await DialogueManager.print_dialogue("Everyone is exhausted.",dialogue_label)
-			reset_exhaustion()
+			reset_exhaustion_and_recover()
 		await get_tree().process_frame
 	return
 
@@ -236,16 +238,11 @@ func decide_menu_main():
 	var index: int = 0
 	get_tree().get_nodes_in_group("menu_"+attacker.talent+"_buttons")[0].grab_focus()
 	get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
-	attacker.main_attack_resource_limit = 4
-	attacker.main_attack_resource_count = 0
 	match attacker.talent:
 			"diva":
-				attacker.main_attack_diva_ego = 0
-				attacker.main_attack_diva_hp = 0
 				target_ally = true
-				for i in range(10):
-					main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
-					main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+				check_diva_resources()
+
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
@@ -261,7 +258,7 @@ func decide_menu_main():
 		if (Input.is_action_just_pressed("confirm") || GameManager.click_button == phase) and get_tree().root.get_viewport().gui_get_focus_owner().functionality == "finish":
 			match attacker.talent:
 				"diva":
-					if attacker.main_attack_resource_count<=0:
+					if attacker.main_attack_diva_resource_count<=0:
 						await get_tree().process_frame
 						print("continue")
 						continue
@@ -412,11 +409,26 @@ func determine_enemy_attack():
 
 ############### TALENT SPECIFIC ACTIONS ###############
 
+func check_diva_resources():
+	while attacker.main_attack_diva_resource_count > attacker.main_attack_diva_resource_limit:
+		attacker.main_attack_diva_ego -= 1
+		attacker.main_attack_diva_resource_count -=1
+		if attacker.main_attack_diva_resource_count > attacker.main_attack_diva_resource_limit:
+			attacker.main_attack_diva_hp -= 1
+			attacker.main_attack_diva_resource_count -=1
+	for i in range(10):
+		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+	for i in range(attacker.main_attack_diva_ego):
+		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
+	for i in range(attacker.main_attack_diva_hp):
+		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
+
 func diva_main_actions(index: int):
 	var value = 0
 	if Input.is_action_just_pressed("move_right"):
 		GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
-		if attacker.main_attack_resource_count>=attacker.main_attack_resource_limit: #no more resources to allocate
+		if attacker.main_attack_diva_resource_count>=attacker.main_attack_diva_resource_limit: #no more resources to allocate
 			return
 		value = 1
 	if Input.is_action_just_pressed("move_left"):
@@ -429,12 +441,12 @@ func diva_main_actions(index: int):
 			if attacker.main_attack_diva_hp<=0 and value == -1:
 				return
 			attacker.main_attack_diva_hp += value
-			attacker.main_attack_resource_count += value
+			attacker.main_attack_diva_resource_count += value
 		1: #we are hovering the EGO bar
 			if attacker.main_attack_diva_ego<=0 and value == -1:
 				return
 			attacker.main_attack_diva_ego += value
-			attacker.main_attack_resource_count += value
+			attacker.main_attack_diva_resource_count += value
 		_:
 			pass
 	if Input.is_action_just_pressed("move_right") or Input.is_action_just_pressed("move_left"):
@@ -608,9 +620,10 @@ func remaining_enemies_attack():
 		while !enemy.is_exhausted(): #if the enemy we would compare speed to has already used all their moves, skip them
 			await enemy_attacks_us(enemy)
 			
-func reset_exhaustion():
+func reset_exhaustion_and_recover():
 	for participant in participants:
 		participant.attack_index = 0
+		participant.restore_resources_iterate()
 
 func populate_skill_buttons():
 	for button in skill_menu.get_children():
@@ -689,7 +702,7 @@ func open_menu():
 				main_attack_diva.get_node("HpBar").get_child(0).size.x = menu.size.x-9
 				main_attack_diva.get_node("EgoBar").size.x = menu.size.x
 				main_attack_diva.get_node("EgoBar").get_child(0).size.x = menu.size.x-9
-				main_attack_diva.get_node("Count").text = str(attacker.main_attack_resource_limit-attacker.main_attack_resource_count)+"/"+str(attacker.main_attack_resource_limit)+" Available"
+				main_attack_diva.get_node("Count").text = str(attacker.main_attack_diva_resource_limit-attacker.main_attack_diva_resource_count)+"/"+str(attacker.main_attack_diva_resource_limit)+" Available"
 			_:
 				pass
 		phase_last_frame = phase
