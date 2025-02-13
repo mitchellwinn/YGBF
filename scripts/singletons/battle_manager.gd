@@ -411,12 +411,18 @@ func determine_enemy_attack():
 
 func check_diva_resources():
 	while attacker.main_attack_diva_resource_count > attacker.main_attack_diva_resource_limit:
-		attacker.main_attack_diva_ego -= 1
-		attacker.main_attack_diva_resource_count -=1
-		if attacker.main_attack_diva_resource_count > attacker.main_attack_diva_resource_limit:
+		if attacker.main_attack_diva_ego > 0:
+			attacker.main_attack_diva_ego -= 1
+			attacker.main_attack_diva_resource_count -= 1
+		elif attacker.main_attack_diva_hp > 0 and attacker.main_attack_diva_resource_count > attacker.main_attack_diva_resource_limit:
 			attacker.main_attack_diva_hp -= 1
-			attacker.main_attack_diva_resource_count -=1
+			attacker.main_attack_diva_resource_count -= 1
+		
 	for i in range(10):
+		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.duplicate()
+		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.duplicate()
+		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.duplicate()
+		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.duplicate()
 		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
 		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
 	for i in range(attacker.main_attack_diva_ego):
@@ -451,14 +457,11 @@ func diva_main_actions(index: int):
 			pass
 	if Input.is_action_just_pressed("move_right") or Input.is_action_just_pressed("move_left"):
 		for i in range(10):
-			main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.duplicate()
-			main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.duplicate()
+			
 			if i<= attacker.main_attack_diva_ego-1:
 				main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
 			else:
 				main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
-			main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.duplicate()
-			main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.duplicate()
 			if i<= attacker.main_attack_diva_hp-1:
 				main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
 			else:
