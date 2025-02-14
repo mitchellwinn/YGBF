@@ -7,6 +7,9 @@ func load(troop: int):
 		0:
 			print("Loading troop "+str(troop))
 			await load_test_troop()
+		1:
+			print("Loading troop "+str(troop))
+			await load_trecherous_troop_1()
 	return
 
 func entry_message(troop: int) -> String:
@@ -24,3 +27,11 @@ func load_test_troop():
 		BattleManager.enemies.append.call_deferred(enemy)
 		await get_tree().process_frame
 		enemy.character_name = enemy.character_name+" "+str(i+1)
+
+func load_trecherous_troop_1():
+	for i in range(3): #make a dummy troop with 3 enemies
+		var enemy: Stats = TrecherousStrutter.new()
+		get_tree().root.add_child.call_deferred(enemy)
+		BattleManager.enemies.append.call_deferred(enemy)
+		await get_tree().process_frame
+		enemy.character_name = enemy.character_name+" "+str(i+1)	

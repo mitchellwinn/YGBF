@@ -110,6 +110,7 @@ func get_scene_references():
 		party_sprites[i].visible = false
 	for i in range (party.size()):
 		party_sprites[i].visible = true
+		party_sprites[i].get_node("Character").texture = party[i].sprite
 		party_sprites[i].get_node("Character").material = party_sprites[i].get_node("Character").material.duplicate() #give it unique copy of material so it can flash independently of other sprites
 		match party.size():
 			1:
@@ -129,6 +130,7 @@ func get_scene_references():
 		enemy_sprites[i].visible = false
 	for i in range (enemies.size()):
 		enemy_sprites[i].visible = true
+		enemy_sprites[i].texture_normal = enemies[i].sprite
 		enemy_sprites[i].material = enemy_sprites[i].material.duplicate()
 		match enemies.size():
 			1:
@@ -170,14 +172,14 @@ func battle_process():
 			match categorical_button_index: #this determines what happens based on the menu we picked
 				0: #Main Attack
 					battle_option = "attack"
-					prepared_skill = attacker.main_attack
+					prepared_skill = attacker.active_talent.main_attack
 					if await decide_menu_main() == -1:
 						continue
 				1: #Skills
 					if await decide_menu_skill() == -1:
 						continue
 					battle_option = "skill"
-					prepared_skill = attacker.skills[skill_button_index]
+					prepared_skill = attacker.active_talent.skills[skill_button_index]
 				2: #Act
 					if await decide_menu_act() == -1:
 						continue
@@ -232,13 +234,13 @@ func decide_attacker():
 	return
 
 func decide_menu_main():
-	phase = "decide_menu_"+attacker.talent
+	phase = "decide_menu_"+attacker.active_talent.talent
 	stop_all_flashes()
 	await get_tree().process_frame
 	var index: int = 0
-	get_tree().get_nodes_in_group("menu_"+attacker.talent+"_buttons")[0].grab_focus()
+	get_tree().get_nodes_in_group("menu_"+attacker.active_talent.talent+"_buttons")[0].grab_focus()
 	get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
-	match attacker.talent:
+	match attacker.active_talent.talent:
 			"diva":
 				target_ally = true
 				check_diva_resources()
@@ -246,7 +248,7 @@ func decide_menu_main():
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
-		match attacker.talent:
+		match attacker.active_talent.talent:
 			"diva":
 				diva_main_actions(index)
 		if (index != get_tree().root.get_viewport().gui_get_focus_owner().index):
@@ -256,7 +258,7 @@ func decide_menu_main():
 				get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
 				GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if (Input.is_action_just_pressed("confirm") || GameManager.click_button == phase) and get_tree().root.get_viewport().gui_get_focus_owner().functionality == "finish":
-			match attacker.talent:
+			match attacker.active_talent.talent:
 				"diva":
 					if attacker.main_attack_diva_resource_count<=0:
 						await get_tree().process_frame
@@ -323,7 +325,7 @@ func decide_menu_skill():
 	stop_all_flashes()
 	await populate_skill_buttons()
 	for button in get_tree().get_nodes_in_group("menu_skill_buttons"):
-		if attacker.skills[button.index].hp_cost()>attacker.inner_hp or attacker.skills[button.index].ego_cost()>attacker.inner_ego:
+		if attacker.active_talent.skills[button.index].hp_cost()>=attacker.inner_hp or attacker.active_talent.skills[button.index].ego_cost()>=attacker.inner_ego:
 			button.make_unselectable()
 			print("unselectable")
 		else:
@@ -335,9 +337,10 @@ func decide_menu_skill():
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
-		if (skill_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
-			skill_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
-			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+		if (get_tree().root.get_viewport().gui_get_focus_owner()):
+			if (skill_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
+				skill_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+				GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			current_move_functionality = "skill"
 			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
@@ -535,6 +538,7 @@ func compare_speed(enemy: Stats) -> int:
 func all_party_members_defeated() -> bool:
 	print("Checking if all party members are defeated...")
 	for member in party:
+		print("checking if "+member.character_name+" is defeated")
 		if !member.is_defeated():
 			print(member.character_name+" is still alive! Keep battling")
 			return false #at least one member is still alive, so return false
@@ -567,7 +571,7 @@ func enemy_attacks_us(enemy: Stats):
 	for member in party:
 		if !member.is_defeated():
 			viable_party_targets.append(member)
-	await enemy.skills[rng.randi()%enemy.skills.size()].use(enemy,viable_party_targets[rng.randi()%viable_party_targets.size()])
+	await enemy.active_talent.skills[rng.randi()%enemy.active_talent.skills.size()].use(enemy,viable_party_targets[rng.randi()%viable_party_targets.size()])
 	enemy.attack_index += 1 #enemy now has one less attack this turn
 	return
 
@@ -595,7 +599,7 @@ func play_minigame():
 	minigame_status = -1 #this is redundant as minigames will set this as well for testing in an isolated space
 	var minigame_instance
 	stop_all_flashes()
-	match attacker.talent.to_lower():
+	match attacker.active_talent.talent.to_lower():
 		"diva":
 			minigame_instance = diva_minigame.instantiate()
 	minigame_viewport.add_child(minigame_instance)
@@ -632,10 +636,10 @@ func populate_skill_buttons():
 	for button in skill_menu.get_children():
 		button.queue_free()
 	var i: int = 0
-	for skill in attacker.skills:
+	for skill in attacker.active_talent.skills:
 		var new_button = await load("res://prefabs/battle_button.tscn").instantiate()
 		skill_menu.add_child(new_button)
-		new_button.text = attacker.skills[i].skill_name
+		new_button.text = attacker.active_talent.skills[i].skill_name
 		new_button.index = i
 		new_button.add_to_group("menu_skill_buttons")
 		i+=1
