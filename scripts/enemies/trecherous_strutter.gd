@@ -1,16 +1,18 @@
 extends Stats
 
-class_name BigMenace
+class_name TrecherousStrutter
 
 func initialize_stats():
-	character_name = "BigMenace"
+	character_name = "Trecherous Strutter"
+	enemy = true
+	sprite = ImageTexture.new().create_from_image(Image.new().load_from_file("res://images/portraits/tt1.png"))
 	ego_subdue_threshold = .9
 	talents.append(Diva.new())
 	for talent in talents:
 		add_child(talent)
 	active_talent = talents[0]
 
-	base_agility = 20 #0-100
+	base_agility = 20
 	base_strength = 5
 	base_charisma = 15
 	base_constitution = 25

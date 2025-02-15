@@ -541,6 +541,7 @@ patch_margin_top = 6
 patch_margin_right = 6
 patch_margin_bottom = 5
 script = ExtResource("13_2q8b1")
+functionality = "finish"
 
 [node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar"]
 layout_mode = 2
@@ -628,6 +629,7 @@ patch_margin_right = 6
 patch_margin_bottom = 5
 script = ExtResource("13_2q8b1")
 index = 1
+functionality = "finish"
 
 [node name="GridContainerEgo" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar"]
 layout_mode = 2

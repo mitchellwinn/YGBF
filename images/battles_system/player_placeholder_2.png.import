@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1m0yxo3fb8wa"
-path="res://.godot/imported/emilio.png-32c0698fe0d76cd4a907eefb9677bee4.ctex"
+uid="uid://byn6l6ci8yna4"
+path="res://.godot/imported/player_placeholder_2.png-2da62f2275a67076f368e59b9349a105.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/portraits/emilio.png"
-dest_files=["res://.godot/imported/emilio.png-32c0698fe0d76cd4a907eefb9677bee4.ctex"]
+source_file="res://images/battles_system/player_placeholder_2.png"
+dest_files=["res://.godot/imported/player_placeholder_2.png-2da62f2275a67076f368e59b9349a105.ctex"]
 
 [params]
 

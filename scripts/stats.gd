@@ -2,25 +2,52 @@ extends Node
 
 class_name Stats
 
+var sprite
+
+var enemy: bool
+
 var hp_armor: int #holds data for current hp_armor
+var temporary_hp_armor: int
 var inner_hp: int #holds data for current inner_hp
 var ego_armor: int #holds data for current ego_armor/id shield
+var temporary_ego_armor: int
 var pacified: bool #holds data for whether entity has been pacified
-var talent: String
+var active_talent: Talent
+var talents: Array[Talent]
 var inner_ego: int #holds data for current inner ego_armor
 var ego_subdue_threshold: float #[0.0-1.0] represents percentage of max ego_armor that ego_armor needs to decrease beyond to subdue
 var hp_subdue_threshold: float #[0.0-1.0] represents percentage of max inner_hp that inner_hp needs to decrease beyond to subdue
 var attacks: Array[int] = [] #holds data for each attack that can be performed per turn and its corresponding speed (thats what the int is for)
-var skills: Array[Skill] = [] #holds data for each skill known
+#var skills: Array[Skill] = [] #holds data for each skill known
+var main_attack: Skill #the skill that represents the main attack
 var attack_index: int = 0 #holds data for which index of move the player is on, most of the time this is 0 if they haven't attacked this turn, 1 if they have
 var character_name: String
 var loaded_from_save: bool
 var animator: AnimationPlayer
 
-var main_attack_resource_count: int
-var main_attack_resource_limit: int
+var main_attack_diva_resource_count: int
+var main_attack_diva_resource_limit: int
+var main_attack_diva_resource_limit_cap: int
 var main_attack_diva_hp: int
 var main_attack_diva_ego: int
+
+var actor_talent: int #[from 0 -> 6] F-0, E-1, D-2, C-3, B-4, A-5, S-6
+
+var base_strength: int #determines damage dealt by physical attacks
+var base_charisma: int #determines damage dealt by EGO attacks
+var base_agility: int #determines speed when deciding who should attack
+var base_constitution: int #determines max HP
+var base_sturdiness: int #determines defense against physical attacks
+var base_perspective: int #determines max EGO
+var base_resilience: int #determines defense against EGO attacks
+
+var growth_strength: float #determines damage dealt by physical attacks
+var growth_charisma: float #determines damage dealt by EGO attacks
+var growth_agility: float #determines speed when deciding who should attack
+var growth_constitution: float #determines max HP
+var growth_sturdiness: float #determines defense against physical attacks
+var growth_perspective: float #determines max EGO
+var growth_resilience: float #determines defense against EGO attacks
 
 func _ready():
 	print("New entity added to scene tree "+character_name)
@@ -28,36 +55,63 @@ func _ready():
 		initialize_new_party_member()
 
 func initialize_new_party_member():
+	initialize_stats()
 	define_attacks()
 	hp_armor = get_max_hp_armor()
 	inner_hp = get_max_hp() 
 	ego_armor = get_max_ego_armor()
 	inner_ego = get_max_ego()
-	initialize_other_stats()
+	main_attack_diva_resource_limit_cap = 4
+	main_attack_diva_resource_limit = main_attack_diva_resource_limit_cap
+	print("hp for "+character_name+" is "+str(inner_hp))
 	return
 
-func initialize_other_stats():
+func restore_resources_full():
+	main_attack_diva_resource_limit = main_attack_diva_resource_limit_cap
+
+func restore_resources_iterate():
+	main_attack_diva_resource_limit += 1  
+	main_attack_diva_resource_limit = clamp(main_attack_diva_resource_limit, 0, main_attack_diva_resource_limit_cap)
+
+func initialize_stats():
 	pass
 
+func get_max_ego_armor() -> int:
+	return get_perspective()/(2-float(actor_talent/2))
+
 func get_max_hp_armor() -> int:
-	var value: int = 100 #write code later to calculate this based on level or other factors
-	return value
+	return get_constitution()/(2-float(actor_talent/2))
 
 func get_max_ego() -> int:
-	var value: int = 100 #write code later to calculate this based on level or other factors
-	return value
+	return get_perspective()
 
 func get_max_hp() -> int:
-	var value: int = 100 #write code later to calculate this based on level or other factors
-	return value
+	return get_constitution()
 
-func get_max_ego_armor() -> int:
-	var value: int = 100 #write code later to calculate this based on level or other factors
-	return value
+func get_constitution() -> int:
+	return base_constitution+growth_constitution*actor_talent*base_constitution
+
+func get_perspective() -> int:
+	return base_perspective+growth_perspective*actor_talent*base_perspective
+
+func get_strength() -> int:
+	return base_strength+growth_strength*actor_talent*base_strength
+
+func get_charisma() -> int:
+	return base_charisma+growth_charisma*actor_talent*base_charisma
+
+func get_agility() -> int:
+	return base_agility+growth_agility*actor_talent*base_agility
+
+func get_sturdiness() -> int:
+	return base_sturdiness+growth_sturdiness*actor_talent*base_sturdiness
+
+func get_resilience()-> int:
+	return base_resilience+growth_resilience*actor_talent*base_resilience
 
 func define_attacks():
 	attacks.clear() #wipe array to a clean slate before any recalculations
-	attacks.append(50) #placeholder character gets 1 attack per turn at speed of 50
+	attacks.append(get_agility())
 	return
 
 func is_exhausted() -> bool:
@@ -84,14 +138,43 @@ func is_subdued() -> bool:
 		subdued = true
 	return subdued
 
-func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
+func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp_armor):
 	#hp dmg
 	hp_dmg = int(hp_dmg*crit)
 	ego_dmg = int(ego_dmg*crit)
+	hp_temp_armor = int(hp_temp_armor*crit)
+	ego_temp_armor = int(ego_temp_armor*crit)
 	var remainder: int = 0
 	var not_yet_subdued: bool = !is_subdued()
 	var ego_not_yet_broken: bool
 	var hp_not_yet_broken: bool
+	if temporary_hp_armor < hp_temp_armor:
+		temporary_hp_armor = hp_temp_armor
+		await DialogueManager.print_dialogue(character_name+" gained "+str(hp_temp_armor)+" points of HP armor!",BattleManager.dialogue_label)
+	if temporary_ego_armor < ego_temp_armor:
+		temporary_ego_armor = ego_temp_armor
+		await DialogueManager.print_dialogue(character_name+" gained "+str(ego_temp_armor)+" points of EGO armor!",BattleManager.dialogue_label)
+
+	if temporary_hp_armor>0:
+		if hp_dmg>temporary_hp_armor:
+			hp_dmg = hp_dmg-temporary_hp_armor
+			temporary_hp_armor = 0
+			await DialogueManager.print_dialogue(character_name+"'s extra HP shield has been broken!",BattleManager.dialogue_label)
+		elif hp_dmg>0:
+			temporary_hp_armor-=hp_dmg
+			hp_dmg = 0
+			await DialogueManager.print_dialogue(character_name+" had their HP completely protected by the shield!",BattleManager.dialogue_label)
+
+	if temporary_ego_armor>0:
+		if ego_dmg>temporary_ego_armor:
+			ego_dmg = ego_dmg-temporary_ego_armor
+			temporary_ego_armor = 0
+			await DialogueManager.print_dialogue(character_name+"'s extra EGO shield has been broken!",BattleManager.dialogue_label)
+		elif ego_dmg>0:
+			temporary_ego_armor-=ego_dmg
+			ego_dmg = 0
+			await DialogueManager.print_dialogue(character_name+" had their EGO completely protected by the shield!",BattleManager.dialogue_label)
+
 	if hp_armor>0:
 		hp_not_yet_broken = true
 		if hp_dmg>hp_armor:
@@ -118,8 +201,12 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float):
 		animator.play("dmg")
 	if hp_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(hp_dmg)+" damage to their HP!",BattleManager.dialogue_label)
+	elif hp_dmg<0:
+		await DialogueManager.print_dialogue(character_name+" recovered "+str(hp_dmg)+" points of damage from their HP!",BattleManager.dialogue_label)
 	if ego_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(ego_dmg)+" damage to their EGO!",BattleManager.dialogue_label)
+	elif ego_dmg<0:
+		await DialogueManager.print_dialogue(character_name+" recovered "+str(ego_dmg)+" points of damage from their EGO!",BattleManager.dialogue_label)
 	if hp_armor<=0 and hp_not_yet_broken:
 		await DialogueManager.print_dialogue(character_name+"'s HP armor has been broken!",BattleManager.dialogue_label)
 	if ego_armor<=0 and ego_not_yet_broken:

@@ -10,17 +10,17 @@ var last_delta: float = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for i in range(2): #make a dummy party with 4 characters
-		var party_member: Stats = Stats.new()
-		party_member.character_name = "Dummy "+str(i+1)
-		party_member.talent = "diva"
-		party_member.skills.append(FashionInsult.new())
-		party_member.skills.append(BasicAttack.new())
-		get_tree().root.add_child.call_deferred(party_member)
-		for skill in party_member.skills:
-			party_member.add_child(skill)
-		party.append.call_deferred(party_member)
-		await get_tree().process_frame
+	BattleManager.troop = 1
+	var party_member: Stats
+	party_member = Robby.new()
+	get_tree().root.add_child.call_deferred(party_member)
+	party.append.call_deferred(party_member)
+	await get_tree().process_frame
+	party_member = Emilio.new()
+	get_tree().root.add_child.call_deferred(party_member)
+	party.append.call_deferred(party_member)
+	await get_tree().process_frame
+
 	if get_tree().current_scene.name.to_lower() == "battle":
 		BattleManager.start_battle()
 

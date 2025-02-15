@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1m0yxo3fb8wa"
-path="res://.godot/imported/emilio.png-32c0698fe0d76cd4a907eefb9677bee4.ctex"
+uid="uid://dlco7kfypmnw8"
+path="res://.godot/imported/robby.png-c411de3e43887125490b91b6b01b7a8a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/portraits/emilio.png"
-dest_files=["res://.godot/imported/emilio.png-32c0698fe0d76cd4a907eefb9677bee4.ctex"]
+source_file="res://images/portraits/robby.png"
+dest_files=["res://.godot/imported/robby.png-c411de3e43887125490b91b6b01b7a8a.ctex"]
 
 [params]
 
