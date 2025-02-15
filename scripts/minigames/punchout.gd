@@ -3,7 +3,7 @@ extends Minigame
 class_name Punchout
 
 const WAIT_TIME: float = 2.0
-const ANIM_SPEED: float = 1.5
+const ANIM_SPEED: float = 1.25
 var timer: Timer
 var thread: Thread
 var scene_animator: AnimationPlayer
