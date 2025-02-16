@@ -197,8 +197,10 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp
 			ego_armor-=ego_dmg
 	else:
 		inner_ego -= ego_dmg
-	if animator:
-		animator.play("dmg")
+	if animator and (ego_dmg>0 or hp_dmg>0):
+		GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg.wav")
+		animator.play("damage")
+	#BattleManager.animate_bars()
 	if hp_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(hp_dmg)+" damage to their HP!",BattleManager.dialogue_label)
 	elif hp_dmg<0:
@@ -211,6 +213,9 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp
 		await DialogueManager.print_dialogue(character_name+"'s HP armor has been broken!",BattleManager.dialogue_label)
 	if ego_armor<=0 and ego_not_yet_broken:
 		await DialogueManager.print_dialogue(character_name+"'s EGO armor has been broken!",BattleManager.dialogue_label)
+	if animator and (is_defeated()):
+		GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg.wav")
+		animator.play("defeated")
 	if inner_hp<=0:
 		await DialogueManager.print_dialogue(character_name+" passed out!",BattleManager.dialogue_label)
 		return

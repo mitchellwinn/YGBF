@@ -5,7 +5,7 @@ class_name MainAttackDiva
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	skill_name = "Diva"
-	crit_chance = 10
+	crit_chance = 20
 	accuracy = 95
 
 func use_text() -> String:

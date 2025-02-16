@@ -1,14 +1,21 @@
-[gd_scene load_steps=21 format=3 uid="uid://cwe6q66isus1c"]
+[gd_scene load_steps=32 format=3 uid="uid://cwe6q66isus1c"]
 
 [ext_resource type="Texture2D" uid="uid://de3b8okmyqlv3" path="res://images/battles_system/tv.png" id="1_f7vsy"]
-[ext_resource type="Texture2D" uid="uid://b4gecnjuu0nna" path="res://images/style_guide/enemy_resolution_guide.png" id="2_musbg"]
+[ext_resource type="PackedScene" uid="uid://5vq4fxc2rak8" path="res://prefabs/enemy.tscn" id="2_7iqjt"]
 [ext_resource type="Material" uid="uid://ce7dt4bf5oulv" path="res://materials/custom_texture_rect_material.tres" id="3_42206"]
+[ext_resource type="Texture2D" uid="uid://dmytp4m8cuy4y" path="res://images/battles_system/hp_holder.png" id="4_yv2iy"]
+[ext_resource type="Texture2D" uid="uid://ciyg1lp0g5ye0" path="res://images/battles_system/hp_armor.png" id="5_00jhl"]
 [ext_resource type="Script" path="res://scripts/custom_texture_button.gd" id="5_btqqj"]
+[ext_resource type="PackedScene" uid="uid://d061u4iqfxaac" path="res://prefabs/character.tscn" id="5_fyc08"]
+[ext_resource type="Texture2D" uid="uid://crv7uq6xwl4hq" path="res://images/battles_system/hp_bar.png" id="6_0mjjh"]
 [ext_resource type="Script" path="res://scripts/custom_button.gd" id="6_76cnh"]
 [ext_resource type="Theme" uid="uid://cf1r6ahcjjocb" path="res://text_themes/menu_buttons.tres" id="6_ath8s"]
+[ext_resource type="Texture2D" uid="uid://rjeh33wecb02" path="res://images/battles_system/bar_under.png" id="6_y8u8e"]
+[ext_resource type="Texture2D" uid="uid://bghh8tf5lujmp" path="res://images/battles_system/ego_holder.png" id="7_3ofo6"]
 [ext_resource type="Texture2D" uid="uid://biv1ktiokn2dr" path="res://images/battles_system/player_window.png" id="8_75ms7"]
+[ext_resource type="Texture2D" uid="uid://ced20ra1krdxk" path="res://images/battles_system/ego_armor.png" id="8_bidra"]
 [ext_resource type="FontFile" uid="uid://cf8buj8w4ewd5" path="res://fonts/GeneralSans-Medium.otf" id="8_ni1p0"]
-[ext_resource type="Texture2D" uid="uid://cto3afusr6ju5" path="res://images/battles_system/player_placeholder.png" id="8_v261t"]
+[ext_resource type="Texture2D" uid="uid://cg7cxlbusaaam" path="res://images/battles_system/ego_bar.png" id="9_iefhm"]
 [ext_resource type="Texture2D" uid="uid://c7bctb28yw32s" path="res://images/battles_system/button_main.png" id="9_qx3y5"]
 [ext_resource type="PackedScene" uid="uid://bill73lwgqhyj" path="res://prefabs/battle_bg.tscn" id="10_q4ian"]
 [ext_resource type="Texture2D" uid="uid://cy0u3utb81ray" path="res://images/battles_system/player_window_bg.png" id="10_smeqf"]
@@ -18,6 +25,18 @@
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kbckk"]
 viewport_path = NodePath("BgViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7ropw"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mxwol"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5d0n5"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jmxdr"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="Gradient" id="Gradient_4cngp"]
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
@@ -98,17 +117,8 @@ pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy1"]
-z_index = -7
-texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+[node name="Enemy" parent="CanvasLayer/HBoxContainerEnemy1" instance=ExtResource("2_7iqjt")]
 layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("2_musbg")
-script = ExtResource("5_btqqj")
-type = "decide_target"
 
 [node name="HBoxContainerEnemy2" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 8
@@ -126,18 +136,8 @@ pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy2"]
-z_index = -7
-texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+[node name="Enemy" parent="CanvasLayer/HBoxContainerEnemy2" instance=ExtResource("2_7iqjt")]
 layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("2_musbg")
-script = ExtResource("5_btqqj")
-type = "decide_target"
-index = 1
 
 [node name="HBoxContainerEnemy3" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -155,25 +155,14 @@ pivot_offset = Vector2(104, 104)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Enemy" type="TextureButton" parent="CanvasLayer/HBoxContainerEnemy3"]
-z_index = -7
-texture_filter = 1
-material = ExtResource("3_42206")
-layout_direction = 1
+[node name="Enemy" parent="CanvasLayer/HBoxContainerEnemy3" instance=ExtResource("2_7iqjt")]
 layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-texture_normal = ExtResource("2_musbg")
-script = ExtResource("5_btqqj")
-type = "decide_target"
-index = 2
 
 [node name="HBoxContainerParty1" type="HBoxContainer" parent="CanvasLayer"]
-clip_contents = true
 anchors_preset = -1
-anchor_left = 0.125
+anchor_left = 0.117
 anchor_top = 1.0
-anchor_right = 0.125
+anchor_right = 0.802
 anchor_bottom = 1.0
 offset_left = -63.5
 offset_top = -139.0
@@ -181,13 +170,12 @@ offset_right = 63.5
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(80, 80)
+pivot_offset = Vector2(64, 64)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
 
 [node name="PartyMember" type="TextureButton" parent="CanvasLayer/HBoxContainerParty1"]
-visible = false
 z_index = 5
 z_as_relative = false
 texture_filter = 1
@@ -198,22 +186,102 @@ focus_mode = 0
 script = ExtResource("5_btqqj")
 type = "decide_attacker"
 
+[node name="Hp" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -32.5
+offset_right = 0.5
+offset_bottom = 127.0
+texture = ExtResource("4_yv2iy")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("5_00jhl")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Hp/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.0
+offset_top = 6.0
+offset_right = -10.0
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("6_0mjjh")
+
+[node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 127.0
+offset_right = 160.0
+offset_bottom = 127.0
+texture = ExtResource("7_3ofo6")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 109.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("8_bidra")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Ego/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.17999
+offset_top = 6.0
+offset_right = -4.82001
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("9_iefhm")
+
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
 z_index = 10
 z_as_relative = false
+clip_contents = true
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
 
-[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
-z_index = 5
-z_as_relative = false
-material = ExtResource("3_42206")
+[node name="Character" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Frame" instance=ExtResource("5_fyc08")]
 layout_mode = 0
-offset_right = 127.0
-offset_bottom = 127.0
-texture = ExtResource("8_v261t")
+texture = SubResource("ViewportTexture_7ropw")
 
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
 z_index = 1
@@ -226,7 +294,6 @@ offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
 [node name="HBoxContainerParty2" type="HBoxContainer" parent="CanvasLayer"]
-clip_contents = true
 anchors_preset = -1
 anchor_left = 0.375
 anchor_top = 1.0
@@ -238,7 +305,7 @@ offset_right = 63.5
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(80, 80)
+pivot_offset = Vector2(64, 64)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
@@ -258,19 +325,15 @@ index = 1
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
 z_index = 10
 z_as_relative = false
+clip_contents = true
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
 
-[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
-z_index = 5
-z_as_relative = false
-material = ExtResource("3_42206")
+[node name="Character" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Frame" instance=ExtResource("5_fyc08")]
 layout_mode = 0
-offset_right = 127.0
-offset_bottom = 127.0
-texture = ExtResource("8_v261t")
+texture = SubResource("ViewportTexture_mxwol")
 
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
 z_index = 1
@@ -282,8 +345,91 @@ offset_right = 123.5
 offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
-[node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
+[node name="Hp" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -32.5
+offset_right = 0.5
+offset_bottom = 127.0
+texture = ExtResource("4_yv2iy")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("5_00jhl")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Hp/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
 clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.0
+offset_top = 6.0
+offset_right = -10.0
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("6_0mjjh")
+
+[node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 127.0
+offset_right = 160.0
+offset_bottom = 127.0
+texture = ExtResource("7_3ofo6")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 109.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("8_bidra")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Ego/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.17999
+offset_top = 6.0
+offset_right = -4.82001
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("9_iefhm")
+
+[node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.625
 anchor_top = 1.0
@@ -295,7 +441,7 @@ offset_right = 63.5
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(80, 80)
+pivot_offset = Vector2(64, 64)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
@@ -316,19 +462,15 @@ index = 2
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
 z_index = 10
 z_as_relative = false
+clip_contents = true
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
 
-[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
-z_index = 5
-z_as_relative = false
-material = ExtResource("3_42206")
+[node name="Character" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Frame" instance=ExtResource("5_fyc08")]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("8_v261t")
+texture = SubResource("ViewportTexture_5d0n5")
 
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
 z_index = 1
@@ -340,20 +482,103 @@ offset_right = 123.5
 offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
-[node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
+[node name="Hp" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -32.5
+offset_right = 0.5
+offset_bottom = 127.0
+texture = ExtResource("4_yv2iy")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("5_00jhl")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Hp/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
 clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.0
+offset_top = 6.0
+offset_right = -10.0
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("6_0mjjh")
+
+[node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 127.0
+offset_right = 160.0
+offset_bottom = 127.0
+texture = ExtResource("7_3ofo6")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 109.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("8_bidra")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Ego/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.17999
+offset_top = 6.0
+offset_right = -4.82001
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("9_iefhm")
+
+[node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
-anchor_left = 0.875
+anchor_left = 0.911
 anchor_top = 1.0
-anchor_right = 0.875
+anchor_right = 0.911
 anchor_bottom = 1.0
-offset_left = -63.5
+offset_left = -91.0
 offset_top = -139.0
-offset_right = 63.5
+offset_right = 36.0
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(80, 80)
+pivot_offset = Vector2(64, 64)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
@@ -374,19 +599,15 @@ index = 3
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
 z_index = 10
 z_as_relative = false
+clip_contents = true
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_75ms7")
 
-[node name="Character" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
-z_index = 5
-z_as_relative = false
-material = ExtResource("3_42206")
+[node name="Character" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Frame" instance=ExtResource("5_fyc08")]
 layout_mode = 0
-offset_right = 127.0
-offset_bottom = 127.0
-texture = ExtResource("8_v261t")
+texture = SubResource("ViewportTexture_jmxdr")
 
 [node name="BG" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
 z_index = 1
@@ -398,15 +619,99 @@ offset_right = 123.5
 offset_bottom = 124.0
 texture = ExtResource("10_smeqf")
 
+[node name="Hp" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -32.5
+offset_right = 0.5
+offset_bottom = 127.0
+texture = ExtResource("4_yv2iy")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("5_00jhl")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Hp/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.0
+offset_top = 6.0
+offset_right = -10.0
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("6_0mjjh")
+
+[node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 127.0
+offset_right = 160.0
+offset_bottom = 127.0
+texture = ExtResource("7_3ofo6")
+stretch_mode = 2
+
+[node name="Armor" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 109.0
+value = 100.0
+fill_mode = 3
+texture_progress = ExtResource("8_bidra")
+
+[node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Ego/Armor"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.17999
+offset_top = 6.0
+offset_right = -4.82001
+offset_bottom = 101.0
+grow_horizontal = 2
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("6_y8u8e")
+texture_progress = ExtResource("9_iefhm")
+
 [node name="HBoxContainerMenu" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
 anchor_left = 0.247
 anchor_top = 1.0
 anchor_right = 0.959
 anchor_bottom = 1.0
-offset_left = -14.12
+offset_left = -5.12
 offset_top = -139.0
-offset_right = -13.64
+offset_right = -4.64001
 offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2

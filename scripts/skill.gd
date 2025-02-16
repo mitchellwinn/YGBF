@@ -40,6 +40,14 @@ func use(user: Stats, target: Stats):
 
 	await DialogueManager.print_dialogue(use_text(),BattleManager.dialogue_label)
 	#await get_tree().create_timer(0.5).timeout #skill effect would go here
+
+	if !user.enemy:
+		if user.inner_hp>hp_cost():
+			user.inner_hp -= hp_cost()
+		if user.inner_ego>ego_cost():
+			user.inner_ego -= ego_cost()
+	BattleManager.animate_bars()
+
 	if BattleManager.rng.randi()%100<=accuracy:
 		if BattleManager.rng.randi()%100<=crit_chance:
 			await DialogueManager.print_dialogue(crit_text(),BattleManager.dialogue_label)
@@ -47,12 +55,6 @@ func use(user: Stats, target: Stats):
 		else:
 			await DialogueManager.print_dialogue(hit_text(),BattleManager.dialogue_label)
 		await target.take_damage(ego_dmg,hp_dmg,crit_multiplier,hp_temp_armor(),ego_temp_armor())
-		if user.enemy:
-			return
-		if user.inner_hp>hp_cost():
-			user.inner_hp -= hp_cost()
-		if user.inner_ego>ego_cost():
-			user.inner_ego -= ego_cost()
 	else:
 		await DialogueManager.print_dialogue(miss_text(),BattleManager.dialogue_label)
 

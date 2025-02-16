@@ -52,8 +52,10 @@ var diva_minigame = preload("res://scenes/minigames/diva.tscn")
 func _ready():
 	pass
 
-func _physics_process(_delta):
-	pass
+func _process(_delta):
+	if !in_battle:
+		return
+	animate_bars()
 
 
 ############### INITIALIZATION FUNCTIONS ###############
@@ -110,8 +112,9 @@ func get_scene_references():
 		party_sprites[i].visible = false
 	for i in range (party.size()):
 		party_sprites[i].visible = true
-		party_sprites[i].get_node("Character").texture = party[i].sprite
-		party_sprites[i].get_node("Character").material = party_sprites[i].get_node("Character").material.duplicate() #give it unique copy of material so it can flash independently of other sprites
+		party_sprites[i].get_node("Frame/Character").sprite.texture = party[i].sprite
+		party[i].animator = party_sprites[i].get_node("Frame/Character").animator
+		party_sprites[i].get_node("Frame/Character").material = party_sprites[i].get_node("Frame/Character").material.duplicate() #give it unique copy of material so it can flash independently of other sprites
 		match party.size():
 			1:
 				party_sprites[0].get_parent().anchor_left = .5
@@ -130,8 +133,9 @@ func get_scene_references():
 		enemy_sprites[i].visible = false
 	for i in range (enemies.size()):
 		enemy_sprites[i].visible = true
-		enemy_sprites[i].texture_normal = enemies[i].sprite
-		enemy_sprites[i].material = enemy_sprites[i].material.duplicate()
+		enemy_sprites[i].sprite.texture = enemies[i].sprite
+		enemies[i].animator = enemy_sprites[i].animator
+		enemy_sprites[i].get_node("Enemy").material = enemy_sprites[i].get_node("Enemy").material.duplicate()
 		match enemies.size():
 			1:
 				enemy_sprites[0].get_parent().anchor_left = .5
@@ -341,6 +345,9 @@ func decide_menu_skill():
 			if (skill_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
 				skill_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
 				GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+		else:
+			await get_tree().process_frame
+			continue
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
 			current_move_functionality = "skill"
 			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
@@ -357,13 +364,13 @@ func decide_target():
 		if Input.is_action_just_pressed("back"):
 			return -1
 		if Input.is_action_just_pressed("move_right"):
-			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
+			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			await iterate_target_index(1)
 		if Input.is_action_just_pressed("move_left"):
 			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 			await iterate_target_index(-1)
 		if Input.is_action_just_pressed("confirm") || GameManager.click_button == phase:
-			GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
+			GameManager.play_sound(sfx_player,"res://sounds/digi select.wav")
 			target = enemies[target_index] #sets the attacker equal to the instance of that troop member
 			break #break out of the loop, return to the battle_process function, keep on going, yadayadayada
 		await get_tree().process_frame
@@ -495,9 +502,9 @@ func iterate_attacker_index(value: int):
 	
 func iterate_target_index(value: int):
 	stop_all_flashes()
-	target_index += value #pick the member to the left of currently hovered party member
+	target_index += value #pick the member to the seleceted side of currently hovered party member
 	target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
-	while current_move_functionality == "pacify" and !enemies[target_index].is_subdued(): #can't target an enemy for pacification that has not been subdued
+	while current_move_functionality == "pacify" and (!enemies[target_index].is_subdued() or enemies[target_index].is_defeated()): #can't target an enemy for pacification that has not been subdued
 		target_index = keep_iterating(target_index, value) #target the next enemy over
 		target_index = posmod(target_index,enemies.size()) #makes sure the attacker_index stays within the size of the enemy troop
 		await get_tree().process_frame
@@ -587,6 +594,9 @@ func we_attack_enemy():
 				await prepared_skill.use(attacker,target)
 		"pacify":
 			await play_minigame()
+			if target.animator and (target.is_defeated()):
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg.wav")
+				target.animator.play("defeated")
 			pass
 		_:
 			pass
@@ -649,29 +659,36 @@ func populate_skill_buttons():
 
 func select_flash_attacker():
 	print ("Flash select attacker_index"+str(attacker_index))
-	party_sprites[attacker_index].get_node("Character").material.set_shader_parameter("flash_enabled", true)
-	party_sprites[attacker_index].get_node("Character").material.set_shader_parameter("oscillation_speed", 7)
+	party_sprites[attacker_index].get_node("Frame/Character").material.set_shader_parameter("flash_enabled", true)
+	party_sprites[attacker_index].get_node("Frame/Character").material.set_shader_parameter("oscillation_speed", 7)
 	return
 
 func select_flash_ally():
 	print ("Flash select attacker_index"+str(ally_index))
-	party_sprites[ally_index].get_node("Character").material.set_shader_parameter("flash_enabled", true)
-	party_sprites[ally_index].get_node("Character").material.set_shader_parameter("oscillation_speed", 7)
+	party_sprites[ally_index].get_node("Frame/Character").material.set_shader_parameter("flash_enabled", true)
+	party_sprites[ally_index].get_node("Frame/Character").material.set_shader_parameter("oscillation_speed", 7)
 	return
 
 func select_flash_enemy():
-	enemy_sprites[target_index].material.set_shader_parameter("flash_enabled", true)
-	enemy_sprites[target_index].material.set_shader_parameter("oscillation_speed", 7)
+	enemy_sprites[target_index].get_node("Enemy").material.set_shader_parameter("flash_enabled", true)
+	enemy_sprites[target_index].get_node("Enemy").material.set_shader_parameter("oscillation_speed", 7)
 	return
 
 func stop_all_flashes():
 	for sprite in party_sprites:
-		sprite.get_node("Character").material.set_shader_parameter("flash_enabled", false)
+		sprite.get_node("Frame/Character").material.set_shader_parameter("flash_enabled", false)
 	for sprite in enemy_sprites:
-		sprite.material.set_shader_parameter("flash_enabled", false)
+		sprite.get_node("Enemy").material.set_shader_parameter("flash_enabled", false)
 	for flashable in get_tree().get_nodes_in_group("flashable"):
 		flashable.material.set_shader_parameter("flash_enabled", false)
 	return
+
+func animate_bars():
+	for i in range(party.size()):
+		party_sprites[i].get_node("Hp/Armor/Bar").value = floor(lerp(party_sprites[i].get_node("Hp/Armor/Bar").value,float(party[i].inner_hp)/float(party[i].get_max_hp())*100,GameManager.last_delta*5))
+		party_sprites[i].get_node("Hp/Armor").value = floor(lerp(party_sprites[i].get_node("Hp/Armor").value,float(party[i].hp_armor)/float(party[i].get_max_hp_armor())*100,GameManager.last_delta*5))
+		party_sprites[i].get_node("Ego/Armor/Bar").value = floor(lerp(party_sprites[i].get_node("Ego/Armor/Bar").value,float(party[i].inner_ego)/float(party[i].get_max_ego())*100,GameManager.last_delta*5))
+		party_sprites[i].get_node("Ego/Armor").value = floor(lerp(party_sprites[i].get_node("Ego/Armor").value,float( party[i].ego_armor)/float(party[i].get_max_ego_armor())*100,GameManager.last_delta*5))
 
 func open_menu():
 	for sprite in party_sprites:
@@ -683,7 +700,7 @@ func open_menu():
 	menu.visible = true
 	var phase_last_frame = ""
 	while true:
-		party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.125,GameManager.last_delta*20.0)
+		party_sprites[attacker_index].get_parent().anchor_left = lerp(party_sprites[attacker_index].get_parent().anchor_left,0.117,GameManager.last_delta*20.0)
 		party_sprites[attacker_index].get_parent().anchor_right = party_sprites[attacker_index].get_parent().anchor_left
 		if phase!=phase_last_frame:
 			categorical_menu.visible = false

@@ -2,6 +2,8 @@ extends TextureButton
 
 class_name CustomTextureButton
 
+@export var sprite: Sprite2D
+@export var animator: AnimationPlayer
 @export var type: String
 @export var functionality: String
 @export var index: int
