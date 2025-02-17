@@ -74,7 +74,7 @@ func minigame_process():
 	await scene_animator.animation_finished
 
 	play_player_animation(PLAYER_STATE.IDLE)
-	while true:
+	while BattleManager.minigame_status == -1:
 		# Select a random state for enemy
 		enemy_state = enemy_action_queue.pop_front()
 		print("Enemy State: " + ENEMY_STATE.find_key(enemy_state))
@@ -95,10 +95,12 @@ func minigame_process():
 		if enemy_health <= 0:
 			print("Minigame Success")
 			scene_animator.play("OUTRO")
+			await scene_animator.animation_finished
 			BattleManager.minigame_status = 1
 		elif player_heath <= 0:
 			print("Minigame Fail")
 			scene_animator.play("OUTRO")
+			await scene_animator.animation_finished
 			BattleManager.minigame_status = 0
 
 		await get_tree().process_frame

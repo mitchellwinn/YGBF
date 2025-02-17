@@ -1,8 +1,8 @@
-[gd_scene load_steps=29 format=3 uid="uid://cb2lmufnhabpp"]
+[gd_scene load_steps=29 format=3 uid="uid://e3ic3cigqyi"]
 
 [ext_resource type="Script" path="res://scripts/minigames/punchout.gd" id="1_lrnin"]
 [ext_resource type="Texture2D" uid="uid://dkcvrib1y2i6p" path="res://images/style_guide/minigame_resolution_guide3.png" id="2_5oe5l"]
-[ext_resource type="Texture2D" uid="uid://dad1voqaos7yo" path="res://images/minigames/boxing_gloves.png" id="3_1hvgm"]
+[ext_resource type="Texture2D" uid="uid://dwnjh7qg2jlii" path="res://images/minigames/boxing_gloves.png" id="3_1hvgm"]
 
 [sub_resource type="Gradient" id="Gradient_r2fxr"]
 

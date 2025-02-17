@@ -49,6 +49,7 @@ var phase: String = ""
 var minigame_status: int
 
 var diva_minigame = preload("res://scenes/minigames/diva.tscn")
+var punchout_minigame = preload("res://scenes/minigames/punchout.tscn")
 
 ############## BUILT IN FUNCTIONS ######################
 
@@ -652,6 +653,8 @@ func play_minigame():
 	match attacker.active_talent.talent.to_lower():
 		"diva":
 			minigame_instance = diva_minigame.instantiate()
+		"action":
+			minigame_instance = punchout_minigame.instantiate()
 	minigame_viewport.add_child(minigame_instance)
 	minigame.visible = true
 	while(minigame_status == -1):
