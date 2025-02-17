@@ -25,12 +25,6 @@ var character_name: String
 var loaded_from_save: bool
 var animator: AnimationPlayer
 
-var main_attack_diva_resource_count: int
-var main_attack_diva_resource_limit: int
-var main_attack_diva_resource_limit_cap: int
-var main_attack_diva_hp: int
-var main_attack_diva_ego: int
-
 var actor_talent: int #[from 0 -> 6] F-0, E-1, D-2, C-3, B-4, A-5, S-6
 
 var base_strength: int #determines damage dealt by physical attacks
@@ -61,17 +55,17 @@ func initialize_new_party_member():
 	inner_hp = get_max_hp() 
 	ego_armor = get_max_ego_armor()
 	inner_ego = get_max_ego()
-	main_attack_diva_resource_limit_cap = 4
-	main_attack_diva_resource_limit = main_attack_diva_resource_limit_cap
+	active_talent.main_attack_resource_limit_cap = 4
+	active_talent.main_attack_resource_limit = active_talent.main_attack_resource_limit_cap
 	print("hp for "+character_name+" is "+str(inner_hp))
 	return
 
 func restore_resources_full():
-	main_attack_diva_resource_limit = main_attack_diva_resource_limit_cap
+	active_talent.main_attack_resource_limit = active_talent.main_attack_resource_limit_cap
 
 func restore_resources_iterate():
-	main_attack_diva_resource_limit += 1  
-	main_attack_diva_resource_limit = clamp(main_attack_diva_resource_limit, 0, main_attack_diva_resource_limit_cap)
+	active_talent.main_attack_resource_limit += 1  
+	active_talent.main_attack_resource_limit = clamp(active_talent.main_attack_resource_limit, 0, active_talent.main_attack_resource_limit_cap)
 
 func initialize_stats():
 	pass
@@ -138,7 +132,7 @@ func is_subdued() -> bool:
 		subdued = true
 	return subdued
 
-func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp_armor):
+func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp_armor, skill_name: String):
 	#hp dmg
 	hp_dmg = int(hp_dmg*crit)
 	ego_dmg = int(ego_dmg*crit)
@@ -198,8 +192,14 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp
 	else:
 		inner_ego -= ego_dmg
 	if animator and (ego_dmg>0 or hp_dmg>0):
+		if animator.has_animation(skill_name):
+			animator.play(skill_name)
+			await animator.animation_finished
 		GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg.wav")
 		animator.play("damage")
+		await animator.animation_finished
+		animator.play("RESET")
+		await animator.animation_finished
 	#BattleManager.animate_bars()
 	if hp_dmg>0:
 		await DialogueManager.print_dialogue(character_name+" took "+str(hp_dmg)+" damage to their HP!",BattleManager.dialogue_label)

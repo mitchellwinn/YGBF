@@ -46,7 +46,7 @@ func use(user: Stats, target: Stats):
 			user.inner_hp -= hp_cost()
 		if user.inner_ego>ego_cost():
 			user.inner_ego -= ego_cost()
-	BattleManager.animate_bars()
+	#BattleManager.animate_bars()
 
 	if BattleManager.rng.randi()%100<=accuracy:
 		if BattleManager.rng.randi()%100<=crit_chance:
@@ -54,7 +54,7 @@ func use(user: Stats, target: Stats):
 			crit_multiplier = 2.0
 		else:
 			await DialogueManager.print_dialogue(hit_text(),BattleManager.dialogue_label)
-		await target.take_damage(ego_dmg,hp_dmg,crit_multiplier,hp_temp_armor(),ego_temp_armor())
+		await target.take_damage(ego_dmg,hp_dmg,crit_multiplier,hp_temp_armor(),ego_temp_armor(),skill_name)
 	else:
 		await DialogueManager.print_dialogue(miss_text(),BattleManager.dialogue_label)
 

@@ -823,7 +823,20 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 3
 
+[node name="GridContainerTalent" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
+clip_contents = true
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
 [node name="MainAttackDiva" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1073,18 +1086,113 @@ theme_override_fonts/font = ExtResource("8_ni1p0")
 theme_override_font_sizes/font_size = 24
 text = "X/Y Available"
 
-[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu"]
+[node name="MainAttackAction" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
 visible = false
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="ActionBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction"]
+texture_filter = 1
+layout_mode = 2
+offset_top = 48.0
+offset_right = 684.0
+offset_bottom = 106.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_mode = 2
+texture = ExtResource("9_qx3y5")
+region_rect = Rect2(0, 0, 117, 117)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 5
+script = ExtResource("13_2q8b1")
+functionality = "finish"
+
+[node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar"]
+layout_mode = 2
+offset_left = 4.0
+offset_top = 3.65
+offset_right = 679.525
+offset_bottom = 26.61
+columns = 5
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("GradientTexture1D_bixc5")
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -2.0
+offset_top = -5.0
+offset_right = 684.0
+offset_bottom = 57.0
+theme = ExtResource("6_ath8s")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "INPUT AN ATTACK COMBO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/Label"]
+texture_filter = 1
+offset_left = 2.0
+offset_top = -1.0
+offset_right = 688.0
+offset_bottom = 61.0
+theme = ExtResource("6_ath8s")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 36
+text = "INPUT AN ATTACK COMBO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Categories" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
+layout_mode = 2
+
+[node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Categories"]
 clip_contents = true
 layout_direction = 2
 layout_mode = 2
+offset_top = 6.0
+offset_right = 680.0
+offset_bottom = 121.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_constants/h_separation = 7
 theme_override_constants/v_separation = 7
 columns = 2
 
-[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="MainAttack" type="Button" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -1095,7 +1203,7 @@ text = "Main Attack"
 text_direction = 1
 script = ExtResource("6_76cnh")
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/MainAttack"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical/MainAttack"]
 z_index = -1
 texture_filter = 1
 layout_mode = 0
@@ -1108,7 +1216,7 @@ patch_margin_right = 15
 patch_margin_bottom = 15
 script = ExtResource("12_3507t")
 
-[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="Skills" type="Button" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -1120,7 +1228,7 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 1
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Skills"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical/Skills"]
 z_index = -1
 texture_filter = 1
 layout_mode = 0
@@ -1133,7 +1241,7 @@ patch_margin_right = 15
 patch_margin_bottom = 15
 script = ExtResource("12_3507t")
 
-[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="Act" type="Button" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -1146,7 +1254,7 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 2
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Act"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical/Act"]
 z_index = -1
 texture_filter = 1
 layout_mode = 0
@@ -1159,7 +1267,7 @@ patch_margin_right = 15
 patch_margin_bottom = 15
 script = ExtResource("12_3507t")
 
-[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical" groups=["menu_categorical_buttons"]]
+[node name="Items" type="Button" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical" groups=["menu_categorical_buttons"]]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 7
@@ -1171,7 +1279,34 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 3
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/GridContainerCategorical/Items"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/Categories/GridContainerCategorical/Items"]
+z_index = -1
+texture_filter = 1
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("9_qx3y5")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+script = ExtResource("12_3507t")
+
+[node name="Change" type="Button" parent="CanvasLayer/HBoxContainerMenu/Categories" groups=["menu_categorical_buttons"]]
+texture_filter = 1
+offset_top = -32.0
+offset_right = 136.0
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource("6_ath8s")
+theme_override_fonts/font = ExtResource("8_ni1p0")
+theme_override_font_sizes/font_size = 24
+text = "Change"
+text_direction = 1
+script = ExtResource("6_76cnh")
+index = 4
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/Categories/Change"]
 z_index = -1
 texture_filter = 1
 layout_mode = 0

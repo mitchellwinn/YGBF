@@ -6,9 +6,10 @@ func initialize_stats():
 	character_name = "Emilio"
 	sprite = ImageTexture.new().create_from_image(Image.new().load_from_file("res://images/portraits/emilio.png"))
 	talents.append(Diva.new())
+	talents.append(Action.new())
 	for talent in talents:
 		add_child(talent)
-	active_talent = talents[0]
+	active_talent = talents[1]
 	
 	base_agility = 35
 	base_strength = 9

@@ -6,6 +6,7 @@ func initialize_stats():
 	character_name = "Robby"
 	sprite = ImageTexture.new().create_from_image(Image.new().load_from_file("res://images/portraits/robby.png"))
 	talents.append(Diva.new())
+	talents.append(Action.new())
 	for talent in talents:
 		add_child(talent)
 	active_talent = talents[0]
