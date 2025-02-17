@@ -2,7 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
+<<<<<<< HEAD
+uid="uid://dad1voqaos7yo"
+=======
 uid="uid://cguw6n3lk61oq"
+>>>>>>> origin/main
 path="res://.godot/imported/boxing_gloves.png-4f40fb55cf1c9b82a50da761371bd4d8.ctex"
 metadata={
 "vram_texture": false
