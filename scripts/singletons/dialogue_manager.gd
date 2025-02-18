@@ -6,6 +6,7 @@ var printed_dialogue: String = ""
 var dialogue_printed: int = 0
 var target_dialogue: String
 var target_region: Label
+var wait_time: float
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -26,6 +27,8 @@ func print_dialogue(dialogue: String, region: Label):
 	region.text = printed_dialogue
 	region.get_parent().visible = true
 	while printed_dialogue!=dialogue:
+		if target_dialogue!=dialogue:
+			return
 		dialogue_printed+=1
 		printed_dialogue = dialogue.substr(0,dialogue_printed)
 		region.text = printed_dialogue
@@ -35,6 +38,8 @@ func print_dialogue(dialogue: String, region: Label):
 	await get_tree().create_timer(0.1).timeout
 	waiting_for_confirmation = true
 	while waiting_for_confirmation:
+		if target_dialogue!=dialogue:
+			return
 		if Input.is_action_just_pressed("confirm"):
 			waiting_for_confirmation = false
 			await get_tree().process_frame
@@ -44,6 +49,6 @@ func print_dialogue(dialogue: String, region: Label):
 	wait_to_close(region)
 
 func wait_to_close(region: Label):
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(wait_time).timeout
 	if !dialogue_open: #another dialogue might immediately come up
 		region.get_parent().visible = false

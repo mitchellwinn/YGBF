@@ -15,7 +15,7 @@ func initialize_stats():
 		talent.owner = self
 		talent.exp = 300
 		add_child(talent)
-	active_talent = talents[0]
+	active_talent = talents[1]
 	
 	base_agility = 35
 	base_strength = 9

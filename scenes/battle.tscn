@@ -1211,80 +1211,80 @@ patch_margin_bottom = 5
 script = ExtResource("13_2q8b1")
 functionality = "finish"
 
-[node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar"]
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar"]
 layout_mode = 2
-offset_left = 11.76
+offset_left = 4.00001
 offset_top = 4.0
-offset_right = 687.76
-offset_bottom = 54.0
-columns = 10
+offset_right = 680.0
+offset_bottom = 60.0
+columns = 4
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = ExtResource("21_wwe0a")
 stretch_mode = 2
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = ExtResource("21_wwe0a")
 stretch_mode = 2
 
-[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = ExtResource("21_wwe0a")
 stretch_mode = 2
 
-[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = ExtResource("21_wwe0a")
 stretch_mode = 2
 
-[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = SubResource("ImageTexture_1se7t")
 stretch_mode = 2
 
-[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = SubResource("ImageTexture_1se7t")
 stretch_mode = 2
 
-[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = SubResource("ImageTexture_1se7t")
 stretch_mode = 2
 
-[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = SubResource("ImageTexture_1se7t")
 stretch_mode = 2
 
-[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = SubResource("ImageTexture_1se7t")
 stretch_mode = 2
 
-[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 size_flags_vertical = 3
 texture = SubResource("ImageTexture_1se7t")
 stretch_mode = 2

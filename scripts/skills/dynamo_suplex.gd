@@ -24,4 +24,4 @@ func ego_cost() -> int:
     return 10
 
 func hp_damage() -> int:
-    return 20
+    return 25

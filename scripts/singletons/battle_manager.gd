@@ -17,6 +17,7 @@ var act_menu: GridContainer
 var skill_menu: GridContainer
 var talent_menu: GridContainer
 var main_attack_model #not sure on the type yet
+var main_attack_action #not sure on the type yet
 var dialogue_label: Label
 var sfx_player: AudioStreamPlayer2D
 var dialogue_sfx_player: AudioStreamPlayer2D
@@ -102,6 +103,7 @@ func get_scene_references():
 	dialogue_sfx_player = get_tree().root.get_node("Battle/DialogueSfxPlayer")
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
 	main_attack_model = menu.get_node("MainAttackModel")
+	main_attack_action = menu.get_node("MainAttackAction")
 	categorical_menu = menu.get_node("Categories")
 	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
 	minigame_viewport = get_tree().root.get_node("Battle/MinigameViewport")
@@ -251,6 +253,8 @@ func decide_attacker():
 
 func decide_menu_main():
 	phase = "decide_menu_"+attacker.active_talent.talent
+	if phase == "decide_menu_action":
+		return
 	stop_all_flashes()
 	await get_tree().process_frame
 	var index: int = 0
@@ -756,12 +760,12 @@ func stop_all_flashes():
 
 func animate_bars(delta):
 	for i in range(party.size()):
-		party_sprites[i].get_node("Hp/Armor2").value = floori(lerp(party_sprites[i].get_node("Hp/Armor2").value,float(party[i].temporary_hp_armor)/float(party[i].get_max_hp_armor())*100,delta*50))
-		party_sprites[i].get_node("Ego/Armor2").value = floori(lerp(party_sprites[i].get_node("Ego/Armor2").value,float(party[i].temporary_ego_armor)/float(party[i].get_max_ego_armor())*100,delta*50))
-		party_sprites[i].get_node("Hp/Armor/Bar").value = floori(lerp(party_sprites[i].get_node("Hp/Armor/Bar").value,float(party[i].inner_hp)/float(party[i].get_max_hp())*100,delta*50))
-		party_sprites[i].get_node("Hp/Armor").value = floori(lerp(party_sprites[i].get_node("Hp/Armor").value,float(party[i].hp_armor)/float(party[i].get_max_hp_armor())*100,delta*50))
-		party_sprites[i].get_node("Ego/Armor/Bar").value = floori(lerp(party_sprites[i].get_node("Ego/Armor/Bar").value,float(party[i].inner_ego)/float(party[i].get_max_ego())*100,delta*50))
-		party_sprites[i].get_node("Ego/Armor").value = floori(lerp(party_sprites[i].get_node("Ego/Armor").value,float( party[i].ego_armor)/float(party[i].get_max_ego_armor())*100,delta*50))
+		party_sprites[i].get_node("Hp/Armor2").value = (move_toward(party_sprites[i].get_node("Hp/Armor2").value,float(party[i].temporary_hp_armor)/float(party[i].get_max_hp_armor())*100,delta*500))
+		party_sprites[i].get_node("Ego/Armor2").value = (move_toward(party_sprites[i].get_node("Ego/Armor2").value,float(party[i].temporary_ego_armor)/float(party[i].get_max_ego_armor())*100,delta*500))
+		party_sprites[i].get_node("Hp/Armor/Bar").value = (move_toward(party_sprites[i].get_node("Hp/Armor/Bar").value,float(party[i].inner_hp)/float(party[i].get_max_hp())*100,delta*500))
+		party_sprites[i].get_node("Hp/Armor").value = (move_toward(party_sprites[i].get_node("Hp/Armor").value,float(party[i].hp_armor)/float(party[i].get_max_hp_armor())*100,delta*500))
+		party_sprites[i].get_node("Ego/Armor/Bar").value = (move_toward(party_sprites[i].get_node("Ego/Armor/Bar").value,float(party[i].inner_ego)/float(party[i].get_max_ego())*100,delta*500))
+		party_sprites[i].get_node("Ego/Armor").value = (move_toward(party_sprites[i].get_node("Ego/Armor").value,float( party[i].ego_armor)/float(party[i].get_max_ego_armor())*100,delta*500))
 
 func open_menu():
 	for sprite in party_sprites:
@@ -781,6 +785,7 @@ func open_menu():
 			act_menu.visible = false
 			talent_menu.visible = false
 			main_attack_model.visible = false
+			main_attack_action.visible = false
 			match phase:
 				"decide_menu_talent":
 					talent_menu.visible = true
@@ -795,9 +800,15 @@ func open_menu():
 					main_attack_model.visible = true
 					main_attack_model.get_node("HpBar").size.x = menu.size.x
 					print(menu.size.x)
+				"main_attack_action":
+					main_attack_action.visible = true
+					main_attack_action.get_node("ActionBar").size.x = menu.size.x
+					print(menu.size.x)
 				_:
 					break
 		match phase:
+			"main_attack_action":
+					main_attack_action.get_node("ActionBar").size.x = menu.size.x
 			"decide_menu_category":
 					categorical_menu.get_node("GridContainerCategorical").size.x = menu.size.x
 			"decide_menu_model":
