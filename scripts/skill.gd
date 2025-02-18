@@ -24,16 +24,24 @@ func use(user: Stats, target: Stats):
 	current_user = user
 	target_name = target.character_name
 	owner_name = user.character_name
-	var ego_dmg_mod: float = user.get_charisma()-target.get_resilience()*.75
-	var hp_dmg_mod: float = user.get_sturdiness()-target.get_sturdiness()*.75
+	var ego_dmg_mod: float = user.get_charisma()-target.get_resilience()*.5
+	if ego_dmg_mod<0:
+		ego_dmg_mod = ego_dmg_mod/2
+	var hp_dmg_mod: float = user.get_strength()-target.get_sturdiness()*.5
+	if hp_dmg_mod<0:
+		ego_dmg_mod = hp_dmg_mod/2
 	var ego_dmg: int
 	var hp_dmg: int
 	if ego_damage()>0:
 		ego_dmg = ego_damage() + int(ego_dmg_mod)
+		if ego_dmg<1:
+			ego_dmg = 1
 	else:
 		ego_dmg = ego_damage()
 	if hp_damage()>0:
 		hp_dmg = hp_damage() + int(hp_dmg_mod)
+		if hp_dmg<1:
+			hp_dmg = 1
 	else:
 		hp_dmg = hp_damage()
 		

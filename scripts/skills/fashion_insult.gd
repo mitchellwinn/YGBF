@@ -24,4 +24,4 @@ func ego_cost() -> int:
     return 10
 
 func ego_damage() -> int:
-    return 30
+    return 18

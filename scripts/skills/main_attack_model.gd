@@ -1,10 +1,10 @@
 extends Skill
 
-class_name MainAttackDiva
+class_name MainAttackModel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	skill_name = "DivaMain"
+	skill_name = "ModelMain"
 	crit_chance = 20
 	accuracy = 95
 

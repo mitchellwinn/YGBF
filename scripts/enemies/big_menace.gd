@@ -5,7 +5,7 @@ class_name BigMenace
 func initialize_stats():
 	character_name = "BigMenace"
 	ego_subdue_threshold = .9
-	talents.append(Diva.new())
+	talents.append(Model.new())
 	for talent in talents:
 		add_child(talent)
 	active_talent = talents[0]

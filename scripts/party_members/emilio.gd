@@ -4,12 +4,18 @@ class_name Emilio
 
 func initialize_stats():
 	character_name = "Emilio"
+
+	exp = 300
+	level_cap = 40
+
 	sprite = ImageTexture.new().create_from_image(Image.new().load_from_file("res://images/portraits/emilio.png"))
-	talents.append(Diva.new())
+	talents.append(Model.new())
 	talents.append(Action.new())
 	for talent in talents:
+		talent.owner = self
+		talent.exp = 300
 		add_child(talent)
-	active_talent = talents[1]
+	active_talent = talents[0]
 	
 	base_agility = 35
 	base_strength = 9
@@ -24,5 +30,5 @@ func initialize_stats():
 	growth_charisma = 0.7
 	growth_constitution = 0.4
 	growth_perspective = 0.55
-	growth_resilience = 0.7
+	growth_resilience = 0.6
 	growth_sturdiness = 0.45

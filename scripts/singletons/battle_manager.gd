@@ -16,7 +16,7 @@ var categorical_menu: Control
 var act_menu: GridContainer
 var skill_menu: GridContainer
 var talent_menu: GridContainer
-var main_attack_diva #not sure on the type yet
+var main_attack_model #not sure on the type yet
 var dialogue_label: Label
 var sfx_player: AudioStreamPlayer2D
 var dialogue_sfx_player: AudioStreamPlayer2D
@@ -48,7 +48,7 @@ var battle_option: String
 var phase: String = ""
 var minigame_status: int
 
-var diva_minigame = preload("res://scenes/minigames/diva.tscn")
+var model_minigame = preload("res://scenes/minigames/model.tscn")
 var punchout_minigame = preload("res://scenes/minigames/punchout.tscn")
 
 ############## BUILT IN FUNCTIONS ######################
@@ -56,10 +56,10 @@ var punchout_minigame = preload("res://scenes/minigames/punchout.tscn")
 func _ready():
 	pass
 
-func _process(_delta):
+func _process(delta):
 	if !in_battle:
 		return
-	animate_bars()
+	animate_bars(delta)
 
 
 ############### INITIALIZATION FUNCTIONS ###############
@@ -101,7 +101,7 @@ func get_scene_references():
 	sfx_player = get_tree().root.get_node("Battle/SfxPlayer")
 	dialogue_sfx_player = get_tree().root.get_node("Battle/DialogueSfxPlayer")
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
-	main_attack_diva = menu.get_node("MainAttackDiva")
+	main_attack_model = menu.get_node("MainAttackModel")
 	categorical_menu = menu.get_node("Categories")
 	minigame = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMinigame/Minigame")
 	minigame_viewport = get_tree().root.get_node("Battle/MinigameViewport")
@@ -206,9 +206,9 @@ func battle_process():
 				4: #Change
 					print("change")
 					battle_option = "change"
-					prepared_talent = attacker.talents[talent_button_index]
 					if await decide_menu_talent() == -1:
 						continue
+					prepared_talent = attacker.talents[talent_button_index]
 			if battle_option != "change":
 				if target_ally:
 					if await decide_ally() == -1:
@@ -257,16 +257,16 @@ func decide_menu_main():
 	get_tree().get_nodes_in_group("menu_"+attacker.active_talent.talent+"_buttons")[0].grab_focus()
 	get_tree().root.get_viewport().gui_get_focus_owner().material.set_shader_parameter("flash_enabled", true)
 	match attacker.active_talent.talent:
-			"diva":
+			"model":
 				target_ally = true
-				check_diva_resources()
+				check_model_resources()
 
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
 		match attacker.active_talent.talent:
-			"diva":
-				diva_main_actions(index)
+			"model":
+				model_main_actions(index)
 		if (index != get_tree().root.get_viewport().gui_get_focus_owner().index):
 			index = get_tree().root.get_viewport().gui_get_focus_owner().index
 			stop_all_flashes()
@@ -275,7 +275,7 @@ func decide_menu_main():
 				GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		if (Input.is_action_just_pressed("confirm") || GameManager.click_button == phase) and get_tree().root.get_viewport().gui_get_focus_owner().functionality == "finish":
 			match attacker.active_talent.talent:
-				"diva":
+				"model":
 					if attacker.active_talent.main_attack_resource_count<=0:
 						await get_tree().process_frame
 						print("continue")
@@ -347,6 +347,11 @@ func decide_menu_skill():
 		else:
 			button.make_selectable()
 			print("selectable")
+	print("skill index: "+str(skill_button_index))
+	if skill_button_index < get_tree().get_nodes_in_group("menu_skill_buttons").size():
+		pass
+	else:
+		skill_button_index = 0
 	get_tree().get_nodes_in_group("menu_skill_buttons")[skill_button_index].grab_focus()
 	print("grabbed focus")
 	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
@@ -374,14 +379,19 @@ func decide_menu_talent():
 	stop_all_flashes()
 	await populate_talent_buttons()
 	get_tree().get_nodes_in_group("menu_talent_buttons")[skill_button_index].grab_focus()
+	while !get_tree().root.get_viewport().gui_get_focus_owner():
+		talent_button_index+=1
+		talent_button_index = talent_button_index%get_tree().get_nodes_in_group("menu_talent_buttons").size()
+		get_tree().get_nodes_in_group("menu_talent_buttons")[skill_button_index].grab_focus()
 	print("grabbed focus")
 	#await iterate_categorical_button_index(0) #incase we start the turn hovering someone who is grayed out for some reason; eg. enemy attack exhausts them before they can go
 	while(true):
 		if Input.is_action_just_pressed("back"):
 			return -1
 		if (get_tree().root.get_viewport().gui_get_focus_owner()):
-			if (skill_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
-				skill_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+			if (talent_button_index != get_tree().root.get_viewport().gui_get_focus_owner().index):
+				talent_button_index = get_tree().root.get_viewport().gui_get_focus_owner().index
+				print(talent_button_index)
 				GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
 		else:
 			await get_tree().process_frame
@@ -456,7 +466,7 @@ func determine_enemy_attack():
 
 ############### TALENT SPECIFIC ACTIONS ###############
 
-func check_diva_resources():
+func check_model_resources():
 	while attacker.active_talent.main_attack_resource_count > attacker.active_talent.main_attack_resource_limit:
 		if attacker.active_talent.main_attack_ego > 0:
 			attacker.active_talent.main_attack_ego -= 1
@@ -466,18 +476,18 @@ func check_diva_resources():
 			attacker.active_talent.main_attack_resource_count -= 1
 		
 	for i in range(10):
-		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.duplicate()
-		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.duplicate()
-		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.duplicate()
-		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient = main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.duplicate()
-		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
-		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+		main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture = main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.duplicate()
+		main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient = main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.duplicate()
+		main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture = main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.duplicate()
+		main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.gradient = main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.duplicate()
+		main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+		main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
 	for i in range(attacker.active_talent.main_attack_ego):
-		main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
+		main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
 	for i in range(attacker.active_talent.main_attack_hp):
-		main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
+		main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
 
-func diva_main_actions(index: int):
+func model_main_actions(index: int):
 	var value = 0
 	if Input.is_action_just_pressed("move_right"):
 		GameManager.play_sound(sfx_player,"res://sounds/digi move.wav")
@@ -506,13 +516,13 @@ func diva_main_actions(index: int):
 		for i in range(10):
 			
 			if i<= attacker.active_talent.main_attack_ego-1:
-				main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
+				main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.BLUE)
 			else:
-				main_attack_diva.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+				main_attack_model.get_node("EgoBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
 			if i<= attacker.active_talent.main_attack_hp-1:
-				main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
+				main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.GREEN)
 			else:
-				main_attack_diva.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
+				main_attack_model.get_node("HpBar").get_child(0).get_children()[i].texture.gradient.set_color(0,Color.WHITE)
 
 ############### BATTLE HELPER FUNCTIONS ###############
 
@@ -637,7 +647,10 @@ func we_attack_enemy():
 			pass
 		"change":
 			#await change_talent_animation()
+			print(talent_button_index)
+			print(prepared_talent.talent)
 			attacker.active_talent = prepared_talent
+			await DialogueManager.print_dialogue(attacker.character_name+" has taken on the "+attacker.active_talent.talent.capitalize()+" persona!",dialogue_label)
 			pass
 		_:
 			pass
@@ -651,8 +664,8 @@ func play_minigame():
 	var minigame_instance
 	stop_all_flashes()
 	match attacker.active_talent.talent.to_lower():
-		"diva":
-			minigame_instance = diva_minigame.instantiate()
+		"model":
+			minigame_instance = model_minigame.instantiate()
 		"action":
 			minigame_instance = punchout_minigame.instantiate()
 	minigame_viewport.add_child(minigame_instance)
@@ -690,6 +703,7 @@ func populate_skill_buttons():
 		button.queue_free()
 	var i: int = 0
 	for skill in attacker.active_talent.skills:
+		print("make skill button")
 		var new_button = await load("res://prefabs/battle_button.tscn").instantiate()
 		skill_menu.add_child(new_button)
 		new_button.text = attacker.active_talent.skills[i].skill_name
@@ -740,12 +754,14 @@ func stop_all_flashes():
 		flashable.material.set_shader_parameter("flash_enabled", false)
 	return
 
-func animate_bars():
+func animate_bars(delta):
 	for i in range(party.size()):
-		party_sprites[i].get_node("Hp/Armor/Bar").value = floor(lerp(party_sprites[i].get_node("Hp/Armor/Bar").value,float(party[i].inner_hp)/float(party[i].get_max_hp())*100,GameManager.last_delta*5))
-		party_sprites[i].get_node("Hp/Armor").value = floor(lerp(party_sprites[i].get_node("Hp/Armor").value,float(party[i].hp_armor)/float(party[i].get_max_hp_armor())*100,GameManager.last_delta*5))
-		party_sprites[i].get_node("Ego/Armor/Bar").value = floor(lerp(party_sprites[i].get_node("Ego/Armor/Bar").value,float(party[i].inner_ego)/float(party[i].get_max_ego())*100,GameManager.last_delta*5))
-		party_sprites[i].get_node("Ego/Armor").value = floor(lerp(party_sprites[i].get_node("Ego/Armor").value,float( party[i].ego_armor)/float(party[i].get_max_ego_armor())*100,GameManager.last_delta*5))
+		party_sprites[i].get_node("Hp/Armor2").value = floori(lerp(party_sprites[i].get_node("Hp/Armor2").value,float(party[i].temporary_hp_armor)/float(party[i].get_max_hp_armor())*100,delta*50))
+		party_sprites[i].get_node("Ego/Armor2").value = floori(lerp(party_sprites[i].get_node("Ego/Armor2").value,float(party[i].temporary_ego_armor)/float(party[i].get_max_ego_armor())*100,delta*50))
+		party_sprites[i].get_node("Hp/Armor/Bar").value = floori(lerp(party_sprites[i].get_node("Hp/Armor/Bar").value,float(party[i].inner_hp)/float(party[i].get_max_hp())*100,delta*50))
+		party_sprites[i].get_node("Hp/Armor").value = floori(lerp(party_sprites[i].get_node("Hp/Armor").value,float(party[i].hp_armor)/float(party[i].get_max_hp_armor())*100,delta*50))
+		party_sprites[i].get_node("Ego/Armor/Bar").value = floori(lerp(party_sprites[i].get_node("Ego/Armor/Bar").value,float(party[i].inner_ego)/float(party[i].get_max_ego())*100,delta*50))
+		party_sprites[i].get_node("Ego/Armor").value = floori(lerp(party_sprites[i].get_node("Ego/Armor").value,float( party[i].ego_armor)/float(party[i].get_max_ego_armor())*100,delta*50))
 
 func open_menu():
 	for sprite in party_sprites:
@@ -764,7 +780,7 @@ func open_menu():
 			skill_menu.visible = false
 			act_menu.visible = false
 			talent_menu.visible = false
-			main_attack_diva.visible = false
+			main_attack_model.visible = false
 			match phase:
 				"decide_menu_talent":
 					talent_menu.visible = true
@@ -775,21 +791,21 @@ func open_menu():
 					act_menu.visible = true
 				"decide_menu_skill":
 					skill_menu.visible = true
-				"decide_menu_diva":
-					main_attack_diva.visible = true
-					main_attack_diva.get_node("HpBar").size.x = menu.size.x
+				"decide_menu_model":
+					main_attack_model.visible = true
+					main_attack_model.get_node("HpBar").size.x = menu.size.x
 					print(menu.size.x)
 				_:
 					break
 		match phase:
 			"decide_menu_category":
 					categorical_menu.get_node("GridContainerCategorical").size.x = menu.size.x
-			"decide_menu_diva":
-				main_attack_diva.get_node("HpBar").size.x = menu.size.x
-				main_attack_diva.get_node("HpBar").get_child(0).size.x = menu.size.x-9
-				main_attack_diva.get_node("EgoBar").size.x = menu.size.x
-				main_attack_diva.get_node("EgoBar").get_child(0).size.x = menu.size.x-9
-				main_attack_diva.get_node("Count").text = str(attacker.active_talent.main_attack_resource_limit-attacker.active_talent.main_attack_resource_count)+"/"+str(attacker.active_talent.main_attack_resource_limit)+" Available"
+			"decide_menu_model":
+				main_attack_model.get_node("HpBar").size.x = menu.size.x
+				main_attack_model.get_node("HpBar").get_child(0).size.x = menu.size.x-9
+				main_attack_model.get_node("EgoBar").size.x = menu.size.x
+				main_attack_model.get_node("EgoBar").get_child(0).size.x = menu.size.x-9
+				main_attack_model.get_node("Count").text = str(attacker.active_talent.main_attack_resource_limit-attacker.active_talent.main_attack_resource_count)+"/"+str(attacker.active_talent.main_attack_resource_limit)+" Available"
 			_:
 				pass
 		phase_last_frame = phase

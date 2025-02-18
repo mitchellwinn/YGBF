@@ -3,11 +3,14 @@ extends Stats
 class_name TrecherousStrutter
 
 func initialize_stats():
+
+	exp = 200
+
 	character_name = "Trecherous Strutter"
 	enemy = true
 	sprite = ImageTexture.new().create_from_image(Image.new().load_from_file("res://images/portraits/tt1.png"))
-	ego_subdue_threshold = .9
-	talents.append(Diva.new())
+	ego_subdue_threshold = .5
+	talents.append(Model.new())
 	for talent in talents:
 		add_child(talent)
 	active_talent = talents[0]

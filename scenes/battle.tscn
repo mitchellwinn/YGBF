@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://cwe6q66isus1c"]
+[gd_scene load_steps=35 format=3 uid="uid://cwe6q66isus1c"]
 
 [ext_resource type="Texture2D" uid="uid://de3b8okmyqlv3" path="res://images/battles_system/tv.png" id="1_f7vsy"]
 [ext_resource type="PackedScene" uid="uid://5vq4fxc2rak8" path="res://prefabs/enemy.tscn" id="2_7iqjt"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://biv1ktiokn2dr" path="res://images/battles_system/player_window.png" id="8_75ms7"]
 [ext_resource type="Texture2D" uid="uid://ced20ra1krdxk" path="res://images/battles_system/ego_armor.png" id="8_bidra"]
 [ext_resource type="FontFile" uid="uid://cf8buj8w4ewd5" path="res://fonts/GeneralSans-Medium.otf" id="8_ni1p0"]
+[ext_resource type="Texture2D" uid="uid://djky2tww6w6ks" path="res://images/battles_system/super_armor.png" id="8_sabne"]
 [ext_resource type="Texture2D" uid="uid://cg7cxlbusaaam" path="res://images/battles_system/ego_bar.png" id="9_iefhm"]
 [ext_resource type="Texture2D" uid="uid://c7bctb28yw32s" path="res://images/battles_system/button_main.png" id="9_qx3y5"]
 [ext_resource type="PackedScene" uid="uid://bill73lwgqhyj" path="res://prefabs/battle_bg.tscn" id="10_q4ian"]
@@ -22,6 +23,7 @@
 [ext_resource type="Script" path="res://scripts/nine_patch_resizer.gd" id="12_3507t"]
 [ext_resource type="Script" path="res://scripts/focusable.gd" id="13_2q8b1"]
 [ext_resource type="Texture2D" uid="uid://b8xjflw3fip8y" path="res://images/battles_system/dialogue.png" id="13_ln60n"]
+[ext_resource type="Texture2D" uid="uid://l7jp83mtvnjk" path="res://images/battles_system/combo_marker_blank1.png" id="21_wwe0a"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kbckk"]
 viewport_path = NodePath("BgViewport")
@@ -48,6 +50,8 @@ width = 1
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_o7jra"]
 gradient = SubResource("Gradient_4cngp")
 width = 1
+
+[sub_resource type="ImageTexture" id="ImageTexture_1se7t"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2dt4m"]
 viewport_path = NodePath("MinigameViewport")
@@ -211,7 +215,7 @@ fill_mode = 3
 texture_progress = ExtResource("5_00jhl")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Hp/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -227,6 +231,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("6_0mjjh")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
 z_index = 10
@@ -253,7 +269,7 @@ fill_mode = 3
 texture_progress = ExtResource("8_bidra")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Ego/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -269,6 +285,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("9_iefhm")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty1/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="Frame" type="TextureRect" parent="CanvasLayer/HBoxContainerParty1/PartyMember"]
 z_index = 10
@@ -370,7 +398,7 @@ fill_mode = 3
 texture_progress = ExtResource("5_00jhl")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Hp/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -386,6 +414,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("6_0mjjh")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty2/PartyMember"]
 z_index = 10
@@ -412,7 +452,7 @@ fill_mode = 3
 texture_progress = ExtResource("8_bidra")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Ego/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -428,6 +468,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("9_iefhm")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty2/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="HBoxContainerParty3" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -507,7 +559,7 @@ fill_mode = 3
 texture_progress = ExtResource("5_00jhl")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Hp/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -523,6 +575,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("6_0mjjh")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty3/PartyMember"]
 z_index = 10
@@ -549,7 +613,7 @@ fill_mode = 3
 texture_progress = ExtResource("8_bidra")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Ego/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -565,6 +629,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("9_iefhm")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty3/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="HBoxContainerParty4" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -644,7 +720,7 @@ fill_mode = 3
 texture_progress = ExtResource("5_00jhl")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Hp/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -660,6 +736,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("6_0mjjh")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Hp"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="Ego" type="TextureRect" parent="CanvasLayer/HBoxContainerParty4/PartyMember"]
 z_index = 10
@@ -686,7 +774,7 @@ fill_mode = 3
 texture_progress = ExtResource("8_bidra")
 
 [node name="Bar" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Ego/Armor"]
-z_index = 10
+z_index = 11
 z_as_relative = false
 texture_filter = 1
 clip_contents = true
@@ -702,6 +790,18 @@ value = 100.0
 fill_mode = 3
 texture_under = ExtResource("6_y8u8e")
 texture_progress = ExtResource("9_iefhm")
+
+[node name="Armor2" type="TextureProgressBar" parent="CanvasLayer/HBoxContainerParty4/PartyMember/Ego"]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.68
+offset_top = 2.0
+offset_right = 34.68
+offset_bottom = 129.0
+fill_mode = 3
+texture_progress = ExtResource("8_sabne")
 
 [node name="HBoxContainerMenu" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = -1
@@ -835,14 +935,14 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 3
 
-[node name="MainAttackDiva" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
+[node name="MainAttackModel" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
 visible = false
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.0
 
-[node name="HpBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["flashable", "menu_diva_buttons"]]
+[node name="HpBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel" groups=["flashable", "menu_model_buttons"]]
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_mode = 2
@@ -861,7 +961,7 @@ patch_margin_bottom = 5
 script = ExtResource("13_2q8b1")
 functionality = "finish"
 
-[node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar"]
+[node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar"]
 layout_mode = 2
 offset_left = 4.0
 offset_top = 3.65
@@ -869,67 +969,67 @@ offset_right = 679.525
 offset_bottom = 26.61
 columns = 10
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/HpBar/GridContainerHp"]
+[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/HpBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="EgoBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["flashable", "menu_diva_buttons"]]
+[node name="EgoBar" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel" groups=["flashable", "menu_model_buttons"]]
 texture_filter = 1
 material = ExtResource("3_42206")
 layout_mode = 2
@@ -949,7 +1049,7 @@ script = ExtResource("13_2q8b1")
 index = 1
 functionality = "finish"
 
-[node name="GridContainerEgo" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar"]
+[node name="GridContainerEgo" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar"]
 layout_mode = 2
 offset_left = 4.0
 offset_top = 3.65
@@ -957,67 +1057,67 @@ offset_right = 679.525
 offset_bottom = 26.61
 columns = 10
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_o7jra")
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/EgoBar/GridContainerEgo"]
+[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/EgoBar/GridContainerEgo"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource("GradientTexture1D_bixc5")
 
-[node name="Finish" type="Button" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["menu_diva_buttons"]]
+[node name="Finish" type="Button" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel" groups=["menu_model_buttons"]]
 texture_filter = 1
 layout_mode = 2
 offset_top = -32.0
@@ -1033,7 +1133,7 @@ script = ExtResource("6_76cnh")
 index = 2
 functionality = "finish"
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/Finish"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/Finish"]
 z_index = -1
 texture_filter = 1
 layout_mode = 0
@@ -1046,7 +1146,7 @@ patch_margin_right = 15
 patch_margin_bottom = 15
 script = ExtResource("12_3507t")
 
-[node name="Patch" type="Button" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva" groups=["menu_diva_buttons"]]
+[node name="Patch" type="Button" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel" groups=["menu_model_buttons"]]
 texture_filter = 1
 layout_mode = 2
 offset_left = 141.0
@@ -1062,7 +1162,7 @@ text_direction = 1
 script = ExtResource("6_76cnh")
 index = 3
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva/Patch"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel/Patch"]
 z_index = -1
 texture_filter = 1
 layout_mode = 0
@@ -1075,7 +1175,7 @@ patch_margin_right = 15
 patch_margin_bottom = 15
 script = ExtResource("12_3507t")
 
-[node name="Count" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackDiva"]
+[node name="Count" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackModel"]
 texture_filter = 1
 layout_mode = 0
 offset_left = 310.0
@@ -1098,7 +1198,7 @@ texture_filter = 1
 layout_mode = 2
 offset_top = 48.0
 offset_right = 684.0
-offset_bottom = 106.0
+offset_bottom = 104.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 focus_mode = 2
@@ -1113,41 +1213,81 @@ functionality = "finish"
 
 [node name="GridContainerHp" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar"]
 layout_mode = 2
-offset_left = 4.0
-offset_top = 3.65
-offset_right = 679.525
-offset_bottom = 26.61
-columns = 5
+offset_left = 11.76
+offset_top = 4.0
+offset_right = 687.76
+offset_bottom = 54.0
+columns = 10
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("GradientTexture1D_bixc5")
+texture = ExtResource("21_wwe0a")
+stretch_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("GradientTexture1D_bixc5")
+texture = ExtResource("21_wwe0a")
+stretch_mode = 2
 
 [node name="TextureRect3" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("GradientTexture1D_bixc5")
+texture = ExtResource("21_wwe0a")
+stretch_mode = 2
 
 [node name="TextureRect4" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("GradientTexture1D_bixc5")
+texture = ExtResource("21_wwe0a")
+stretch_mode = 2
 
 [node name="TextureRect5" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = SubResource("GradientTexture1D_bixc5")
+texture = SubResource("ImageTexture_1se7t")
+stretch_mode = 2
+
+[node name="TextureRect6" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("ImageTexture_1se7t")
+stretch_mode = 2
+
+[node name="TextureRect7" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("ImageTexture_1se7t")
+stretch_mode = 2
+
+[node name="TextureRect8" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("ImageTexture_1se7t")
+stretch_mode = 2
+
+[node name="TextureRect9" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("ImageTexture_1se7t")
+stretch_mode = 2
+
+[node name="TextureRect10" type="TextureRect" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/ActionBar/GridContainerHp"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("ImageTexture_1se7t")
+stretch_mode = 2
 
 [node name="Label" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction"]
 texture_filter = 1
@@ -1165,6 +1305,7 @@ vertical_alignment = 1
 
 [node name="Label" type="Label" parent="CanvasLayer/HBoxContainerMenu/MainAttackAction/Label"]
 texture_filter = 1
+layout_mode = 0
 offset_left = 2.0
 offset_top = -1.0
 offset_right = 688.0
@@ -1177,6 +1318,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Categories" type="Control" parent="CanvasLayer/HBoxContainerMenu"]
+visible = false
 layout_mode = 2
 
 [node name="GridContainerCategorical" type="GridContainer" parent="CanvasLayer/HBoxContainerMenu/Categories"]
@@ -1294,6 +1436,7 @@ script = ExtResource("12_3507t")
 
 [node name="Change" type="Button" parent="CanvasLayer/HBoxContainerMenu/Categories" groups=["menu_categorical_buttons"]]
 texture_filter = 1
+layout_mode = 0
 offset_top = -32.0
 offset_right = 136.0
 size_flags_horizontal = 7

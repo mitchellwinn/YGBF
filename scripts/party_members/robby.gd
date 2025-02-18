@@ -4,10 +4,16 @@ class_name Robby
 
 func initialize_stats():
 	character_name = "Robby"
+
+	exp = 150
+	level_cap = 20
+
 	sprite = ImageTexture.new().create_from_image(Image.new().load_from_file("res://images/portraits/robby.png"))
-	talents.append(Diva.new())
+	talents.append(Model.new())
 	talents.append(Action.new())
 	for talent in talents:
+		talent.owner = self
+		talent.exp = 150
 		add_child(talent)
 	active_talent = talents[0]
 

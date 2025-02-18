@@ -34,9 +34,9 @@ window/stretch/aspect="expand"
 menu_act_buttons=""
 menu_categorical_buttons=""
 menu_skill_buttons=""
-menu_diva_buttons=""
 flashable=""
 menu_talent_buttons=""
+menu_model_buttons=""
 
 [input]
 

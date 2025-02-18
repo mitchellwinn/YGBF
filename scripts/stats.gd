@@ -25,7 +25,8 @@ var character_name: String
 var loaded_from_save: bool
 var animator: AnimationPlayer
 
-var actor_talent: int #[from 0 -> 6] F-0, E-1, D-2, C-3, B-4, A-5, S-6
+var exp: int
+var level_cap: int
 
 var base_strength: int #determines damage dealt by physical attacks
 var base_charisma: int #determines damage dealt by EGO attacks
@@ -55,8 +56,6 @@ func initialize_new_party_member():
 	inner_hp = get_max_hp() 
 	ego_armor = get_max_ego_armor()
 	inner_ego = get_max_ego()
-	active_talent.main_attack_resource_limit_cap = 4
-	active_talent.main_attack_resource_limit = active_talent.main_attack_resource_limit_cap
 	print("hp for "+character_name+" is "+str(inner_hp))
 	return
 
@@ -70,11 +69,36 @@ func restore_resources_iterate():
 func initialize_stats():
 	pass
 
+func gain_exp(value: int):
+	exp += value
+	if exp > level_cap*10:
+		exp = level_cap*10
+
+func get_level() -> int:
+	return (exp/10)+1
+
+func get_rank() -> String:
+	match (exp/100):
+		0:
+			return "F"
+		1:
+			return "E"
+		2,3:
+			return "D"
+		4,5:
+			return "C"
+		6,7:
+			return "B"
+		8,9:
+			return "A"
+		_:
+			return "S"
+
 func get_max_ego_armor() -> int:
-	return get_perspective()/(2-float(actor_talent/2))
+	return get_perspective()/(2-float(float(get_level()/100.0)))
 
 func get_max_hp_armor() -> int:
-	return get_constitution()/(2-float(actor_talent/2))
+	return get_constitution()/(2-float(float(get_level()/100.0)))
 
 func get_max_ego() -> int:
 	return get_perspective()
@@ -83,25 +107,25 @@ func get_max_hp() -> int:
 	return get_constitution()
 
 func get_constitution() -> int:
-	return base_constitution+growth_constitution*actor_talent*base_constitution
+	return base_constitution+growth_constitution*(float(get_level())/5.0)*base_constitution
 
 func get_perspective() -> int:
-	return base_perspective+growth_perspective*actor_talent*base_perspective
+	return base_perspective+growth_perspective*(float(get_level())/5.0)*base_perspective
 
 func get_strength() -> int:
-	return base_strength+growth_strength*actor_talent*base_strength
+	return base_strength+growth_strength*(float(get_level())/5.0)*base_strength
 
 func get_charisma() -> int:
-	return base_charisma+growth_charisma*actor_talent*base_charisma
+	return base_charisma+growth_charisma*(float(get_level())/5.0)*base_charisma
 
 func get_agility() -> int:
-	return base_agility+growth_agility*actor_talent*base_agility
+	return base_agility+growth_agility*(float(get_level())/5.0)*base_agility
 
 func get_sturdiness() -> int:
-	return base_sturdiness+growth_sturdiness*actor_talent*base_sturdiness
+	return base_sturdiness+growth_sturdiness*(float(get_level())/5.0)*base_sturdiness
 
 func get_resilience()-> int:
-	return base_resilience+growth_resilience*actor_talent*base_resilience
+	return base_resilience+growth_resilience*(float(get_level())/5.0)*base_resilience
 
 func define_attacks():
 	attacks.clear() #wipe array to a clean slate before any recalculations
@@ -134,20 +158,59 @@ func is_subdued() -> bool:
 
 func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp_armor, skill_name: String):
 	#hp dmg
+	var hp_armor_gain = hp_temp_armor*crit
+	var ego_armor_gain = ego_temp_armor*crit
+	var hp_armor_meaningful_gain = false
+	var ego_armor_meaningful_gain = false
+
 	hp_dmg = int(hp_dmg*crit)
 	ego_dmg = int(ego_dmg*crit)
-	hp_temp_armor = int(hp_temp_armor*crit)
-	ego_temp_armor = int(ego_temp_armor*crit)
+
+	var temp_overflow = 0
+	if hp_temp_armor>0:
+		if hp_temp_armor*crit+hp_armor<=get_max_hp_armor():
+			hp_armor += hp_temp_armor*crit
+			hp_armor_meaningful_gain = true
+			print("missing hp totally")
+		elif hp_armor != get_max_hp_armor():
+			print("missing some hp")
+			temp_overflow = (hp_armor+hp_temp_armor*crit)-get_max_hp_armor()
+			hp_armor = get_max_hp_armor()
+		elif hp_armor == get_max_hp_armor():
+			print("missing no hp")
+			temp_overflow = hp_temp_armor * crit
+		if temporary_hp_armor<temp_overflow:
+			temporary_hp_armor = temp_overflow
+			hp_armor_meaningful_gain = true
+		print("hp armor: "+str(temporary_hp_armor))
+		print("temp hp armor: "+str(temporary_hp_armor))
+	temp_overflow = 0
+	if ego_temp_armor>0:
+		if ego_temp_armor*crit+ego_armor<=get_max_ego_armor():
+			ego_armor += ego_temp_armor*crit
+			ego_armor_meaningful_gain = true
+			print("missing ego totally")
+		elif ego_armor != get_max_ego_armor():
+			print("missing some ego")
+			temp_overflow = (ego_armor+ego_temp_armor*crit)-get_max_ego_armor()
+			ego_armor = get_max_ego_armor()
+		elif ego_armor == get_max_ego_armor():
+			print("missing no ego")
+			temp_overflow = ego_temp_armor * crit
+		if temporary_ego_armor<temp_overflow:
+			temporary_ego_armor = temp_overflow
+			ego_armor_meaningful_gain = true
+		print("ego armor: "+str(ego_armor))
+		print("temp ego armor: "+str(temporary_ego_armor))
+
 	var remainder: int = 0
 	var not_yet_subdued: bool = !is_subdued()
 	var ego_not_yet_broken: bool
 	var hp_not_yet_broken: bool
-	if temporary_hp_armor < hp_temp_armor:
-		temporary_hp_armor = hp_temp_armor
-		await DialogueManager.print_dialogue(character_name+" gained "+str(hp_temp_armor)+" points of HP armor!",BattleManager.dialogue_label)
-	if temporary_ego_armor < ego_temp_armor:
-		temporary_ego_armor = ego_temp_armor
-		await DialogueManager.print_dialogue(character_name+" gained "+str(ego_temp_armor)+" points of EGO armor!",BattleManager.dialogue_label)
+	if hp_armor_meaningful_gain:
+		await DialogueManager.print_dialogue(character_name+" gained "+str(hp_armor_gain)+" points of HP armor!",BattleManager.dialogue_label)
+	if ego_armor_meaningful_gain:
+		await DialogueManager.print_dialogue(character_name+" gained "+str(ego_armor_gain)+" points of EGO armor!",BattleManager.dialogue_label)
 
 	if temporary_hp_armor>0:
 		if hp_dmg>temporary_hp_armor:
