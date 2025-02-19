@@ -67,12 +67,20 @@ func use(user: Stats, target: Stats):
 					combo_dmg = 1
 				DialogueManager.print_dialogue("",BattleManager.dialogue_label)
 				DialogueManager.print_dialogue(crit_text(),BattleManager.dialogue_label)
+				target.animator.play("RESET")
+				await target.animator.animation_finished
+				target.animator.play(dir+"_hit_crit")
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/crit_hurt_"+str((randi()%5)+1)+".wav")
 			else:
 				combo_dmg = int(randi_range(3,8)*user.active_talent.get_level()/15+hp_dmg_mod)/2
 				if combo_dmg<1:
 					combo_dmg = 1
 				DialogueManager.print_dialogue("",BattleManager.dialogue_label)
 				DialogueManager.print_dialogue(hit_text(),BattleManager.dialogue_label)
+				target.animator.play("RESET")
+				await target.animator.animation_finished
+				target.animator.play(dir+"_hit")
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/hurt_"+str((randi()%5)+1)+".wav")
 			total_dmg += combo_dmg
 			
 		else:

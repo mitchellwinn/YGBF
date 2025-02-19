@@ -34,6 +34,15 @@ func _process(delta):
 			DisplayServer.WINDOW_MODE_FULLSCREEN:
 				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED, 0)
 
-func play_sound(player: AudioStreamPlayer2D, stream: String):
+func play_sound(sfx_player: PackedScene, stream: String):
+	var player = sfx_player.instantiate()
+	get_tree().root.add_child(player)
 	player.stream = load(stream)
 	player.play()
+	while player.is_playing:
+		await get_tree().process_frame
+	player.queue_free()
+
+func play_sound_from_player(sfx_player: AudioStreamPlayer2D, stream: String):
+	sfx_player.stream = load(stream)
+	sfx_player.play()

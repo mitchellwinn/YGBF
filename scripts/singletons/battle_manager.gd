@@ -19,7 +19,7 @@ var talent_menu: GridContainer
 var main_attack_model #not sure on the type yet
 var main_attack_action #not sure on the type yet
 var dialogue_label: Label
-var sfx_player: AudioStreamPlayer2D
+var sfx_player: PackedScene = preload("res://prefabs/sfx_player.tscn")
 var dialogue_sfx_player: AudioStreamPlayer2D
 
 var came_from_overworld: bool
@@ -99,7 +99,6 @@ func get_scene_references():
 	enemy_sprites.clear()
 	dialogue_label = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerDialogue/DialogueGuide/Label")
 	dialogue_label.get_parent().visible = false
-	sfx_player = get_tree().root.get_node("Battle/SfxPlayer")
 	dialogue_sfx_player = get_tree().root.get_node("Battle/DialogueSfxPlayer")
 	menu = get_tree().root.get_node("Battle/CanvasLayer/HBoxContainerMenu")
 	main_attack_model = menu.get_node("MainAttackModel")

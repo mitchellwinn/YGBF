@@ -33,7 +33,7 @@ func print_dialogue(dialogue: String, region: Label):
 		printed_dialogue = dialogue.substr(0,dialogue_printed)
 		region.text = printed_dialogue
 		if get_tree().current_scene.name.to_lower() == "battle":
-			GameManager.play_sound(BattleManager.dialogue_sfx_player,"res://sounds/text1.wav")
+			GameManager.play_sound_from_player(BattleManager.dialogue_sfx_player,"res://sounds/text1.wav")
 		await get_tree().create_timer(0.01).timeout
 	await get_tree().create_timer(0.1).timeout
 	waiting_for_confirmation = true

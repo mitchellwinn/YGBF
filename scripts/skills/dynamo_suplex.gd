@@ -21,7 +21,7 @@ func  miss_text() -> String:
     return "But "+target_name+" simply stepped out of the way!"
 
 func ego_cost() -> int:
-    return 10
+    return 15
 
 func hp_damage() -> int:
-    return 25
+    return 55

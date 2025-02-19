@@ -12,22 +12,22 @@ uniform float palette_shift_speed = 2; // Speed for palette shifting
 
 void fragment() {
     vec2 uv = UV;
-	
+
     uv.y += sin(uv.x * wave_frequency + TIME) * wave_amplitude;
     uv.x += sin(uv.x * wave_frequency + TIME) * wave_amplitude;
     uv.y += TIME * scroll_speed;
     uv.x += TIME * scroll_speed;
     uv.x = mod(uv.x, 1.0);
     uv.y = mod(uv.y, 1.0);
-    
+
 	vec4 color = texture(main_texture_1, uv);
-	
+
 	if(palette_shift){
 	    vec4 new_color = color;
 		int shift;
 		float ping_pong_time;
 		if (ping_pong_shift){
-			ping_pong_time = mod(TIME*palette_shift_speed, float(palette_size * 2));	
+			ping_pong_time = mod(TIME*palette_shift_speed, float(palette_size * 2));
 			shift = int(ping_pong_time);
 		}
 	    else{
@@ -45,6 +45,6 @@ void fragment() {
 	    }
 		color = new_color;
 	}
-	
+
 	COLOR = color;
 }

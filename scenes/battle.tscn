@@ -1550,5 +1550,3 @@ position = Vector2(729.544, 168.719)
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 
 [node name="DialogueSfxPlayer" type="AudioStreamPlayer2D" parent="."]
-
-[node name="SfxPlayer" type="AudioStreamPlayer2D" parent="."]

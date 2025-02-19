@@ -258,7 +258,22 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp
 		if animator.has_animation(skill_name):
 			animator.play(skill_name)
 			await animator.animation_finished
-		GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg.wav")
+		if ego_dmg>0 and hp_dmg>0:
+			GameManager.play_sound(BattleManager.sfx_player,"res://sounds/universal_dmg_1.wav")
+		elif ego_dmg > 0:
+			if crit>1:
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/crit_ego_dmg_1.wav")
+			else:
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg_2.wav")
+		elif hp_dmg > 0:
+			if crit>1:
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/crit_hurt_"+str((randi()%5)+1)+".wav")
+				await get_tree().process_frame
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/crit_hp_dmg_1.wav")
+			else:
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/hurt_"+str((randi()%5)+1)+".wav")
+				await get_tree().process_frame
+				GameManager.play_sound(BattleManager.sfx_player,"res://sounds/hp_dmg_1.wav")
 		animator.play("damage")
 		await animator.animation_finished
 		animator.play("RESET")
@@ -277,7 +292,7 @@ func take_damage(ego_dmg: int, hp_dmg: int, crit: float, hp_temp_armor, ego_temp
 	if ego_armor<=0 and ego_not_yet_broken:
 		await DialogueManager.print_dialogue(character_name+"'s EGO armor has been broken!",BattleManager.dialogue_label)
 	if animator and (is_defeated()):
-		GameManager.play_sound(BattleManager.sfx_player,"res://sounds/ego_dmg.wav")
+		GameManager.play_sound(BattleManager.sfx_player,"res://sounds/die_1.wav")
 		animator.play("defeated")
 	if inner_hp<=0:
 		await DialogueManager.print_dialogue(character_name+" passed out!",BattleManager.dialogue_label)
